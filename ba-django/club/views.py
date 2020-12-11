@@ -51,8 +51,17 @@ def dashboard(request):
             #           .order_by(workout__workout_date)
     
     # if coach
-        get tracked athletes
-        get workouts pending review
+        # get tracked athletes
+        #     all_ath = TrackedAthlete.objects.filter(tracked_by=COACH)
+
+        # get all athlete workouts
+        #     ath_workouts = WorkoutResult.objects.filter(athlete=all_ath)
+        # get workouts pending review
+        #     pending = ath_workouts.filter(reviwed_by_coach = False)
+        # get workouts pending athlete result
+        #     pending = ath_workouts.filter(completed = False)
+        # get today's
+        #     today = ath_workouts.filter(workout__workout_date=datetime.date.today())
     
     pass
 
