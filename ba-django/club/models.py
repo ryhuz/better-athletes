@@ -13,6 +13,7 @@ class Club(models.Model):
         return self.club_name
 
 class UserDetail(models.Model):
+    base_user = models.OneToOneField(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, related_name='members', on_delete=models.PROTECT)
     dob = models.DateField(auto_now=False, auto_now_add=False)
     location = models.CharField(max_length=50)
@@ -27,10 +28,9 @@ class UserDetail(models.Model):
     ]
     gender = models.CharField(max_length=1, choices=GENDER,)
     public_workouts = models.BooleanField("Make workouts public?", default=True)
-    base_user = models.OneToOneField(User, on_delete=models.CASCADE)
-
+    
     def __str__(self):
-        return self.base_user
+        return self.base_user.username
 
 class WorkoutTemplate(models.Model):
     workout_name = models.CharField(max_length=50)
@@ -55,6 +55,8 @@ class WorkoutTemplate(models.Model):
 
 class Workout(models.Model):
     workout_name = models.CharField(max_length=50)
+    workout_date = models.DateField()
+    based_on_template = models.ForeignKey(WorkoutTemplate, related_name=("workout"), on_delete=models.PROTECT, null=True, blank=True)
     exercise = ArrayField( # number of sets
         ArrayField( # exercises
             models.CharField(max_length=50, blank=True)
@@ -71,9 +73,7 @@ class Workout(models.Model):
         )
     )
     created_date = models.DateTimeField(auto_now=True)
-    workout_date = models.DateField()
-    based_on_template = models.ForeignKey(WorkoutTemplate, related_name=("workout"), on_delete=models.PROTECT, null=True)
-
+    
     def __str__(self):
         return self.workout_name
       
@@ -88,16 +88,16 @@ class Workout(models.Model):
         }
 
 class WorkoutResult(models.Model):
-    athlete = models.ForeignKey(User, related_name=("results"), on_delete=models.PROTECT)
-    workout = models.ForeignKey(Workout, related_name=("results"), on_delete=models.PROTECT)
+    athlete = models.ForeignKey(User, related_name=("athlete"), on_delete=models.PROTECT)
+    workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.PROTECT)
     completed = models.BooleanField(default=False)
-    reviewed_by_coach = models.BooleanField(default=False)
+    completed_on = models.DateTimeField(auto_now=True)
     results = ArrayField(   # number of sets
         ArrayField(         # number of exercises
             ArrayField(         # reps per exercise
-                models.CharField(max_length=10, blank=True)
+                models.CharField(max_length=10, default="")
             )
-        )
+        ), blank=True
     )
 
     UNIT = [
@@ -110,27 +110,28 @@ class WorkoutResult(models.Model):
     units = ArrayField(     # number of sets
         ArrayField(         # units per result
             models.CharField(max_length=3, choices=UNIT, default="")
-        )
+        ), blank=True
     )
     comments = ArrayField(  # number of sets
         ArrayField(         # comments per exercise
             models.CharField(max_length=255, blank=True)
-        )
+        ), blank=True
     )
-    completed_on = models.DateTimeField(null=True)
     # workout_conversation = 
     # performance_tracking
 
     def __str__(self):
-        return self.athlete + self.workout + self.completed_on
+        return self.athlete.first_name + "/" + self.workout.workout_name
 
 class SavedWorkout(models.Model):
+    coach = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
     saved_workouts = models.ManyToManyField(Workout)
     saved_templates = models.ManyToManyField(WorkoutTemplate)
-    saved_by = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
 
 class TrackedAthlete(models.Model):
-    tracked_athletes = models.ManyToManyField(User)
-    notes = models.TextField()
-    tracked_by = models.ForeignKey(User, related_name=("tracking"), on_delete=models.CASCADE)
-    
+    coach = models.ForeignKey(User, related_name=("tracking"), on_delete=models.CASCADE, null=True)
+    athlete = models.ForeignKey(User, related_name=("tracked"), on_delete=models.CASCADE, null=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.coach.username + " tracking " + self.athlete.username
