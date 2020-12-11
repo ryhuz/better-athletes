@@ -5,6 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
+python-dotenv = "*"
+psycopg2 = "*"
+djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
