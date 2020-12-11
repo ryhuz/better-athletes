@@ -88,9 +88,10 @@ class Workout(models.Model):
         }
 
 class WorkoutResult(models.Model):
-    athlete = models.ForeignKey(User, related_name=("athlete"), on_delete=models.PROTECT)
-    workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.PROTECT)
+    athlete = models.ForeignKey(User, related_name=("results"), on_delete=models.PROTECT)
+    workout = models.ForeignKey(Workout, related_name=("results"), on_delete=models.PROTECT)
     completed = models.BooleanField(default=False)
+    reviewed_by_coach = models.BooleanField(default=False)
     results = ArrayField(   # number of sets
         ArrayField(         # number of exercises
             ArrayField(         # reps per exercise
@@ -116,7 +117,7 @@ class WorkoutResult(models.Model):
             models.CharField(max_length=255, blank=True)
         )
     )
-    completed_on = models.DateTimeField(auto_now=True)
+    completed_on = models.DateTimeField(null=True)
     # workout_conversation = 
     # performance_tracking
 
