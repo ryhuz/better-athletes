@@ -76,6 +76,16 @@ class Workout(models.Model):
 
     def __str__(self):
         return self.workout_name
+      
+    def serialize(self):
+        return {
+            "workout_name": self.workout_name,
+            "exercise": self.exercise,
+            "reps": self.reps,
+            "targets": self.targets,
+            "created_date" : self.created_date,
+            "workout_date" : self.workout_date,
+        }
 
 class WorkoutResult(models.Model):
     athlete = models.ForeignKey(User, related_name=("athlete"), on_delete=models.PROTECT)
@@ -122,3 +132,4 @@ class TrackedAthlete(models.Model):
     tracked_athletes = models.ManyToManyField(User)
     notes = models.TextField()
     tracked_by = models.ForeignKey(User, related_name=("tracking"), on_delete=models.CASCADE)
+    
