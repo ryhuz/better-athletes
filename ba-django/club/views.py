@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from club.models import Workout
 from django.http import JsonResponse
-
+from rest_framework.response import Response
+from .serializers import WorkoutSerializer
 # Create your views here.
 
 def not_found(request):
@@ -16,9 +17,9 @@ def workouts(request):
         targets = request.body.targets
         workout_date = request.body.workout_date
         workout = new Workout(workout_name=workout_name, exercise=exercise, reps=reps, rests=rests, targets=targets, workout_date=workout_date)
-        if form.is_valid():
-            form.save()
-            return JsonResponse(form.serialize(), status=200)
+        if workout.is_valid():
+            workout.save()
+            return JsonResponse(workout.serialize(), status=200)
         else:
             return JsonResponse({"message" : "Data invalid"}, status=400)
 
