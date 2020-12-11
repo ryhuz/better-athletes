@@ -12,7 +12,7 @@ class Club(models.Model):
     def __str__(self):
         return self.club_name
 
-class User_Details(models.Model):
+class UserDetail(models.Model):
     club = models.ForeignKey(Club, related_name='members', on_delete=models.PROTECT)
     dob = models.DateField(auto_now=False, auto_now_add=False)
     location = models.CharField(max_length=50)
@@ -32,6 +32,26 @@ class User_Details(models.Model):
     def __str__(self):
         return self.base_user
 
+class WorkoutTemplate(models.Model):
+    workout_name = models.CharField(max_length=50)
+    exercise = ArrayField( # number of sets
+        ArrayField( # exercises
+            models.CharField(max_length=50, blank=True)
+        )
+    )
+    reps = ArrayField( # number of sets
+        ArrayField( # reps per exercise
+            models.IntegerField(validators=[MinValueValidator(1)], blank=True)
+        )
+    )
+    targets = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
+        )
+    )
+
+    def __str__(self):
+        return self.workout_name + " template"
 
 class Workout(models.Model):
     workout_name = models.CharField(max_length=50)
@@ -52,10 +72,11 @@ class Workout(models.Model):
     )
     created_date = models.DateTimeField(auto_now=True)
     workout_date = models.DateField()
+    based_on_template = models.ForeignKey(WorkoutTemplate, related_name=("workout"), on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.workout_name
-    
+      
     def serialize(self):
         return {
             "workout_name": self.workout_name,
@@ -65,3 +86,50 @@ class Workout(models.Model):
             "created_date" : self.created_date,
             "workout_date" : self.workout_date,
         }
+
+class WorkoutResult(models.Model):
+    athlete = models.ForeignKey(User, related_name=("athlete"), on_delete=models.PROTECT)
+    workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.PROTECT)
+    completed = models.BooleanField(default=False)
+    results = ArrayField(   # number of sets
+        ArrayField(         # number of exercises
+            ArrayField(         # reps per exercise
+                models.CharField(max_length=10, blank=True)
+            )
+        )
+    )
+
+    UNIT = [
+        ('sec', 's'),
+        ('min', 'min'),
+        ('m', 'meters'),
+        ('kg', 'kg'),
+        ('-', ''),
+    ]
+    units = ArrayField(     # number of sets
+        ArrayField(         # units per result
+            models.CharField(max_length=3, choices=UNIT, default="")
+        )
+    )
+    comments = ArrayField(  # number of sets
+        ArrayField(         # comments per exercise
+            models.CharField(max_length=255, blank=True)
+        )
+    )
+    completed_on = models.DateTimeField(auto_now=True)
+    # workout_conversation = 
+    # performance_tracking
+
+    def __str__(self):
+        return self.athlete + self.workout + self.completed_on
+
+class SavedWorkout(models.Model):
+    saved_workouts = models.ManyToManyField(Workout)
+    saved_templates = models.ManyToManyField(WorkoutTemplate)
+    saved_by = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
+
+class TrackedAthlete(models.Model):
+    tracked_athletes = models.ManyToManyField(User)
+    notes = models.TextField()
+    tracked_by = models.ForeignKey(User, related_name=("tracking"), on_delete=models.CASCADE)
+    
