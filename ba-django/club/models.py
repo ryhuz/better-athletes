@@ -92,6 +92,7 @@ class WorkoutResult(models.Model):
     workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.PROTECT)
     completed = models.BooleanField(default=False)
     completed_on = models.DateTimeField(auto_now=True)
+    reviewed = models.BooleanField(default=False)
     results = ArrayField(   # number of sets
         ArrayField(         # number of exercises
             ArrayField(         # reps per exercise
