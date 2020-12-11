@@ -2,16 +2,16 @@ import React, { Fragment }from 'react'
 import { NavLink } from "react-router-dom";
 import { Navbar, Col, Row, Form, Nav, Container, Button } from "react-bootstrap";
 
-function Home() {
+function LandingPage() {
     return (
         <Fragment>
                    <Navbar bg="light" expand="lg">
-            <Navbar.Brand href="#home">BETTER ATHLETES</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
+                    <Navbar.Brand href="#home">BETTER ATHLETES</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="mr-auto">
 
-                </Nav>
+                    </Nav>
                 <Form inline>
                     <div class="px-3">
                         <NavLink to="/ranking" style={{ textDecoration: 'none' }} className="text-secondary">RANKING</NavLink>
@@ -50,4 +50,4 @@ function Home() {
     )
 }
 
-export default Home
+export default LandingPage
