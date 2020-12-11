@@ -45,6 +45,7 @@ REST_FRAMEWORK = {
 INSTALLED_APPS = [
     'club',
     'rest_framework',
+    'django_better_admin_arrayfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

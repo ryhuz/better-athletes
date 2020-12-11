@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django_better_admin_arrayfield.models.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
 
