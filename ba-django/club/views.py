@@ -9,12 +9,18 @@ def not_found(request):
 
 def workouts(request):
     if request.method == "POST":
-            form = NewWorkoutForm(request.body)
-            if form.is_valid():
-                form.save()
-                return JsonResponse(form.serialize(), status=200)
-            else:
-                return JsonResponse({"message" : "Data invalid"}, status=400)
+        workout_name = request.body.workout_name
+        exercise = request.body.exercise
+        reps = request.body.reps
+        rests = request.body.rests
+        targets = request.body.targets
+        workout_date = request.body.workout_date
+        workout = new Workout(workout_name=workout_name, exercise=exercise, reps=reps, rests=rests, targets=targets, workout_date=workout_date)
+        if form.is_valid():
+            form.save()
+            return JsonResponse(form.serialize(), status=200)
+        else:
+            return JsonResponse({"message" : "Data invalid"}, status=400)
 
     try:
         workouts = Workout.objects.all()
