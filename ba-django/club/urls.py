@@ -13,5 +13,6 @@ urlpatterns = [
     path('signup/', views.UserCreate.as_view(), name='signup'),
     # path('logout/', api_views.logout, name='logout'),
     # features
+    path('testing/', views.dashboard, name='test'),
     # about
 ]

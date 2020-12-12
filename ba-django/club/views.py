@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from club.models import Workout, Club, UserDetail
+from club.models import Workout,WorkoutResult,User,TrackedAthlete
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .serializers import ClubSerializer, UserSerializer
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
 from rest_framework.views import APIView
+from datetime import date
 
 # Create your views here.
 
@@ -68,3 +69,69 @@ class Clubs(APIView):
         except Club.DoesNotExist:
             return JsonResponse({"message" : "Data not found"}, status=400)
     
+def dashboard(request):
+    # if athlete                                            **********TESTED**************
+            # all = WorkoutResult.objects.filter(athlete=ATHLETE) <<<<< need to pull athlete from somewhere
+        
+        # get today's                                       **********TESTED**************
+            # today = all.filter(workout__workout_date=date.today())
+        
+        # get upcoming
+            # future = all.exclude(workout__workout_date__lte=datetime.date.today())
+            #           .order_by(workout__workout_date)[:3]
+        # get past entries
+            # past = all.exclude(workout__workout_date__gte=datetime.date.today())
+        # get recently completed (x 3)
+            # re_com = past.order_by(workout__workout_date)
+            #           .filter(completed=True)[:3]
+
+        # get pending results (must be before today)
+            # pending = past.exclude(completed=True)
+            #           .order_by(workout__workout_date)
+    
+    # if coach
+        # get tracked athletes                              **********TESTED**************
+        #     all_ath = TrackedAthlete.objects.filter(coach=COACH) <<<<< need to pull coach from somewhere
+
+        # get all athlete workouts                          **********TESTED**************
+        #     ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
+        # get workouts pending review                       **********TESTED**************
+        #     pending = ath_workouts.filter(completed = True, reviewed = False)
+        # get workouts pending athlete result               **********TESTED**************
+        #     pending = ath_workouts.filter(completed = False)
+        # get today's                                       **********TESTED**************
+        #     today = ath_workouts.filter(workout__workout_date=date.today())
+    
+    print('----------------')
+    athlete = User.objects.get(username='ryhuz')
+    all = WorkoutResult.objects.filter(athlete=athlete)
+    today = all.filter(workout__workout_date=date.today())
+    
+    print(today)
+    print('----------------')
+    pass
+
+
+def new_workout(request):
+    # get form data
+    # need the following data
+    # for ATHLETE 
+    # for WORKOUT_DATE
+    # workout_name
+    # array of exercises
+    # array of reps
+    # array of targets
+    # if based_on_template
+
+    # save workout
+        # workout.save()
+
+    # initialise workout result
+        # new_result = WorkoutResult(athlete=ATHLETE, workout=WORKOUT)
+        # new_result.save()
+    # if multiple athletes
+        # foreach athlete
+        # new_result = WorkoutResult(athlete=ATHLETE, workout=WORKOUT)
+        # new_result.save()
+    
+    pass
