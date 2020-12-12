@@ -30,7 +30,7 @@ class UserDetail(models.Model):
     base_user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.base_user
+        return self.base_user.username
 
 class WorkoutTemplate(models.Model):
     workout_name = models.CharField(max_length=50)
