@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from club.models import Workout,WorkoutResult,User,TrackedAthlete
+from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .serializers import ClubSerializer, UserSerializer

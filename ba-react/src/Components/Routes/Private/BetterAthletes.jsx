@@ -3,8 +3,8 @@ import { Fragment } from 'react'
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom"
 import { Container } from "react-bootstrap"
 import InnerNaviBar from '../../InnerNaviBar';
-import WorkOut from "./WorkOut"
-
+import AddWorkOut from "./AddWorkOut"
+import ViewWorkOut from "./ViewWorkOut"
 
 
 
@@ -16,10 +16,10 @@ function BetterAthletes() {
                 <Router>
                 <Switch>
                     <Route exact path="/betterathletes/add_new_workout">
-                        <WorkOut name="add_new_workout"/>
+                        <AddWorkOut/>
                     </Route>
                     <Route exact path="/betterathletes/view_workout">
-                        <WorkOut name="view_workout"/>
+                        <ViewWorkOut />
                     </Route>
                 </Switch>
                 </Router>

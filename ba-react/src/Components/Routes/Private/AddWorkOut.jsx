@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Col, Row, Form, Button, DropdownButton, Dropdown } from "react-bootstrap";
 import axios from "axios";
 
-function WorkOut({ name }) {
+function WorkOut() {
     const [athletes, setAthletes] = useState([])
     const [inputForm, setForm] = useState(
         {
@@ -131,27 +131,34 @@ function WorkOut({ name }) {
                 </Col>
                 <Col md={12} className="my-3 py-3 outer_form">
                 <Form>
-                <DropdownButton 
-                id="dropdown-basic-button" 
-                variant="info" 
-                title="Dropdown button" 
-                className="d-flex justify-content-end"
-                onChange={(e)=>ChangeHandler(e)}
-                >
-                    <Dropdown.Item >
-                        <Form.Group controlId="formBasicCheckbox">
-                            <Form.Check type="checkbox" label="Select One" name="athletes" value={1}/>
-                        </Form.Group>
-                    </Dropdown.Item>
-                    {athletes.map((item,index)=>(
-                        <Dropdown.Item key={index} >
-                            <Form.Group controlId="formBasicCheckbox">
-                                <Form.Check type="checkbox" label={item} value={item}/>
-                            </Form.Group>
-                        </Dropdown.Item>
-                    ))}
+                    <Row className="no-gutters">
+                        <Col md={10}></Col>
+                        <Col md={2} className="d-flex justify-content-center">
 
-                </DropdownButton>
+
+                            <DropdownButton 
+                            id="dropdown-basic-button" 
+                            variant="info" 
+                            title="Athletes" 
+                            className="d-flex justify-content-end"
+                            onChange={(e)=>ChangeHandler(e)}
+                            >
+                                <Dropdown.Item >
+                                    <Form.Group controlId="formBasicCheckbox">
+                                        <Form.Check type="checkbox" label="Select One" name="athletes" value={1}/>
+                                    </Form.Group>
+                                </Dropdown.Item>
+                                {athletes.map((item,index)=>(
+                                    <Dropdown.Item key={index} >
+                                        <Form.Group controlId="formBasicCheckbox">
+                                            <Form.Check type="checkbox" label={item} value={item}/>
+                                        </Form.Group>
+                                    </Dropdown.Item>
+                                ))}
+
+                            </DropdownButton>
+                        </Col>
+                    </Row>
                     {inputForm.sets.map((item, index) => (
                         <Form.Group className="my-3 py-3 form_set" key={index}>
                             <Row className="no-gutters">
@@ -194,7 +201,7 @@ function WorkOut({ name }) {
 
                             {inputForm.sets[index].data.map((item2, index2) => (
 
-                                <Row key={index} className="my-2">
+                                <Row key={index2} className="my-2">
                                     <Col md={4} >
                                         <Form.Control
                                             name="exercise"
