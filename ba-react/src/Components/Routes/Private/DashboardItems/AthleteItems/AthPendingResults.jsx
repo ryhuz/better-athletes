@@ -2,7 +2,7 @@ import React from 'react'
 import { Col } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 
-function RecentlyCompleted({ data }) {
+function AthPendingResults({ data }) {
     return (
         <>
             {data.length ?
@@ -16,11 +16,11 @@ function RecentlyCompleted({ data }) {
                     ))}
                 </>:
                 <Col>
-                    <div className="mx-2">No workout records</div>
+                <div className="mx-2">You're all caught up!</div>
                 </Col>
             }
         </>
     )
 }
 
-export default RecentlyCompleted
+export default AthPendingResults

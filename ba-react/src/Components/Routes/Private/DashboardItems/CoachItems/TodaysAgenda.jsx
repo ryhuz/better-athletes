@@ -15,7 +15,9 @@ function TodaysAgenda({ data }) {
                         </Col>
                     ))}
                 </>:
-                <>Nothing on today!</>
+                <Col>
+                    <div className="mx-2">Nothing on today!</div>
+                </Col>
             }
         </>
     )

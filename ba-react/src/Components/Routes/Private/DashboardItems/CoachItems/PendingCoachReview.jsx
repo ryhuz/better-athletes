@@ -15,7 +15,9 @@ function PendingCoachReview({ data }) {
                         </Col>
                     ))}
                 </>:
-                <>You're all caught up!</>
+                <Col>
+                    <div className="mx-2">You're all caught up!</div>
+                </Col>
             }
         </>
     )

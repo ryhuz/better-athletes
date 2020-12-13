@@ -84,56 +84,70 @@ class Clubs(APIView):
             return JsonResponse({"message" : "Data not found"}, status=400)
     
 def dashboard(request):
-    # if athlete                                            **********TESTED**************
-            # all = WorkoutResult.objects.filter(athlete=ATHLETE) <<<<< need to pull athlete from somewhere
+    # get user detais ??????????? from token?
+    user = User.objects.get(id=2)
+    # get user type ?????????????
+    userType = "Athlete"
+
+    if userType == "Coach":
+        # Getting coach details and tracked athletes ???????????????? get from token
+        all_ath = TrackedAthlete.objects.filter(coach=user)
         
-        # get today's                                       **********TESTED**************
-            # today = all.filter(workout__workout_date=date.today())
-        
-        # get upcoming
-            # future = all.exclude(workout__workout_date__lte=datetime.date.today())
-            #           .order_by(workout__workout_date)[:3]
+        # coach - get pending coach review
+        ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
+        pending_coach_review = ath_workouts.filter(completed = True, reviewed = False)
+
+        serialized_ppr = [x.serialize() for x in list(pending_coach_review)]
+
+        # coach - get today's agenda
+        today = ath_workouts.filter(workout__workout_date=date.today())
+        serialized_today = [x.serialize() for x in list(today)]
+
+        # coach - get pending athlete
+        pending_athlete = ath_workouts.filter(completed = False, workout__workout_date__lt=date.today())
+        serialized_pending_athlete = [x.serialize() for x in list(pending_athlete)]
+
+        # coach - get recently completed (both coach and athlete done)
         # get past entries
-            # past = all.exclude(workout__workout_date__gte=datetime.date.today())
-        # get recently completed (x 3)
-            # re_com = past.order_by(workout__workout_date)
-            #           .filter(completed=True)[:3]
+        past = ath_workouts.filter(completed = True, reviewed = True)
+        re_com = past.order_by('-workout__workout_date')[:3]
+        serialized_past = [x.serialize() for x in list(re_com)]
 
-        # get pending results (must be before today)
-            # pending = past.exclude(completed=True)
-            #           .order_by(workout__workout_date)
+        dashboard_data = {
+            "pending_coach_review": serialized_ppr,
+            "today": serialized_today,
+            "pending_athlete": serialized_pending_athlete,
+            "recent_completed": serialized_past
+        }
 
-    # Getting coach details and tracked athletes ???????????????? get from token
-    coach = User.objects.get(id=1)
-    all_ath = TrackedAthlete.objects.filter(coach=coach)
-    
-    # coach - get pending coach review
-    ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
-    pending_coach_review = ath_workouts.filter(completed = True, reviewed = False)
+    else:
+        # Get all workout results
+        all_results = WorkoutResult.objects.filter(athlete=user)
+        
+        # athlete - get today's agenda
+        today = all_results.filter(workout__workout_date=date.today())
+        serialized_today = [x.serialize() for x in list(today)]
 
-    serialized_ppr = [x.serialize() for x in list(pending_coach_review)]
+        # athlete - get pending results (must be before today)
+        pending_complete = all_results.filter(completed = False, workout__workout_date__lt=date.today())
+        serialized_pending_complete = [x.serialize() for x in list(pending_complete)]
+        
+        # athlete - get upcoming
+        future = all_results.exclude(workout__workout_date__lte=date.today()).order_by('workout__workout_date')[:3]
+        serialized_upcoming = [x.serialize() for x in list(future)]
+        
+        # athlete - recently completed
+        past = all_results.filter(completed = True)
+        re_com = past.order_by('-workout__workout_date')[:3]
+        serialized_past = [x.serialize() for x in list(re_com)]
 
-    # coach - get today's agenda
-    today = ath_workouts.filter(workout__workout_date=date.today())
-    serialized_today = [x.serialize() for x in list(today)]
+        dashboard_data = {
+            "pending_results": serialized_pending_complete,
+            "today": serialized_today,
+            "upcoming": serialized_upcoming,
+            "recent_completed": serialized_past
+        }
 
-    # coach - get pending athlete
-    pending_athlete = ath_workouts.filter(completed = False, workout__workout_date__lt=date.today())
-    serialized_pending_athlete = [x.serialize() for x in list(pending_athlete)]
-
-    # coach - get recently completed (both coach and athlete done)
-    # get past entries
-    past = ath_workouts.filter(completed = True, reviewed = True)
-    re_com = past.order_by('-workout__workout_date')[:3]
-    serialized_past = [x.serialize() for x in list(re_com)]
-
-    dashboard_data = {
-        "pending_coach_review": serialized_ppr,
-        "today": serialized_today,
-        "pending_athlete": serialized_pending_athlete,
-        "recent_completed": serialized_past
-    }
-    
     return JsonResponse(dashboard_data, status=200, safe=False)
     
 def new_workout(request):

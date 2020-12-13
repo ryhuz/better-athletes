@@ -15,7 +15,9 @@ function PendingAthlete({ data }) {
                         </Col>
                     ))}
                 </>:
-                <>Athletes are on the ball!</>
+                <Col>
+                    <div className="mx-2">Your athletes are on the ball!</div>
+                </Col>
             }
         </>
     )
