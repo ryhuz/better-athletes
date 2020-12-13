@@ -33,6 +33,7 @@ function CoachDash() {
     return (
         <>
         {axiosErr ?
+            /* shows error if can't fetch axios */
             <Col>
                 <div className="border border-danger m-3">
                     <div className="h6 mt-2 mx-2 text-center">

@@ -5,7 +5,7 @@ import CoachDash from './DashboardItems/CoachDash'
 
 function Dashboard() {
     /* GET USER TYPE FROM TOKEN ?????????????????????? */
-    const [userType, setUserType] = useState("Athlete")
+    const [userType, setUserType] = useState("Coach")
 
     return (
         <Row>
