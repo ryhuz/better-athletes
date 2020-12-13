@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink } from "react-router-dom";
 import { Col, Form, Container, Button } from "react-bootstrap";
-import axios from "axios";
+import {axiosInstance} from "../../../func/axiosApi"
 
 function Register() {
     const [user, setUser] = useState({});
@@ -18,7 +18,7 @@ function Register() {
     // getting club details for user creation
     async function getClub(){
       try {
-        let resp = await axios.get("http://localhost:8000/api/clubs");
+        let resp = await axiosInstance.get("clubs");
         setClub(resp.data);
         } catch (error) {
         console.log(error);
@@ -30,7 +30,7 @@ function Register() {
         e.preventDefault();
         try {
         console.log(user);
-        let resp = await axios.post("http://localhost:8000/api/signup",user);
+        let resp = await axiosInstance.post("signup",user);
         console.log(resp)
         // setIsAuth(true);
         } catch (error) {
