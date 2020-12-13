@@ -1,9 +1,11 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { NavLink } from "react-router-dom";
 import { Navbar, NavDropdown, Button, FormControl, Form, Nav, Container} from "react-bootstrap";
 
 
 function InnerNaviBar() {
+    let user = localStorage.getItem("user");
+
     return (
         <Fragment>
             <Navbar bg="light" expand="lg">
@@ -22,10 +24,11 @@ function InnerNaviBar() {
                         </Nav.Link>
                     </Nav>
                 <Form inline>
+                    Logged in as: 
                     <div className="px-1">
                         <NavLink to="/profile_settings" style={{ textDecoration: 'none' }} className="text-secondary">
                             <Button variant="outline-info">
-                                Profile Settings
+                                {user}
                             </Button> 
                         </NavLink>
                     </div>
