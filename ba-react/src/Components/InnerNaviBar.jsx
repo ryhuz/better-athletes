@@ -22,14 +22,14 @@ function InnerNaviBar() {
                         </Nav.Link>
                     </Nav>
                 <Form inline>
-                    <div class="px-1">
+                    <div className="px-1">
                         <NavLink to="/profile_settings" style={{ textDecoration: 'none' }} className="text-secondary">
                             <Button variant="outline-info">
                                 Profile Settings
                             </Button> 
                         </NavLink>
                     </div>
-                    <div class="px-1">
+                    <div className="px-1">
                         <NavLink to="/logout" style={{ textDecoration: 'none' }} className="alert">
                             <Button variant="outline-secondary">
                                 Logout
