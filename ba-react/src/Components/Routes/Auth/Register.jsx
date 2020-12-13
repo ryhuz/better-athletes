@@ -28,7 +28,7 @@ function Register() {
         e.preventDefault();
         try {
         console.log(user);
-        let resp = await axios.post("http://localhost:8000/api/signup/",user);
+        let resp = await axios.post("http://localhost:8000/api/signup",user);
         console.log(resp)
         // setIsAuth(true);
         } catch (error) {

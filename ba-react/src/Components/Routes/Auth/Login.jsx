@@ -14,7 +14,7 @@ function Login() {
     e.preventDefault();
     try {
       console.log(user);
-      let resp = await axios.post("http://localhost:8000/api/login/",{username: user.username, password: user.password});
+      let resp = await axios.post("http://localhost:8000/api/login",{username: user.username, password: user.password});
       localStorage.setItem("token", resp.data.access);
       console.log(resp)
       // setIsAuth(true);
