@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from club.models import Workout,WorkoutResult,User,TrackedAthlete
+from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDetail
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .serializers import ClubSerializer, UserSerializer
@@ -14,27 +14,40 @@ from datetime import date
 def not_found(request):
     pass
 
+# User Creation
 class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format='json'):
+        # serialize and check for the basic user details
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            club = Club.objects.get(pk=request.data['club'])
+            # after user is created, only proceed to create the UserDetail model
+            # still need to see how to prevent user creation/delete if UserDetail is not created successfully
+            club = Club.objects.get(club_name=request.data['club'])
             dob = request.data['dob']
             location = request.data['location']
             phone = request.data['phone']
             height = request.data['height']
             weight = request.data['weight']
             gender = request.data['gender']
-            public_workouts = request.data['public_workouts']
+            # for public workouts, data comes in as string, need to convert to Boolean
+            if request.data['public_workouts'] == 'false':
+                public_workouts = False
+            else:
+                public_workouts = True
+            # user detail saved here
             user_detail = UserDetail(base_user=user,club=club, dob=dob, location=location, phone=phone, weight=weight, height=height, gender=gender, public_workouts=public_workouts)
             if user:
                 user_detail.save()
                 json = serializer.data
                 return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # as of now, unable to get back the error message to React side
 
 class Workouts(APIView):
 
@@ -60,7 +73,8 @@ class Workouts(APIView):
             return JsonResponse({"message" : "Data invalid"}, status=400)
 
 class Clubs(APIView):
-
+    permission_classes = (permissions.AllowAny,)
+    # getting clubs list to populate register selection
     def get(self,request):
         try:
             clubs = Club.objects.all()
