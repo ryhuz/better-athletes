@@ -80,9 +80,9 @@ function WorkOut({ name }) {
         let { name, value } = e.target;
         let form_data = {...inputForm};
 
-        if (name == "athletes"){
+        if (name === "athletes"){
             form_data.athletes.push(value)
-        } else if (name != "athletes"){
+        } else if (name !== "athletes"){
             form_data.sets[i].set = i+1;
             form_data.sets[i].data[ii][name] = value;
         }

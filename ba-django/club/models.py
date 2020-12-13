@@ -92,11 +92,12 @@ class WorkoutResult(models.Model):
     athlete = models.ForeignKey(User, related_name=("athlete"), on_delete=models.PROTECT)
     workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.PROTECT)
     completed = models.BooleanField(default=False)
-    completed_on = models.DateTimeField(auto_now=True)
+    completed_on = models.DateTimeField(blank=True, default=None, null=True)
     reviewed = models.BooleanField(default=False)
+    reviewed_on = models.DateTimeField(blank=True, default=None, null=True)
     results = ArrayField(   # number of sets
         ArrayField(         # number of exercises
-            ArrayField(         # reps per exercise
+            ArrayField(         # array of results
                 models.CharField(max_length=10, default="")
             )
         ), blank=True
@@ -125,6 +126,17 @@ class WorkoutResult(models.Model):
     def __str__(self):
         return self.athlete.first_name + "/" + self.workout.workout_name
 
+    def serialize(self):
+        return {
+            "result_id": self.id,
+            "workout_id": self.workout.id,
+            "workout_name": self.workout.workout_name,
+            "completed_on": self.completed_on,
+            "athlete_id": self.athlete.id,
+            "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
+            "results": self.results,
+            "reviewed": self.reviewed,
+        }
 class SavedWorkout(models.Model):
     coach = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
     saved_workouts = models.ManyToManyField(Workout)
