@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from club.models import Workout,WorkoutResult,User,TrackedAthlete
+from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDetail
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .serializers import ClubSerializer, UserSerializer
@@ -14,27 +14,40 @@ from datetime import date
 def not_found(request):
     pass
 
+# User Creation
 class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format='json'):
+        # serialize and check for the basic user details
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            club = Club.objects.get(pk=request.data['club'])
+            # after user is created, only proceed to create the UserDetail model
+            # still need to see how to prevent user creation/delete if UserDetail is not created successfully
+            club = Club.objects.get(club_name=request.data['club'])
             dob = request.data['dob']
             location = request.data['location']
             phone = request.data['phone']
             height = request.data['height']
             weight = request.data['weight']
             gender = request.data['gender']
-            public_workouts = request.data['public_workouts']
+            # for public workouts, data comes in as string, need to convert to Boolean
+            if request.data['public_workouts'] == 'false':
+                public_workouts = False
+            else:
+                public_workouts = True
+            # user detail saved here
             user_detail = UserDetail(base_user=user,club=club, dob=dob, location=location, phone=phone, weight=weight, height=height, gender=gender, public_workouts=public_workouts)
             if user:
                 user_detail.save()
                 json = serializer.data
                 return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # as of now, unable to get back the error message to React side
 
 class Workouts(APIView):
 
@@ -60,7 +73,8 @@ class Workouts(APIView):
             return JsonResponse({"message" : "Data invalid"}, status=400)
 
 class Clubs(APIView):
-
+    permission_classes = (permissions.AllowAny,)
+    # getting clubs list to populate register selection
     def get(self,request):
         try:
             clubs = Club.objects.all()
@@ -88,30 +102,40 @@ def dashboard(request):
         # get pending results (must be before today)
             # pending = past.exclude(completed=True)
             #           .order_by(workout__workout_date)
-    
-    # if coach
-        # get tracked athletes                              **********TESTED**************
-        #     all_ath = TrackedAthlete.objects.filter(coach=COACH) <<<<< need to pull coach from somewhere
 
-        # get all athlete workouts                          **********TESTED**************
-        #     ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
-        # get workouts pending review                       **********TESTED**************
-        #     pending = ath_workouts.filter(completed = True, reviewed = False)
-        # get workouts pending athlete result               **********TESTED**************
-        #     pending = ath_workouts.filter(completed = False)
-        # get today's                                       **********TESTED**************
-        #     today = ath_workouts.filter(workout__workout_date=date.today())
+    # Getting coach details and tracked athletes ???????????????? get from token
+    coach = User.objects.get(id=1)
+    all_ath = TrackedAthlete.objects.filter(coach=coach)
     
-    print('----------------')
-    athlete = User.objects.get(username='ryhuz')
-    all = WorkoutResult.objects.filter(athlete=athlete)
-    today = all.filter(workout__workout_date=date.today())
+    # coach - get pending coach review
+    ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
+    pending_coach_review = ath_workouts.filter(completed = True, reviewed = False)
+
+    serialized_ppr = [x.serialize() for x in list(pending_coach_review)]
+
+    # coach - get today's agenda
+    today = ath_workouts.filter(workout__workout_date=date.today())
+    serialized_today = [x.serialize() for x in list(today)]
+
+    # coach - get pending athlete
+    pending_athlete = ath_workouts.filter(completed = False, workout__workout_date__lt=date.today())
+    serialized_pending_athlete = [x.serialize() for x in list(pending_athlete)]
+
+    # coach - get recently completed (both coach and athlete done)
+    # get past entries
+    past = ath_workouts.filter(completed = True, reviewed = True)
+    re_com = past.order_by('-workout__workout_date')[:3]
+    serialized_past = [x.serialize() for x in list(re_com)]
+
+    dashboard_data = {
+        "pending_coach_review": serialized_ppr,
+        "today": serialized_today,
+        "pending_athlete": serialized_pending_athlete,
+        "recent_completed": serialized_past
+    }
     
-    print(today)
-    print('----------------')
-    pass
-
-
+    return JsonResponse(dashboard_data, status=200, safe=False)
+    
 def new_workout(request):
     # get form data
     # need the following data

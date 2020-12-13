@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import User
-from club.models import Club
+from club.models import Club, WorkoutResult
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

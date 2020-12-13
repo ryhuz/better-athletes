@@ -124,6 +124,16 @@ class WorkoutResult(models.Model):
     def __str__(self):
         return self.athlete.first_name + "/" + self.workout.workout_name
 
+    def serialize(self):
+        return {
+            "result_id": self.id,
+            "workout_id": self.workout.id,
+            "workout_name": self.workout.workout_name,
+            "completed_on": self.completed_on,
+            "athlete_id": self.athlete.id,
+            "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
+            "results": self.results
+        }
 class SavedWorkout(models.Model):
     coach = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
     saved_workouts = models.ManyToManyField(Workout)
