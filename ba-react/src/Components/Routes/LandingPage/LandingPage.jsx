@@ -25,7 +25,7 @@ function LandingPage() {
                 </Form>
             </Navbar.Collapse>
             </Navbar>
-                <Container className="mt-5">
+                <Container className="mt-5 text-center">
                     <Row>
                         <Col md={12} className="my-4">
                             <h6 className="display-1">Better Athletes</h6>
