@@ -2,14 +2,18 @@ from django.shortcuts import render
 from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDetail
 from django.http import JsonResponse
 from rest_framework.response import Response
-from .serializers import ClubSerializer, UserSerializer
+from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from datetime import date
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Create your views here.
+
+class Login(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 def not_found(request):
     pass
