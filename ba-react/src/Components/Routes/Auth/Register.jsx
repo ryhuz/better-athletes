@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink } from "react-router-dom";
 import { Col, Form, Container, Button } from "react-bootstrap";
-import axios from "axios";
+import {axiosInstance} from "../../../func/axiosApi"
 
 function Register() {
     const [user, setUser] = useState({});
@@ -15,20 +15,22 @@ function Register() {
       setUser((user) => ({ ...user, [e.target.name]: e.target.value }));
     }
 
+    // getting club details for user creation
     async function getClub(){
       try {
-        let resp = await axios.get("http://localhost:8000/api/clubs");
+        let resp = await axiosInstance.get("clubs");
         setClub(resp.data);
         } catch (error) {
         console.log(error);
         }
     }
 
+    //submits and sends user creation request to Django
     async function handleSubmit(e){
         e.preventDefault();
         try {
         console.log(user);
-        let resp = await axios.post("http://localhost:8000/api/signup/",user);
+        let resp = await axiosInstance.post("signup",user);
         console.log(resp)
         // setIsAuth(true);
         } catch (error) {
@@ -43,6 +45,7 @@ function Register() {
           <h3>Better Athletes</h3>
           <Form onSubmit={handleSubmit}>
             <div>User Registration</div>
+            {/* Username Input */}
             <Form.Row className="mb-3">
             <Form.Label>Username</Form.Label>
               <Form.Control
@@ -51,6 +54,7 @@ function Register() {
                 name="username"
               />
             </Form.Row>
+            {/* Email Input */}
             <Form.Row className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -60,6 +64,7 @@ function Register() {
               />
             </Form.Row>
             <Form.Row className="mb-3">
+              {/* Password Input */}
             <Form.Label>Password</Form.Label>
               <Form.Control
                 onChange={handleChange}
@@ -68,6 +73,7 @@ function Register() {
                 type="password"
               />
             </Form.Row>
+            {/* Date of Birth Input */}
             <Form.Row className="mb-3">
             <Form.Label>Date of Birth</Form.Label>
               <Form.Control
@@ -76,6 +82,7 @@ function Register() {
                 type="date"
               />
             </Form.Row>
+            {/* Location Input */}
             <Form.Row className="mb-3">
             <Form.Label>Location</Form.Label>
               <Form.Control
@@ -84,6 +91,7 @@ function Register() {
                 placeholder="location"
               />
             </Form.Row>
+            {/* Contact Input */}
             <Form.Row className="mb-3">
             <Form.Label>Contact Number</Form.Label>
               <Form.Control
@@ -92,6 +100,7 @@ function Register() {
                 placeholder="phone"
               />
             </Form.Row>
+            {/* Height Input */}
             <Form.Row className="mb-3">
             <Form.Label>Height</Form.Label>
               <Form.Control
@@ -101,6 +110,7 @@ function Register() {
                 type="number"
               />
             </Form.Row>
+            {/* Weight Input */}
             <Form.Row className="mb-3">
               <Form.Label>Weight</Form.Label>
               <Form.Control
@@ -110,6 +120,7 @@ function Register() {
                 type="number"
               />
             </Form.Row>
+            {/* Gender Selection */}
             <Form.Row className="mb-3">
             <Form.Label>Gender</Form.Label>
                 <Form.Control onChange={handleChange} name="gender" as="select">
@@ -119,6 +130,7 @@ function Register() {
                   <option value="P">Prefer not to say</option>
                   </Form.Control>
             </Form.Row>
+            {/* Club Selection */}
             <Form.Row className="mb-3">
             <Form.Label>Club</Form.Label>
               <Form.Control onChange={handleChange} name="club" as="select">
@@ -128,6 +140,7 @@ function Register() {
                 ))}
               </Form.Control>
             </Form.Row>
+            {/* Public Workout Selection */}
             <Form.Row className="mb-3">
             <Form.Label>Do you wish to make your workouts public?</Form.Label>
                 <Form.Control onChange={handleChange} name="public_workouts" as="select">
@@ -142,6 +155,7 @@ function Register() {
               </Button>
             </Form.Row>
           </Form>
+          {/* Re-route to Login Page */}
           <NavLink to="/login">Login</NavLink>
         </Col>
       </Container>

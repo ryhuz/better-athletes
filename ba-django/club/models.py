@@ -13,7 +13,7 @@ class Club(models.Model):
         return self.club_name
 
 class UserDetail(models.Model):
-    base_user = models.OneToOneField(User, on_delete=models.CASCADE)
+    base_user = models.OneToOneField(User, related_name="userdetail", on_delete=models.CASCADE)
     club = models.ForeignKey(Club, related_name='members', on_delete=models.PROTECT)
     dob = models.DateField(auto_now=False, auto_now_add=False)
     location = models.CharField(max_length=50)
@@ -28,7 +28,8 @@ class UserDetail(models.Model):
     ]
     gender = models.CharField(max_length=1, choices=GENDER,)
     public_workouts = models.BooleanField("Make workouts public?", default=True)
-    
+    is_coach = models.BooleanField(default=False)
+
     def __str__(self):
         return self.base_user.username
 
@@ -42,6 +43,11 @@ class WorkoutTemplate(models.Model):
     reps = ArrayField( # number of sets
         ArrayField( # reps per exercise
             models.IntegerField(validators=[MinValueValidator(1)], blank=True)
+        )
+    )
+    rests = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
         )
     )
     targets = ArrayField( # number of sets
@@ -67,12 +73,18 @@ class Workout(models.Model):
             models.IntegerField(validators=[MinValueValidator(1)], blank=True)
         )
     )
+    rests = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
+        )
+    )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
         )
     )
     created_date = models.DateTimeField(auto_now=True)
+    
     
     def __str__(self):
         return self.workout_name

@@ -2,14 +2,19 @@ from django.shortcuts import render
 from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDetail
 from django.http import JsonResponse
 from rest_framework.response import Response
-from .serializers import ClubSerializer, UserSerializer
+from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from datetime import date
+import json
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Create your views here.
+
+class Login(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 def not_found(request):
     pass
@@ -59,18 +64,17 @@ class Workouts(APIView):
             return JsonResponse({"message" : "Data not found"}, status=400)
     
     def post(self, request):
-        workout_name = request.body.workout_name
-        exercise = request.body.exercise
-        reps = request.body.reps
-        rests = request.body.rests
-        targets = request.body.targets
-        workout_date = request.body.workout_date
-        workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps, rests=rests, targets=targets, workout_date=workout_date)
-        if workout.is_valid():
-            workout.save()
-            return JsonResponse(workout.serialize(), status=200)
-        else:
-            return JsonResponse({"message" : "Data invalid"}, status=400)
+       
+        workout_name = [["1"], ["2"]] #body.workout_name
+        exercise = [["1"], ["2"]]#body.exercise
+        reps = [["1"], ["2"]]#body.reps
+        rests = [["1333"], ["2"]]#body.rests
+        targets = [["1"], ["2"]]#body.targets
+        workout_date = "2020-12-05"#body.workout_date, rests=rests
+        
+        workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
+        workout.save()
+        return JsonResponse({"message" : "Data isvalid"}, status=200)
 
 class Clubs(APIView):
     permission_classes = (permissions.AllowAny,)
