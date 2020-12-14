@@ -60,11 +60,11 @@ function WorkOut() {
     function ChangeHandler(e, i, ii) {
         let { name, value } = e.target;
         let temp = { ...inputForm };
-        if (name == "athletes") {
+        if (name === "athletes") {
             temp.athletes.push(value)
-        } else if (name == "workout_name") {
+        } else if (name === "workout_name") {
             temp.workout_name = value
-        } else if (name != "athletes") {
+        } else if (name !== "athletes") {
             temp.sets[i][ii][name] = value
         }
 
