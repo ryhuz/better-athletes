@@ -18,10 +18,6 @@ function Login() {
       let resp = await axiosInstance.post("login",{username: user.username, password: user.password});
       axiosInstance.defaults.headers['Authorization'] = "JWT " + resp.data.access;
       localStorage.setItem("token", resp.data.access);
-      let token = localStorage.getItem("token");
-      let decoded = jwt_decode(token);
-      localStorage.setItem("user", decoded.username);
-      localStorage.setItem("is_coach", decoded.is_coach);
       // setIsAuth(true);
     } catch (error) {
       console.log(error);
