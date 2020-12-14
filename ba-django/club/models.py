@@ -148,6 +148,19 @@ class WorkoutResult(models.Model):
             "results": self.results,
             "reviewed": self.reviewed,
         }
+        
+    def single_workout(self):
+        return {
+            "result_id": self.id,
+            "workout_id": self.workout.id,
+            "workout_name": self.workout.workout_name,
+            "exercise": self.workout.exercise,
+            "reps": self.workout.reps,
+            "rests": self.workout.rests,
+            "target": self.workout.targets
+        }    
+        
+    
 class SavedWorkout(models.Model):
     coach = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
     saved_workouts = models.ManyToManyField(Workout)
