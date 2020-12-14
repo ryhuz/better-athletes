@@ -105,8 +105,6 @@ function ViewWorkOut() {
                     'accept': "application/json"
                 }
             }
-
-
             let data = await axios.post(`http://localhost:8000/api/singleworkout/comment/${3}`,django_comments, headToken)
         } catch (error){
             console.log(error)
@@ -214,12 +212,12 @@ function ViewWorkOut() {
                     <Form>
                         <Row className="no-gutters">
                             <Col md={10}>
-                                <h5>{ workout.workout_name == undefined ? <><div>Loading...</div></> : workout.workout_name}</h5>
+                                <h5>{ workout.workout_name === undefined ? <><div>Loading...</div></> : workout.workout_name}</h5>
                             </Col>
                             <Col md={2} className="d-flex justify-content-center">
                             </Col>
                         </Row>
-                         { workout.exercise == undefined ? <><div>Loading...</div></> :  workout.exercise.map((item, index) => (
+                         { workout.exercise === undefined ? <><div>Loading...</div></> :  workout.exercise.map((item, index) => (
                             <Form.Group className="my-3 py-3 form_set" key={index}>
                                 <Row className="no-gutters">
                                     <Col md={8} className="">
@@ -251,7 +249,7 @@ function ViewWorkOut() {
                                 </Row>
 
                                 <Row  className="my-2">
-                                  { workout.exercise == undefined ? <><div>Loading...</div></> : workout.exercise[index].map((item2, index2) => (
+                                  { workout.exercise === undefined ? <><div>Loading...</div></> : workout.exercise[index].map((item2, index2) => (
                                     <>
                                     
                                         <Col key={index2} md={4} className="d-flex align-items-center my-2">
@@ -262,7 +260,7 @@ function ViewWorkOut() {
                                     </>
                                         ))}
 
-                                    { workout.reps == undefined ? <><div>Loading...</div></> : workout.reps[index].map((item2, index2) => (
+                                    { workout.reps === undefined ? <><div>Loading...</div></> : workout.reps[index].map((item2, index2) => (
                                     <>
                                     
                                         <Col key={index2} md={2} className="d-flex align-items-center my-2">
@@ -272,7 +270,7 @@ function ViewWorkOut() {
                                         </Col>
                                     </>
                                         ))}
-                                    {workout.rests == undefined ? <><div>Loading...</div></> : workout.rests[index].map((item2, index2) => (
+                                    {workout.rests === undefined ? <><div>Loading...</div></> : workout.rests[index].map((item2, index2) => (
                                     <>
                                         <Col key={index2} md={2} className="d-flex align-items-center my-2">
                                             <div>
@@ -282,7 +280,7 @@ function ViewWorkOut() {
                                     </>
                                         ))}
 
-                                    {workout.target == undefined ? <><div>Loading...</div></> : workout.target[index].map((item2, index2) => (
+                                    {workout.target === undefined ? <><div>Loading...</div></> : workout.target[index].map((item2, index2) => (
                                     <>
                                     
                                         <Col key={index2} md={2} className="d-flex align-items-center my-2">
@@ -292,7 +290,7 @@ function ViewWorkOut() {
                                         </Col>
                                     </>
                                         ))}
-                                        {workout.exercise == undefined ? <><div>Loading...</div></> : workout.exercise[index].map((item2, index2) => (
+                                        {workout.exercise === undefined ? <><div>Loading...</div></> : workout.exercise[index].map((item2, index2) => (
                                     <>
                                     
                                         <Col key={index2} md={2} className="d-flex align-items-center my-2">
@@ -303,10 +301,7 @@ function ViewWorkOut() {
                                             placeholder="Results"/>
                                         </Col>
                                     </>
-                                        ))}
-                                        
-                                    
-                              
+                                        ))}   
                                 </Row>
                             </Form.Group>
                         ))} 
@@ -336,7 +331,7 @@ function ViewWorkOut() {
                                     onClick={getExerciseList}
                                     name="Exercise"
                                     >
-                                    {exerciseList == undefined ? <>Loading...</> : exerciseList.map((item,index)=>(
+                                    {exerciseList === undefined ? <>Loading...</> : exerciseList.map((item,index)=>(
                                             <option
                                             key={index}
                                             name={index}
@@ -375,7 +370,7 @@ function ViewWorkOut() {
 export default ViewWorkOut
 
 
-{/* <Col md={2} className="d-flex align-items-center my-2">
+/* <Col md={2} className="d-flex align-items-center my-2">
                                             <div>
                                                 {item2.reps}
                                             </div>
@@ -406,7 +401,7 @@ export default ViewWorkOut
                                                     </div>
                                                 ))}
                                            </Col>
-                                        </Col> */}
+                                        </Col> */
 
                                         // <option
                                         //     key={index}
