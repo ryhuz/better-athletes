@@ -16,5 +16,7 @@ urlpatterns = [
     # path('logout/', api_views.logout, name='logout'),
     # features
     path('testing/', views.dashboard, name='test'),
+    path('singleworkout/<int:id>', views.single_workout, name="single_workout"),
+    path('singleworkout/comment/<int:id>', views.workout_comment, name="workout_comment")
     # about
 ]

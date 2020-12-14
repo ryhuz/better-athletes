@@ -45,6 +45,11 @@ class WorkoutTemplate(models.Model):
             models.IntegerField(validators=[MinValueValidator(1)], blank=True)
         )
     )
+    rests = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
+        )
+    )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
@@ -68,12 +73,18 @@ class Workout(models.Model):
             models.IntegerField(validators=[MinValueValidator(1)], blank=True)
         )
     )
+    rests = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
+        )
+    )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
         )
     )
     created_date = models.DateTimeField(auto_now=True)
+    
     
     def __str__(self):
         return self.workout_name
@@ -137,6 +148,19 @@ class WorkoutResult(models.Model):
             "results": self.results,
             "reviewed": self.reviewed,
         }
+        
+    def single_workout(self):
+        return {
+            "result_id": self.id,
+            "workout_id": self.workout.id,
+            "workout_name": self.workout.workout_name,
+            "exercise": self.workout.exercise,
+            "reps": self.workout.reps,
+            "rests": self.workout.rests,
+            "target": self.workout.targets
+        }    
+        
+    
 class SavedWorkout(models.Model):
     coach = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
     saved_workouts = models.ManyToManyField(Workout)

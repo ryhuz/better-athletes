@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDetail
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer
@@ -8,8 +9,9 @@ from rest_framework.decorators import api_view
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from datetime import date
+import json
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 class Login(TokenObtainPairView):
@@ -63,18 +65,28 @@ class Workouts(APIView):
             return JsonResponse({"message" : "Data not found"}, status=400)
     
     def post(self, request):
-        workout_name = request.body.workout_name
-        exercise = request.body.exercise
-        reps = request.body.reps
-        rests = request.body.rests
-        targets = request.body.targets
-        workout_date = request.body.workout_date
-        workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps, rests=rests, targets=targets, workout_date=workout_date)
-        if workout.is_valid():
-            workout.save()
-            return JsonResponse(workout.serialize(), status=200)
-        else:
-            return JsonResponse({"message" : "Data invalid"}, status=400)
+       
+        # user = User.objects.get(username="tyrone")
+        # print(user)
+        workout_name = "Running" #body.workout_name
+        exercise = [["100M"], ["150M"],["200M"]]#body.exercise
+        reps = [["2"], ["2"],["2"]]#body.reps
+        rests = [["3min"], ["3min"],["4min"]]#body.rests
+        targets = [["2rep"], ["2rep"],["2rep"]]#body.targets
+        workout_date = "2020-12-05"#body.workout_date, rests=rests
+        
+        results = [[0],[0],[0]]
+        athlete = request.user
+        workout_name2 = Workout.objects.get(pk=15)
+        units = [["meters"],["meters"],["meters"]]
+        comments = [["None"],["None"],["None"]]
+        
+        workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
+        
+        workout.save()
+        workout_result = WorkoutResult(athlete=athlete,workout=workout_name2,results=results, units=units, comments=comments)
+        workout_result.save()
+        return JsonResponse({"message" : "Data isvalid"}, status=200)
 
 class Clubs(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -89,9 +101,9 @@ class Clubs(APIView):
     
 def dashboard(request):
     # get user detais ??????????? from token?
-    user = User.objects.get(id=1)
+    user = User.objects.get(pk=1)
     # get user type ?????????????
-    userType = "Coach"
+    userType = "User"
 
     if userType == "Coach":
         # Getting coach details and tracked athletes ???????????????? get from token
@@ -127,6 +139,9 @@ def dashboard(request):
     else:
         # Get all workout results
         all_results = WorkoutResult.objects.filter(athlete=user)
+        # serialized_all = [x.serialize() for x in list(all_results)]
+        
+    
         
         # athlete - get today's agenda
         today = all_results.filter(workout__workout_date=date.today())
@@ -149,7 +164,8 @@ def dashboard(request):
             "pending_results": serialized_pending_complete,
             "today": serialized_today,
             "upcoming": serialized_upcoming,
-            "recent_completed": serialized_past
+            "recent_completed": serialized_past,
+            # "all_results": serialized_all
         }
 
     return JsonResponse(dashboard_data, status=200, safe=False)
@@ -177,3 +193,35 @@ def new_workout(request):
         # new_result.save()
     
     pass
+@csrf_exempt
+def single_workout(request, id):
+    
+    result = WorkoutResult.objects.get(workout_id=id)
+    
+    if request.method == "GET":
+        return JsonResponse({"result":result.single_workout()}, status=200, safe=False)
+    
+    elif request.method == "POST":
+        print("Hellow")    
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        
+        result.results = body["results"]
+        result.save()
+
+        return JsonResponse({"message" : "Data saved"}, status=200)
+    
+@csrf_exempt  
+def workout_comment(request,id):
+    result = WorkoutResult.objects.get(workout_id=id)
+    
+    if request.method == "POST":
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        result.comments = body["comments"]
+        result.save()
+        return JsonResponse({"message" : "Data saved"}, status=200)
+        
+    
+    
+    
