@@ -208,6 +208,13 @@ def single_club(request):
     club['this_month'] = workouts_this_month.count()
     return JsonResponse(club, status=200, safe=False)
 
+def getworkouts(request,id):
+    # find workouts of userid, filter by date
+    temp = WorkoutResult.objects.filter(athlete__id=2)
+    
+
+    pass
+
 def new_workout(request,id):
     result = WorkoutResult.objects.get(id = resultID)
 
