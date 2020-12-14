@@ -17,4 +17,6 @@ urlpatterns = [
     # features
     path('testing/', views.dashboard, name='test'),
     # about
+    path('profile/<int:id>', views.profile, name='profile'),
+    path('club', views.single_club, name='club'),
 ]

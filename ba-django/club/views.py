@@ -7,9 +7,14 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
 from rest_framework.views import APIView
-from datetime import date
+from datetime import date, datetime
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
+import jwt
+import os
+from dotenv import load_dotenv
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Create your views here.
 
@@ -153,8 +158,59 @@ def dashboard(request):
         }
 
     return JsonResponse(dashboard_data, status=200, safe=False)
-    
-def new_workout(request):
+
+def profile(request, id):
+    try:
+        user_profile = UserDetail.objects.get(base_user__id=id)
+
+        data = user_profile.serialize()
+        data['recent_workouts'] = []
+        data['public'] = False
+
+        if user_profile.public_workouts:
+            data['public'] = True
+            recent = WorkoutResult.objects.filter(athlete=user_profile.base_user).order_by('-workout__workout_date')[:5]
+            serialized_recent = []
+            for x in recent:
+                serialized_recent.append({
+                    'workout_name': x.workout.workout_name,
+                    'workout_date': x.workout.workout_date,
+                })
+            data['recent_workouts'] = serialized_recent
+        
+        return JsonResponse({
+            "found": True,
+            "valid": True,
+            "profile": data
+            }, status=200, safe=False)
+    except:
+        return JsonResponse({
+            "found": True,
+            "valid": False,
+            }, status=404, safe=False)
+
+def single_club(request):
+    token = request.headers['Authorization'].split(" ")[1]
+    decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    user_id = decoded_token['user_id']
+    user = UserDetail.objects.get(base_user__id=user_id)
+
+    club = user.club.serialize()
+    members = UserDetail.objects.filter(club=user.club)
+    coaches = [x.serialize_for_club() for x in members.filter(is_coach=True)]
+    athletes = [x.serialize_for_club() for x in members.filter(is_coach=False)]
+
+    month = datetime.now().month
+    workouts_this_month = WorkoutResult.objects.filter(athlete__in=(x.base_user for x in members), workout__workout_date__month=month, completed=True)
+
+    club['coaches'] = coaches
+    club['athletes'] = athletes
+    club['this_month'] = workouts_this_month.count()
+    return JsonResponse(club, status=200, safe=False)
+
+def new_workout(request,id):
+    result = WorkoutResult.objects.get(id = resultID)
+
     # get form data
     # need the following data
     # for ATHLETE 
