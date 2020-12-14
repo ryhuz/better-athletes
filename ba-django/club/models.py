@@ -45,6 +45,11 @@ class WorkoutTemplate(models.Model):
             models.IntegerField(validators=[MinValueValidator(1)], blank=True)
         )
     )
+    rests = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
+        )
+    )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
@@ -68,12 +73,18 @@ class Workout(models.Model):
             models.IntegerField(validators=[MinValueValidator(1)], blank=True)
         )
     )
+    rests = ArrayField( # number of sets
+        ArrayField( # target per exercise
+            models.CharField(max_length=50, blank=True)
+        )
+    )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
         )
     )
     created_date = models.DateTimeField(auto_now=True)
+    
     
     def __str__(self):
         return self.workout_name
