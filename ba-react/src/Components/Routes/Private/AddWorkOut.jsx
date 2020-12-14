@@ -94,12 +94,19 @@ function WorkOut() {
     function ChangeHandler(e, i, ii) {
         let { name, value } = e.target;
         let form_data = {...inputForm};
+<<<<<<< HEAD:ba-react/src/Components/Routes/Private/AddWorkOut.jsx
         console.log("hello!")
         if (name == "athletes"){
             form_data.athletes.push(value)
         } else if (name == "workout_name") {
             form_data.athletes = value
         } else if (name != "athletes"){
+=======
+
+        if (name === "athletes"){
+            form_data.athletes.push(value)
+        } else if (name !== "athletes"){
+>>>>>>> master:ba-react/src/Components/Routes/Private/WorkOut.jsx
             form_data.sets[i].set = i+1;
             form_data.sets[i].data[ii][name] = value;
             form_data.workout_date = date;

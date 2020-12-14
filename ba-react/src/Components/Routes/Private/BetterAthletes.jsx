@@ -1,17 +1,16 @@
 import React from 'react'
 import { Fragment } from 'react'
-import { BrowserRouter as Router, Switch, Route} from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { Container } from "react-bootstrap"
 import InnerNaviBar from '../../InnerNaviBar';
 import AddWorkOut from "./AddWorkOut"
 import ViewWorkOut from "./ViewWorkOut"
-
-
+import Dashboard from './Dashboard';
 
 function BetterAthletes() {
     return (
         <Fragment>
-            <InnerNaviBar/>
+            <InnerNaviBar />
             <Container className="border mt-5">
                 <Router>
                 <Switch>
@@ -20,6 +19,9 @@ function BetterAthletes() {
                     </Route>
                     <Route exact path="/betterathletes/view_workout">
                         <ViewWorkOut />
+                    </Route>
+                    <Route exact path="/betterathletes/dashboard">
+                            <Dashboard name="dashboard" />
                     </Route>
                 </Switch>
                 </Router>
