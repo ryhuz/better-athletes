@@ -2,8 +2,6 @@ import React, { useState, useEffect, Fragment } from 'react'
 import { Col, Row, Form, Button} from "react-bootstrap";
 import axios from "axios";
 
-
-
 function ViewWorkOut() {
     const [workout, setWorkout] = useState("")
     const [results, setResults] = useState({})
@@ -12,8 +10,6 @@ function ViewWorkOut() {
     const [indexSet, setIndexSet] = useState(0)
     const [comments, setComments] = useState({})  
     const [exerciseSelection, setExerciseSelection] = useState([])
-
- 
 
     function resultsHandler(e, i, ii){
         let {name, value, id} = e.target;
@@ -32,16 +28,12 @@ function ViewWorkOut() {
         setExerciseList(arr)
     }
 
-        
     function commentHandler(e){
         let { name, value} = e.target
         let obj = {...comments, [name]: value}
         setComments(obj)
     }
     console.log(comments)
-
-
-    
 
   //=========================AXIOS API TO BE UPDATED ================================\\
     async function saveComments(){

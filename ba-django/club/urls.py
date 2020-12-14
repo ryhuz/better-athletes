@@ -19,4 +19,6 @@ urlpatterns = [
     path('singleworkout/<int:id>', views.single_workout, name="single_workout"),
     path('singleworkout/comment/<int:id>', views.workout_comment, name="workout_comment")
     # about
+    path('profile/<int:id>', views.profile, name='profile'),
+    path('club', views.single_club, name='club'),
 ]

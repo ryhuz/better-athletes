@@ -3,9 +3,11 @@ import { Fragment } from 'react'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { Container } from "react-bootstrap"
 import InnerNaviBar from '../../InnerNaviBar';
-import AddWorkOut from "./AddWorkOut"
-import ViewWorkOut from "./ViewWorkOut"
+import AddWorkOut from "./Workout/AddWorkOut"
+import ViewWorkOut from "./Workout/ViewWorkOut"
 import Dashboard from './Dashboard';
+import AthleteProfile from './AthleteProfile';
+import ViewClub from './ViewClub';
 
 function BetterAthletes() {
     return (
@@ -21,7 +23,13 @@ function BetterAthletes() {
                         <ViewWorkOut />
                     </Route>
                     <Route exact path="/betterathletes/dashboard">
-                            <Dashboard name="dashboard" />
+                        <Dashboard name="dashboard" />
+                    </Route>
+                    <Route exact path="/betterathletes/profile/:id">
+                        <AthleteProfile name="profile" />
+                    </Route>
+                    <Route exact path="/betterathletes/myclub">
+                        <ViewClub name="view_club" />
                     </Route>
                 </Switch>
                 </Router>
