@@ -1,28 +1,43 @@
 import React, { useState, useEffect } from 'react'
+import DatePicker from 'react-modern-calendar-datepicker';
 import { Fragment } from 'react'
 import { Col, Row, Form, Button, DropdownButton, Dropdown } from "react-bootstrap";
 import axios from "axios";
 
-function WorkOut({ name }) {
+function WorkOut() {
     const [athletes, setAthletes] = useState([])
+    const [date, setDate] = useState(null)
+    const [exer, setExer] = useState([])
     const [inputForm, setForm] = useState(
         {
             athletes: [],
+            workout_name: "",
+            workout_date:{},
             sets: [
                     {
                         set: "",
                         data: [
-                                {
+                                {   
                                     exercise: "",
                                     reps: "",
-                                    rest: "",
-                                    target: ""
+                                    rests: "",
+                                    targets: ""
                                 }
                         ]   
                     }
                 ]
         })
-
+    
+    const [djangoData, setDjangoData] = useState(
+        {
+            athletes: [],
+            workout_name:"",
+            exercise: [[]],
+            reps: [],
+            targets: [],
+            rests: [],
+        }
+    )
     
     function AddSet(){
         let new_form = {...inputForm}
@@ -32,8 +47,8 @@ function WorkOut({ name }) {
                     {
                         exercise: "",
                         reps: "",
-                        rest: "",
-                        target: ""
+                        rests: "",
+                        targets: ""
                     }
                 ]
             })
@@ -52,8 +67,8 @@ function WorkOut({ name }) {
         new_form.push({
             exercise: "",
             reps: "",
-            rest: "",
-            target: ""
+            rests: "",
+            targets: ""
         })
         setForm(input)
     }
@@ -79,17 +94,97 @@ function WorkOut({ name }) {
     function ChangeHandler(e, i, ii) {
         let { name, value } = e.target;
         let form_data = {...inputForm};
-
+<<<<<<< HEAD:ba-react/src/Components/Routes/Private/AddWorkOut.jsx
+        console.log("hello!")
         if (name == "athletes"){
             form_data.athletes.push(value)
+        } else if (name == "workout_name") {
+            form_data.athletes = value
         } else if (name != "athletes"){
+=======
+
+        if (name === "athletes"){
+            form_data.athletes.push(value)
+        } else if (name !== "athletes"){
+>>>>>>> master:ba-react/src/Components/Routes/Private/WorkOut.jsx
             form_data.sets[i].set = i+1;
             form_data.sets[i].data[ii][name] = value;
+            form_data.workout_date = date;
         }
         
         setForm(form_data)
+        djangoHandler(e,i,ii);
     }
-    console.log(inputForm)
+
+    let newArr = []
+
+    // let obj = {
+    //     xxx: [],
+    //     sdasda
+    // }
+
+    function djangoHandler(e,i,ii){
+        let { name, value } = e.target;
+        let django_data = {...djangoData};
+        
+        if (name == "athletes"){
+            django_data.athletes.push(value)
+        } else if (name == "workout_name"){
+            django_data.workout_name = value
+        } else if (name == "exercise"){
+            
+            django_data.exercise[i][ii] = value
+        }
+        setDjangoData(django_data)
+        console.log(djangoData)
+        // [[[]],[[[]]]]
+    }
+    // console.log(newArr)
+
+    // console.log(inputForm)
+    // exercise: [],
+    //         reps: [],
+    //         targets: [],
+    //         rests: []
+
+    function djangoConversion(){
+        let exercise_arr = new Array(inputForm.sets.length).fill([])
+        let reps_arr = new Array(inputForm.sets.length).fill([])
+        let targets_arr = new Array(inputForm.sets.length).fill([])
+        let rests_arr = new Array(inputForm.sets.length).fill([])
+        let count = 0;
+        let data = inputForm.sets;
+        let arr = []
+        let merged = [].concat(arr)
+
+        // console.log(length_of_arr)
+        // // data.forEach((item,index)=>{
+        // //     arr.push(item.data[index].exercise)
+        // // })
+        // console.log(arr)
+        // console.log(merged)
+        // item.data.forEach((item2,index2)=>{
+        //     console.log(count)
+        //     if (item2["exercise"]){
+        //         exercise_arr[count].push(item2["exercise"])
+        //     } else if (item2["reps"] && index == index2){
+        //         reps_arr[index].push(item2["reps"])
+        //     } else if (item2["targets"] && index == index2){
+        //         targets_arr[index].push(item2["targets"])
+        //     } else if (item2["rests"] && index == index2){
+        //         rests_arr[index].push(item2["rests"])
+        //     }
+            
+        // })
+        // count += 1
+        // console.log(count)
+    }
+    // djangoConversion();
+
+
+
+
+    // console.log(inputForm)
 
 
 
@@ -100,7 +195,13 @@ function WorkOut({ name }) {
      */
     async function submitWorkout(){
         try {
-            let response = await axios.post(process.env.REACT_APP_LOCALHOST + `/`, inputForm);
+            let response = await axios.post("http://localhost:8000/api/workouts",inputForm, {
+                headers: {
+                    'Authorization': "JWT " + localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'accept': "application/json"
+                }
+            })
         } catch (error) {
             return error
         }
@@ -119,8 +220,23 @@ function WorkOut({ name }) {
         }
     }
 
+    async function getData(){
+        try {
+            let response = await axios.get("http://localhost:8000/api/workouts", {
+                headers: {
+                    'Authorization': "JWT " + localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'accept': "application/json"
+                }
+            });
+        } catch (error) {
+            return error
+        }
+    }
+
     useEffect(() => {
-        getAthletes();
+        // getAthletes();
+        getData();
     }, [])
 
     return (
@@ -131,27 +247,54 @@ function WorkOut({ name }) {
                 </Col>
                 <Col md={12} className="my-3 py-3 outer_form">
                 <Form>
-                <DropdownButton 
-                id="dropdown-basic-button" 
-                variant="info" 
-                title="Dropdown button" 
-                className="d-flex justify-content-end"
-                onChange={(e)=>ChangeHandler(e)}
-                >
-                    <Dropdown.Item >
-                        <Form.Group controlId="formBasicCheckbox">
-                            <Form.Check type="checkbox" label="Select One" name="athletes" value={1}/>
-                        </Form.Group>
-                    </Dropdown.Item>
-                    {athletes.map((item,index)=>(
-                        <Dropdown.Item key={index} >
-                            <Form.Group controlId="formBasicCheckbox">
-                                <Form.Check type="checkbox" label={item} value={item}/>
-                            </Form.Group>
-                        </Dropdown.Item>
-                    ))}
+                    <Row className="no-gutters">
+                        <Col md={3}>
+                        <Form.Control
+                            name="workout_name"
+                            onChange={(e) => ChangeHandler(e)}
+                            placeholder="Designate a workout name" 
+                            />
+                        </Col>
+                        <Col md={1}>
 
-                </DropdownButton>
+                        </Col>
+                        <Col md={3}>
+                        <DatePicker
+                            value={date}
+                            onChange={setDate}
+                            inputPlaceholder="Select a day"
+                            shouldHighlightWeekends
+                            />
+                        </Col>
+                        <Col md={3}>
+
+                        </Col>
+                        <Col md={2} className="d-flex justify-content-center">
+
+
+                            <DropdownButton 
+                            id="dropdown-basic-button" 
+                            variant="info" 
+                            title="Athletes" 
+                            className="d-flex justify-content-end"
+                            onChange={(e)=>ChangeHandler(e)}
+                            >
+                                <Dropdown.Item >
+                                    <Form.Group controlId="formBasicCheckbox">
+                                        <Form.Check type="checkbox" label="Select One" name="athletes" value={1}/>
+                                    </Form.Group>
+                                </Dropdown.Item>
+                                {athletes.map((item,index)=>(
+                                    <Dropdown.Item key={index} >
+                                        <Form.Group controlId="formBasicCheckbox">
+                                            <Form.Check type="checkbox" label={item} value={item}/>
+                                        </Form.Group>
+                                    </Dropdown.Item>
+                                ))}
+
+                            </DropdownButton>
+                        </Col>
+                    </Row>
                     {inputForm.sets.map((item, index) => (
                         <Form.Group className="my-3 py-3 form_set" key={index}>
                             <Row className="no-gutters">
@@ -176,8 +319,9 @@ function WorkOut({ name }) {
                                 </Col>
                             </Row>
                             <Row>
+                            
                                 <Col md={4} >
-                                    <Form.Label>Exercises</Form.Label>
+                                    <Form.Label>Exercise</Form.Label>
                                 </Col>
                                 <Col md={2} >
                                     <Form.Label>Reps</Form.Label>
@@ -188,19 +332,18 @@ function WorkOut({ name }) {
                                 <Col md={2} >
                                     <Form.Label>Target</Form.Label>
                                 </Col>
-                                <Col md={2} ></Col>
                             </Row>
 
 
                             {inputForm.sets[index].data.map((item2, index2) => (
 
-                                <Row key={index} className="my-2">
+                                <Row key={index2} className="my-2">
                                     <Col md={4} >
                                         <Form.Control
                                             name="exercise"
                                             onChange={(e) => ChangeHandler(e,index, index2)}
                                             value={item2.exercise}
-                                            placeholder="Workout" />
+                                            placeholder="Exercise type" />
                                     </Col>
                                     <Col md={2} >
                                         <Form.Control
@@ -211,16 +354,16 @@ function WorkOut({ name }) {
                                     </Col>
                                     <Col md={2}>
                                         <Form.Control
-                                            name="rest"
+                                            name="rests"
                                             onChange={(e) => ChangeHandler(e,index, index2)}
-                                            value={item2.rest}
+                                            value={item2.rests}
                                             placeholder="Rest" />
                                     </Col>
                                     <Col md={2}>
                                         <Form.Control
-                                            name="target"
+                                            name="targets"
                                             onChange={(e) => ChangeHandler(e,index, index2)}
-                                            value={item2.target}
+                                            value={item2.targets}
                                             placeholder="Target" />
                                     </Col>
                                     <Col md={2}>
@@ -252,7 +395,7 @@ function WorkOut({ name }) {
                             variant="warning" 
                             type="submit"
                             onClick={submitWorkout}
-                            >Add Exercise</Button>
+                            >Save Exercise</Button>
                         </Col>
                     </Row>
                 </Col>
