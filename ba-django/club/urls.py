@@ -15,6 +15,6 @@ urlpatterns = [
     path('token/verify', TokenVerifyView.as_view(), name='token_verify'),
     # path('logout/', api_views.logout, name='logout'),
     # features
-    path('testing/', views.dashboard, name='test'),
+    path('dashboard', views.dashboard, name='dashboard'),
     # about
 ]

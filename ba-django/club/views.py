@@ -10,6 +10,12 @@ from rest_framework.views import APIView
 from datetime import date
 import json
 from rest_framework_simplejwt.views import TokenObtainPairView
+import jwt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Create your views here.
 
@@ -42,8 +48,12 @@ class UserCreate(APIView):
                 public_workouts = False
             else:
                 public_workouts = True
+            if request.data['is_coach'] == 'false':
+                is_coach = False
+            else:
+                is_coach = True
             # user detail saved here
-            user_detail = UserDetail(base_user=user,club=club, dob=dob, location=location, phone=phone, weight=weight, height=height, gender=gender, public_workouts=public_workouts)
+            user_detail = UserDetail(base_user=user,club=club, dob=dob, location=location, phone=phone, weight=weight, height=height, gender=gender, public_workouts=public_workouts, is_coach=is_coach)
             if user:
                 user_detail.save()
                 json = serializer.data
@@ -89,11 +99,15 @@ class Clubs(APIView):
     
 def dashboard(request):
     # get user detais ??????????? from token?
-    user = User.objects.get(id=1)
+    # decode - token => id, username, is_coach
+    token = request.headers['Authorization'].split(" ")[1]
+    decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    user_id = decoded_token['user_id']
+    is_coach = decoded_token['is_coach']
+    user = User.objects.get(id=user_id)
     # get user type ?????????????
-    userType = "Coach"
 
-    if userType == "Coach":
+    if is_coach == True:
         # Getting coach details and tracked athletes ???????????????? get from token
         all_ath = TrackedAthlete.objects.filter(coach=user)
         

@@ -1,13 +1,16 @@
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom"
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import LandingPage from "./LandingPage/LandingPage"
 import BetterAthletes from "./Private/BetterAthletes"
 import Login from "./Auth/Login"
 import Register from "./Auth/Register"
+import jwt_decode from 'jwt-decode';
 
 function AllRoutes() {
   const [user, setUser] = useState()
   const [is_coach, setIs_coach] = useState(false)
+  const [isAuth, setAuth] = useState(false)
+  const [isRegis, setIsRegis] = useState(false)
 
   useEffect(() => {
     getTokenDetails()
@@ -15,9 +18,11 @@ function AllRoutes() {
   
   function getTokenDetails(){
     let token = localStorage.getItem("token");
-    let decoded = jwt_decode(token);
-    setUser(decoded.username);
-    setIs_coach(decoded.is_coach);
+    if(token){
+      let decoded = jwt_decode(token);
+      setUser(decoded.username);
+      setIs_coach(decoded.is_coach);
+    }
   }
   
     return (
@@ -27,12 +32,12 @@ function AllRoutes() {
             <LandingPage/>
           </Route>
           <Route path="/login">
-            <Login/>
+            <Login isAuth={isAuth} setAuth={setAuth}/>
           </Route>
           <Route path="/register">
-            <Register/>
+            <Register isRegis={isRegis} setIsRegis={setIsRegis}/>
           </Route>
-          <BetterAthletes />
+          <BetterAthletes isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach}/>
         </Switch>
       </Router>
     )
