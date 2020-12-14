@@ -3,8 +3,8 @@ import { Fragment } from 'react'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { Container } from "react-bootstrap"
 import InnerNaviBar from '../../InnerNaviBar';
-import AddWorkOut from "./AddWorkOut"
-import ViewWorkOut from "./ViewWorkOut"
+import AddWorkOut from "./Workout/AddWorkOut"
+import ViewWorkOut from "./Workout/ViewWorkOut"
 import Dashboard from './Dashboard';
 
 function BetterAthletes() {
