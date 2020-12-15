@@ -1,45 +1,36 @@
 import { NavLink, Redirect } from "react-router-dom";
 import { Col, Form, Container, Button } from "react-bootstrap";
-import React, {useState} from 'react';
-import InnerNaviBar from "../../InnerNaviBar";
-import {axiosInstance} from "../../../func/axiosApi"
-import { useEffect } from "react";
+import React, { useState } from 'react';
+import { axiosInstance } from "../../../func/axiosApi"
+import jwt_decode from 'jwt-decode';
 
-function Login({load, isAuth, setAuth}) {
+function Login({ isAuth, setAuth }) {
   const [user, setUser] = useState({});
-  
-
-  useEffect(() => {
-    check()
-  }, [])
-
   function handleChange(e) {
     setUser((user) => ({ ...user, [e.target.name]: e.target.value }));
   }
 
-  async function handleSubmit(e){
+  async function handleSubmit(e) {
     e.preventDefault();
     try {
-      let resp = await axiosInstance.post("login",{username: user.username, password: user.password});
-      if(resp){
+      let resp = await axiosInstance.post("login", { username: user.username, password: user.password });
+      if (resp) {
         axiosInstance.defaults.headers['Authorization'] = "JWT " + resp.data.access;
         localStorage.setItem("token", resp.data.access);
-        setAuth(true);
+        let decoded = jwt_decode(resp.data.access);
+        setAuth({
+          valid: true,
+          load: true,
+          coach: decoded.is_coach,
+          user: decoded.username,
+        });
       }
     } catch (error) {
       console.log(error);
-    }    
-  }
-
-  function check(){
-    setAuth(false);
-    if(localStorage.getItem("token")!=null){
-      setAuth(true);
-      console.log("Login redirecting");
     }
   }
 
-  if(isAuth && load){
+  if (isAuth.valid) {
     return <Redirect to="/betterathletes/dashboard" />
   }
 
@@ -52,7 +43,7 @@ function Login({load, isAuth, setAuth}) {
             <div>User Login</div>
             {/* Username Input */}
             <Form.Row>
-            <Form.Label>Username</Form.Label>
+              <Form.Label>Username</Form.Label>
               <Form.Control
                 placeholder="username"
                 onChange={handleChange}
@@ -61,7 +52,7 @@ function Login({load, isAuth, setAuth}) {
             </Form.Row>
             {/* Password Input */}
             <Form.Row className="mb-3">
-            <Form.Label>Password</Form.Label>
+              <Form.Label>Password</Form.Label>
               <Form.Control
                 onChange={handleChange}
                 placeholder="password"

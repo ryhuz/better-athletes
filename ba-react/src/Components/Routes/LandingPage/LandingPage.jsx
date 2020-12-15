@@ -13,13 +13,13 @@ function LandingPage() {
 
                     </Nav>
                 <Form inline>
-                    <div class="px-3">
+                    <div className="px-3">
                         <NavLink to="/ranking" style={{ textDecoration: 'none' }} className="text-secondary">RANKING</NavLink>
                     </div>
-                    <div class="px-3">
+                    <div className="px-3">
                         <NavLink to="/features" style={{ textDecoration: 'none' }} className="text-secondary">FEATURES</NavLink>
                     </div>
-                    <div class="px-3">
+                    <div className="px-3">
                         <NavLink to="/about" style={{ textDecoration: 'none' }} className="text-secondary">ABOUT</NavLink>
                     </div>
                 </Form>

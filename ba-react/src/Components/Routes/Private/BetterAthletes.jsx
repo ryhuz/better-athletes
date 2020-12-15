@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { Fragment } from 'react'
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 import { Container } from "react-bootstrap"
 import InnerNaviBar from '../../InnerNaviBar';
 import AddWorkOut from "./Workout/AddWorkOut"
@@ -9,13 +9,38 @@ import Dashboard from './Dashboard';
 import AthleteProfile from './AthleteProfile';
 import ViewClub from './ViewClub';
 import CalendarDisplay from './Calendar/CalendarDisplay'
+import { axiosInstance } from "../../../func/axiosApi"
 
-function BetterAthletes({ load, setUser, setIs_coach, user, is_coach }) {
-    const [isAuth, setAuth] = useState(true)
+function BetterAthletes({ isAuth, setAuth }) {
+    useEffect(() => {
+        async function verifyToken() {
+            try {
+                await axiosInstance.post("token/verify", {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                });
+            } catch (error) {
+                localStorage.removeItem("token");
+                axiosInstance.defaults.headers['Authorization'] = null;
+                setAuth({
+                    valid: false,
+                    load: false,
+                    coach: false,
+                    user: ""
+                });
+                console.log(error);
+            }
+        }
+        verifyToken();
+    }, [])
 
+    if (!isAuth.valid) {
+        return <Redirect to="/login" />
+    }
     return (
         <Fragment>
-            <InnerNaviBar setIs_coach={setIs_coach} isAuth={isAuth} setAuth={setAuth} user={user} />
+            <InnerNaviBar user={isAuth.user} />
             <Container className="border mt-5">
                 <Router>
                     <Switch>
@@ -26,7 +51,7 @@ function BetterAthletes({ load, setUser, setIs_coach, user, is_coach }) {
                             <ViewWorkOut />
                         </Route>
                         <Route exact path="/betterathletes/dashboard">
-                            <Dashboard name="dashboard" load={load} isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach} />
+                            <Dashboard name="dashboard" isAuth={isAuth} />
                         </Route>
                         <Route exact path="/betterathletes/profile/:id">
                             <AthleteProfile name="profile" />
