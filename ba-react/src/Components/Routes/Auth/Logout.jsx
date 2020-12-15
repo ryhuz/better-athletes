@@ -8,7 +8,7 @@ function Logout({ isAuth, setAuth }) {
         axiosInstance.defaults.headers['Authorization'] = null;
         setAuth({
             valid: false,
-            load: false,
+            refreshed: false,
             coach: false,
             user: ""
         });

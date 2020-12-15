@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { NavLink } from "react-router-dom";
 import { Navbar, Button, Form, Nav } from "react-bootstrap";
 
-function InnerNaviBar() {
+function NavBarLoggedIn() {
     return (
-        <Fragment>
+        <>
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand href="/">BETTER ATHLETES</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -37,8 +37,8 @@ function InnerNaviBar() {
                     </Form>
                 </Navbar.Collapse>
             </Navbar>
-        </Fragment>
+        </>
     )
 }
 
-export default InnerNaviBar
+export default NavBarLoggedIn

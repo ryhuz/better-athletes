@@ -5,9 +5,10 @@ import Login from "./Auth/Login"
 import Register from "./Auth/Register"
 import jwt_decode from 'jwt-decode';
 import Logout from "./Auth/Logout"
-import InnerNaviBar from "../NavBars/InnerNaviBar"
 import Landing from "./LandingPage/Landing"
 import { axiosInstance } from "../../func/axiosApi";
+import NavBarLoggedIn from "../NavBars/NavBarLoggedIn"
+import NavBarNotLoggedIn from "../NavBars/NavBarNotLoggedIn"
 
 function AllRoutes() {
   const [isAuth, setAuth] = useState({
@@ -24,7 +25,7 @@ function AllRoutes() {
       axiosInstance.defaults.headers['Authorization'] = null;
       return setAuth({
         valid: false,
-        load: false,
+        refreshed: false,
         coach: false,
         user: ""
       });
@@ -57,15 +58,24 @@ function AllRoutes() {
         } else {
           removeToken()
         }
+      } else {
+        return setAuth({
+          valid: false,
+          refreshed: false,
+          coach: null,
+          user: ""
+        });
       }
     }
-    
+
     getTokenDetails();
   }, [])
 
   return (
     <Router>
-      <InnerNaviBar />
+      {isAuth.valid ?
+        <NavBarLoggedIn /> :
+        <NavBarNotLoggedIn />}
       <Switch>
         <Route path="/" exact>
           <Landing isAuth={isAuth} />

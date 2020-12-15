@@ -1,33 +1,12 @@
 import React, { Fragment } from 'react'
 import { NavLink } from "react-router-dom";
-import { Navbar, Col, Row, Form, Nav, Container, Button } from "react-bootstrap";
+import { Col, Row, Container, Button } from "react-bootstrap";
 
 function LandingPage() {
     return (
         <Fragment>
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">BETTER ATHLETES</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
+            <h1 className="display-1">NOT LOGGED IN</h1>
 
-                    </Nav>
-                    <Form inline>
-                        <div className="px-3">
-                            <NavLink to="/ranking" style={{ textDecoration: 'none' }} className="text-secondary">RANKING</NavLink>
-                        </div>
-                        <div className="px-3">
-                            <NavLink to="/features" style={{ textDecoration: 'none' }} className="text-secondary">FEATURES</NavLink>
-                        </div>
-                        <div className="px-3">
-                            <NavLink to="/about" style={{ textDecoration: 'none' }} className="text-secondary">ABOUT</NavLink>
-                        </div>
-                    </Form>
-                </Navbar.Collapse>
-            </Navbar>
-
-        <h1 className="display-1">NOT LOGGED IN</h1>
-        
             <Container className="mt-5 text-center">
                 <Row>
                     <Col md={12} className="my-4">

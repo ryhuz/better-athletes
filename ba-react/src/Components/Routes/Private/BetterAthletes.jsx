@@ -9,6 +9,7 @@ import ViewClub from './ViewClub';
 import CalendarDisplay from './Calendar/CalendarDisplay'
 
 function BetterAthletes({ isAuth }) {
+    console.log(isAuth)
     return (
         <>
             {isAuth.valid ?
