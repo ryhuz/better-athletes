@@ -12,7 +12,7 @@ function BetterAthletes({ isAuth }) {
     return (
         <div className="full-height landing">
             {isAuth.valid ?
-                <Container>
+                <>
                     <Router>
                         <Switch>
                             <Route exact path="/betterathletes/add_new_workout">
@@ -35,9 +35,9 @@ function BetterAthletes({ isAuth }) {
                             </Route>
                         </Switch>
                     </Router>
-                </Container> :
+                </> :
                 !isAuth.refreshed &&
-                < Redirect to='/' />
+                < Redirect to='/login' />
             }
         </div>
     )

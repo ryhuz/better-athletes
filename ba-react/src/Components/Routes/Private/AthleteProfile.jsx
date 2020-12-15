@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Col, Row } from 'react-bootstrap'
+import { Col, Container, Row } from 'react-bootstrap'
 import { axiosInstance } from '../../../func/axiosApi'
 
 function AthleteProfile() {
@@ -25,47 +25,51 @@ function AthleteProfile() {
     }, [])
 
     return (
-        <div className="p-5">
+        <Container className="p-5">
             {profile.found ?
                 <>
                     {profile.valid ?
-                        <>
-                            <h1 className="mb-3 display-4">{profile.profile.name.trim() ? profile.profile.name: profile.profile.username }</h1>
+                        <div className="bg-contrast p-4">
+                            <h1 className="mb-3 display-4 title">{profile.profile.name.trim() ? profile.profile.name : profile.profile.username}</h1>
                             <div className="my-3">
                                 <Row>
                                     <Col>
-                                        <div className="h5 my-2"><u>Club</u></div>
-                                        <div>{profile.profile.club}</div>
-                                        <div className="h5 my-2"><u>Gender</u></div>
-                                        <div>{profile.profile.gender}</div>
-                                        <div className="h5 my-2"><u>Age</u></div>
-                                        <div>{profile.profile.age}</div>
-                                        <div className="h5 my-2"><u>Location</u></div>
-                                        <div>{profile.profile.location}</div>
+                                        <div className="my-2"><u>Club</u></div>
+                                        <div className="bigger-text ml-3">{profile.profile.club}</div>
+                                        <div className="my-2"><u>Gender</u></div>
+                                        <div className="bigger-text ml-3">{profile.profile.gender}</div>
+                                        <div className="my-2"><u>Age</u></div>
+                                        <div className="bigger-text ml-3">{profile.profile.age}</div>
+                                        <div className="my-2"><u>Location</u></div>
+                                        <div className="bigger-text ml-3">{profile.profile.location}</div>
                                     </Col>
                                     <Col>
                                         Photo
                                 </Col>
                                 </Row>
-                                <hr className="my-4"/>
+                                <hr className="my-5 border" />
                                 <Row className="my-3">
                                     <Col>
-                                        <h3 className="display-4 mb-5">Recent Workouts</h3>
+                                        <div className="display-5 mb-5">Recent Workouts</div>
                                         {profile.profile.public ?
-                                        <>
-                                            {profile.profile.recent_workouts.map(wkout=>(
+                                            profile.profile.recent_workouts.length ?
                                                 <>
-                                                <h5>{wkout.workout_date}</h5>
-                                                <div>
-                                                    {wkout.workout_name}
-                                                </div>
-                                                </>
-                                            ))}
-                                        </>:
-                                        <>
-                                            Workouts have been set to private
+                                                    {profile.profile.recent_workouts.map((wkout, index) => (
+                                                        <div key={index}>
+                                                            <h5>{wkout.workout_date}</h5>
+                                                            <div>
+                                                                {wkout.workout_name}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </> :
+                                                <>
+                                                    No recent workouts
+                                        </> :
+                                            <>
+                                                Workouts have been set to private
                                         </>
-                                    }
+                                        }
                                     </Col>
                                     <Col className="d-flex align-items-center">
                                         <div>
@@ -76,7 +80,7 @@ function AthleteProfile() {
                                     </Col>
                                 </Row>
                             </div>
-                        </> :
+                        </div> :
                         <>
                             <h1 className="my-3 display-4">Oops, no such user</h1>
                         </>
@@ -86,7 +90,7 @@ function AthleteProfile() {
                     <h1 className="my-3 display-4">Loading...</h1>
                 </>
             }
-        </div>
+        </Container>
     )
 }
 

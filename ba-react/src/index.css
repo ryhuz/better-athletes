@@ -18,7 +18,7 @@ a, body {
 }
 
 .bg-contrast {
-  background-color: rgba(0, 0, 0, 0.425);
+  background-color: rgba(0, 0, 0, 0.589);
 }
 
 a.red-shadow{
@@ -44,6 +44,20 @@ a.red-shadow:hover, a>.red-shadow:hover{
   background-size: cover;
 }
 
+.bigger-text {
+  font-size: 2.3rem;
+  font-weight:300;
+}
+
+.display-5{
+  font-size: 2.5rem;
+  font-weight:300;
+}
+.display-6{
+  font-size: 1.7rem;
+  font-weight:300;
+}
+
 .navbar{
   background-image: linear-gradient(to bottom right, #5a5f63, #000000);
 }
@@ -63,13 +77,17 @@ button.btn-main:hover, .btn.btn-main:hover {
   box-shadow: 3px 5px 30px 5px #ffffff54;
 }
 
+.cal-container {
+  margin: 0 8% 0 8%; 
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-.wkout-day {
-  min-height: 9rem;
+.cal-day {
+  min-height: 11rem;
 }
 
 .button-addexe {
