@@ -7,43 +7,23 @@ import { useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios';
 
-function Dashboard({isAuth, setAuth, setUser, setIs_coach, user, is_coach}) {
-
-    useEffect(() => {
-        verifyToken();
-    }, [])
-
-    function check(){
-        let token = localStorage.getItem("token");
-        if(token){
-          setAuth(true);
-        } 
-      }
-
-    async function verifyToken(){
-        try {
-          await axiosInstance.post("token/verify", {
-            'token': localStorage.getItem('token'),
-            'Content-Type': 'application/json',
-            'accept': 'application/json'
-          });
-        } catch (error) {
-          localStorage.removeItem("token");
-          setIs_coach();
-          axiosInstance.defaults.headers['Authorization'] = null;
-          setAuth(false);
-          console.log(error);
-        }
-        check();
-      }
-
+function Dashboard({load, isAuth, setAuth, setUser, setIs_coach, user, is_coach}) {
+    console.log("Initial Load");
+    console.log(load);
     return (
+        <>
+        {load ? 
         <Row>
-            {is_coach === true ?
-            <CoachDash user = {user} is_coach={is_coach}/>:
-            <AthleteDash user = {user} is_coach={is_coach}/>
+            {is_coach == true ?
+            <CoachDash />:
+            <AthleteDash />
             }
+        </Row> : 
+        <Row>
+        Loading
         </Row>
+        }
+        </>
     )
 }
 

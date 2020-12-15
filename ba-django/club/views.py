@@ -100,8 +100,11 @@ class Clubs(APIView):
 def dashboard(request):
     # get user detais ??????????? from token?
     # decode - token => id, username, is_coach
-    token = request.headers['Authorization'].split(" ")[1]
-    decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    try:
+        token = request.headers['Authorization'].split(" ")[1]
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    except:
+        return JsonResponse({"message": "Fatal Error"}, status=400)
     user_id = decoded_token['user_id']
     is_coach = decoded_token['is_coach']
     user = User.objects.get(id=user_id)

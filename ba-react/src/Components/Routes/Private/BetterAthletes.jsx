@@ -8,12 +8,12 @@ import ViewWorkOut from "./ViewWorkOut"
 import Dashboard from './Dashboard';
 import { useState } from 'react';
 
-function BetterAthletes({setUser, setIs_coach, user, is_coach}) {
+function BetterAthletes({load, setUser, setIs_coach, user, is_coach}) {
     const [isAuth, setAuth] = useState(true)
 
     return (
         <Fragment>
-            <InnerNaviBar isAuth={isAuth} setAuth={setAuth} user={user} />
+            <InnerNaviBar setIs_coach={setIs_coach} isAuth={isAuth} setAuth={setAuth} user={user} />
             <Container className="border mt-5">
                 <Router>
                 <Switch>
@@ -24,7 +24,7 @@ function BetterAthletes({setUser, setIs_coach, user, is_coach}) {
                         <ViewWorkOut />
                     </Route>
                     <Route exact path="/betterathletes/dashboard">
-                            <Dashboard name="dashboard" isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach}/>
+                            <Dashboard name="dashboard" load={load} isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach}/>
                     </Route>
                 </Switch>
                 </Router>

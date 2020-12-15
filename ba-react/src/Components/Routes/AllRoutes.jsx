@@ -8,20 +8,33 @@ import jwt_decode from 'jwt-decode';
 
 function AllRoutes() {
   const [user, setUser] = useState()
-  const [is_coach, setIs_coach] = useState(false)
+  const [is_coach, setIs_coach] = useState(null)
   const [isAuth, setAuth] = useState(false)
   const [isRegis, setIsRegis] = useState(false)
+  const [load, setLoad] = useState(false)
 
   useEffect(() => {
-    getTokenDetails()
+    setLoad(false);
+    setAuth(false);
+    getTokenDetails();
   }, [])
   
   function getTokenDetails(){
     let token = localStorage.getItem("token");
+    console.log("getToken")
     if(token){
       let decoded = jwt_decode(token);
-      setUser(decoded.username);
-      setIs_coach(decoded.is_coach);
+      if(decoded.username && decoded.is_coach && decoded.user_id){
+        setUser(decoded.username);
+        setIs_coach(decoded.is_coach);
+        console.log("setToken");
+        setLoad(true);
+        console.log("setLoad");
+        setAuth(true);
+      } else {
+        setLoad(true);
+        setAuth(false);
+      }
     }
   }
   
@@ -32,12 +45,12 @@ function AllRoutes() {
             <LandingPage/>
           </Route>
           <Route path="/login">
-            <Login isAuth={isAuth} setAuth={setAuth}/>
+            <Login load={load} isAuth={isAuth} setAuth={setAuth}/>
           </Route>
           <Route path="/register">
             <Register isRegis={isRegis} setIsRegis={setIsRegis}/>
           </Route>
-          <BetterAthletes isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach}/>
+          <BetterAthletes load={load} isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach}/>
         </Switch>
       </Router>
     )

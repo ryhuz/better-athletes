@@ -3,14 +3,16 @@ import { NavLink, Redirect } from "react-router-dom";
 import { Navbar, Button, Form, Nav} from "react-bootstrap";
 import {axiosInstance} from "../func/axiosApi";
 
-function InnerNaviBar({setAuth, isAuth, user}) {
+function InnerNaviBar({setIs_coach ,setAuth, isAuth, user}) {
     function logout(){
         localStorage.removeItem("token");
         axiosInstance.defaults.headers['Authorization'] = null;
-        setAuth(false)
+        setAuth(false);
+        setIs_coach(null);
       }
 
       if(!isAuth){
+        console.log("Redirecting");
         return <Redirect to="/login" />
     }
     

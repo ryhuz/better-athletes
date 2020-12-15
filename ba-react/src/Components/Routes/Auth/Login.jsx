@@ -5,7 +5,7 @@ import InnerNaviBar from "../../InnerNaviBar";
 import {axiosInstance} from "../../../func/axiosApi"
 import { useEffect } from "react";
 
-function Login({isAuth, setAuth}) {
+function Login({load, isAuth, setAuth}) {
   const [user, setUser] = useState({});
   
 
@@ -32,12 +32,14 @@ function Login({isAuth, setAuth}) {
   }
 
   function check(){
-    if(localStorage.getItem("token")){
+    setAuth(false);
+    if(localStorage.getItem("token")!=null){
       setAuth(true);
+      console.log("Login redirecting");
     }
   }
 
-  if(isAuth){
+  if(isAuth && load){
     return <Redirect to="/betterathletes/dashboard" />
   }
 
