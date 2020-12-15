@@ -48,14 +48,21 @@ a.red-shadow:hover, a>.red-shadow:hover{
   background-image: linear-gradient(to bottom right, #5a5f63, #000000);
 }
 
-button.btn-main {
+button.btn-main, .btn.btn-main {
   background-color: #6e0a0a;
   color: rgb(173, 173, 173);
 }
-button.btn-main:hover {
+button.btn-main:hover, .btn.btn-main:hover {
   background-color: #9e4444;
   color: rgb(173, 173, 173);
 }
+
+.dash-card {
+  min-height: 23rem;
+  background-color: rgba(80, 76, 76, 0.425);
+  box-shadow: 3px 5px 30px 5px #ffffff54;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

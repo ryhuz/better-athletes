@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from "react-router-dom";
-import { Navbar, Button, Form, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 
 function NavBarLoggedIn({ username, user_id }) {
     return (
@@ -14,9 +14,7 @@ function NavBarLoggedIn({ username, user_id }) {
                             Logged in as: <NavLink to={`/profile/${user_id}`} className="red-shadow">{username}</NavLink>
                         </div>
                         <div className="h6 mx-4">
-                            <NavLink to='/logout' classname="btn btn-outline-secondary alert">
-                                Logout
-                            </NavLink>
+                            <NavLink to='/logout' className="red-shadow">Logout</NavLink>
                         </div>
                     </ul>
                 </Navbar.Collapse>
