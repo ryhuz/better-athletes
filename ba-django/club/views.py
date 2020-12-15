@@ -236,9 +236,9 @@ def single_club(request):
     return JsonResponse(club, status=200, safe=False)
 
 @api_view(['GET'])
-def getworkouts(request):
+def getworkouts(request,id):
     # find workouts of userid, filter by date
-    temp = WorkoutResult.objects.filter(athlete_id=3)
+    temp = WorkoutResult.objects.filter(athlete_id=id)
     serialize = [x.serialize() for x in temp]
     if serialize:
         return JsonResponse(serialize, status=200, safe=False)
