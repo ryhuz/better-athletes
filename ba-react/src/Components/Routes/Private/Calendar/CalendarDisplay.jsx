@@ -40,10 +40,9 @@ function CalendarDisplay() {
         async function getWorkouts(){
             try {
                 let temp = await axiosInstance(`getworkouts`) // getworkouts?user=${user.id}?week=${sfjksdfjds}
-                console.log(temp.data)
-                // setClub(temp.data)
+                setWorkouts(temp.data)
             } catch (e) {
-
+                console.log(e);
             }
         }
         getCalendar()
@@ -75,13 +74,13 @@ function CalendarDisplay() {
                         Up
                     </div>
                     <DisplayMonth mth={calendar.prevWeek[2].format('MMMM')} days={days} />
-                    <DisplayWeek week={calendar.prevWeek} relative="prev" />
+                    <DisplayWeek workouts={workouts} week={calendar.prevWeek} relative="prev" />
                     {calendar.prevWeek[2].format("MM") !== calendar.currWeek[2].format("MM") &&
                         <DisplayMonth mth={calendar.currWeek[2].format('MMMM')} days={days}/>}
-                    <DisplayWeek week={calendar.currWeek} relative="curr" />
+                    <DisplayWeek workouts={workouts} week={calendar.currWeek} relative="curr" />
                     {calendar.currWeek[2].format("MM") !== calendar.nextWeek[2].format("MM") &&
                         <DisplayMonth mth={calendar.nextWeek[2].format('MMMM')} days={days}/>}
-                    <DisplayWeek week={calendar.nextWeek} relative="next" />
+                    <DisplayWeek workouts={workouts} week={calendar.nextWeek} relative="next" />
                     <div className="btn btn-sm btn-block btn-outline-dark my-2" onClick={() => changeWeek('next')}>
                         Down
                     </div>

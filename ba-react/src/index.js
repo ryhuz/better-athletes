@@ -4,10 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css";
-<<<<<<< HEAD
-import DatePicker from 'react-modern-calendar-datepicker';
-=======
->>>>>>> master
 import 'react-modern-calendar-datepicker/lib/DatePicker.css'
 ReactDOM.render(
   <React.StrictMode>
