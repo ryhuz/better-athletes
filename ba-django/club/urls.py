@@ -21,5 +21,5 @@ urlpatterns = [
     # about
     path('profile/<int:id>', views.profile, name='profile'),
     path('club', views.single_club, name='club'),
-    path('getworkouts', views.getworkouts, name='getworkouts'),
+    path('getworkouts/<int:id>', views.getworkouts, name='getworkouts'),
 ]
