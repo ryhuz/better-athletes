@@ -1,59 +1,100 @@
-import { BrowserRouter as Router, Switch, Route} from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import React, { useState, useEffect } from 'react'
-import LandingPage from "./LandingPage/LandingPage"
 import BetterAthletes from "./Private/BetterAthletes"
 import Login from "./Auth/Login"
 import Register from "./Auth/Register"
 import jwt_decode from 'jwt-decode';
+import Logout from "./Auth/Logout"
+import Landing from "./LandingPage/Landing"
+import { axiosInstance } from "../../func/axiosApi";
+import NavBarLoggedIn from "../NavBars/NavBarLoggedIn"
+import NavBarNotLoggedIn from "../NavBars/NavBarNotLoggedIn"
 
 function AllRoutes() {
-  const [user, setUser] = useState()
-  const [is_coach, setIs_coach] = useState(null)
-  const [isAuth, setAuth] = useState(false)
-  const [isRegis, setIsRegis] = useState(false)
-  const [load, setLoad] = useState(false)
+  const [isAuth, setAuth] = useState({
+    valid: false,
+    refreshed: true,
+    coach: false,
+    user: ""
+  })
 
   useEffect(() => {
-    setLoad(false);
-    setAuth(false);
-    getTokenDetails();
-  }, [])
-  
-  function getTokenDetails(){
     let token = localStorage.getItem("token");
-    console.log("getToken")
-    if(token){
-      let decoded = jwt_decode(token);
-      if(decoded.username && decoded.is_coach && decoded.user_id){
-        setUser(decoded.username);
-        setIs_coach(decoded.is_coach);
-        console.log("setToken");
-        setLoad(true);
-        console.log("setLoad");
-        setAuth(true);
-      } else {
-        setLoad(true);
-        setAuth(false);
+    function removeToken() {
+      localStorage.removeItem("token");
+      axiosInstance.defaults.headers['Authorization'] = null;
+      return setAuth({
+        valid: false,
+        refreshed: false,
+        coach: false,
+        user: ""
+      });
+    }
+
+    async function verifyToken() {
+      try {
+        await axiosInstance.post("token/verify", {
+          'token': token,
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
+        });
+        let decoded = jwt_decode(token);
+        return setAuth({
+          valid: true,
+          refreshed: false,
+          coach: decoded.is_coach,
+          user: decoded.username
+        });
+      } catch (error) {
+        removeToken()
       }
     }
-  }
-  
-    return (
-      <Router>
-        <Switch>
-          <Route path="/" exact>
-            <LandingPage/>
-          </Route>
-          <Route path="/login">
-            <Login load={load} isAuth={isAuth} setAuth={setAuth}/>
-          </Route>
-          <Route path="/register">
-            <Register isRegis={isRegis} setIsRegis={setIsRegis}/>
-          </Route>
-          <BetterAthletes load={load} isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach}/>
-        </Switch>
-      </Router>
-    )
+
+    function getTokenDetails() {
+      if (token != null) {
+        let decoded = jwt_decode(token);
+        if (decoded.username && decoded.user_id && decoded.is_coach !== undefined) {
+          verifyToken()
+        } else {
+          removeToken()
+        }
+      } else {
+        return setAuth({
+          valid: false,
+          refreshed: false,
+          coach: null,
+          user: ""
+        });
+      }
+    }
+
+    getTokenDetails();
+  }, [])
+
+  return (
+    <Router>
+      {isAuth.valid ?
+        <NavBarLoggedIn /> :
+        <NavBarNotLoggedIn />}
+      <Switch>
+        <Route path="/" exact>
+          <Landing isAuth={isAuth} />
+        </Route>
+        {/* Accounts */}
+        <Route path="/login">
+          <Login isAuth={isAuth} setAuth={setAuth} />
+        </Route>
+        <Route path="/logout">
+          <Logout isAuth={isAuth} setAuth={setAuth} />
+        </Route>
+        <Route path="/register">
+          <Register isAuth={isAuth} setAuth={setAuth} />
+        </Route>
+        {/* Logged in route */}
+        <BetterAthletes isAuth={isAuth} />
+      </Switch>
+    </Router>
+  )
 }
 
 export default AllRoutes

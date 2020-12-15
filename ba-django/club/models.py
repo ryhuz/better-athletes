@@ -165,6 +165,7 @@ class WorkoutResult(models.Model):
             "result_id": self.id,
             "workout_id": self.workout.id,
             "workout_name": self.workout.workout_name,
+            "workout_date": self.workout.workout_date,
             "completed_on": self.completed_on,
             "athlete_id": self.athlete.id,
             "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,

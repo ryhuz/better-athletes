@@ -125,6 +125,7 @@ function WorkOut() {
             results: []
         }
 
+
         if (date === null){
             djangoFormVersion.workout_date = ""
         } else {
@@ -133,6 +134,7 @@ function WorkOut() {
         }
         
         
+
         inputForm.sets.forEach(set => {
             let exerciseSet = []
             let repSet = []
@@ -170,6 +172,7 @@ function WorkOut() {
             djangoFormVersion.comments.push(commentsSet)
             djangoFormVersion.results.push(resultsSet)
         })
+
         console.log(djangoFormVersion)
         try {
             let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
@@ -182,6 +185,7 @@ function WorkOut() {
         } catch (error) {
             return error
         }
+
     }
 
     /**
@@ -274,7 +278,7 @@ function WorkOut() {
                                     {item.map((item2, index2) => (
                                         <Row key={index2} className="my-2">
                                             <Col md="auto">
-                                                {index2+1}:
+                                                {index2 + 1}:
                                             </Col>
                                             <Col md={4} >
                                                 <Form.Control
