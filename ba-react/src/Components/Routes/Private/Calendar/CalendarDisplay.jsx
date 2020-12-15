@@ -15,7 +15,7 @@ function CalendarDisplay() {
         currWeek: [],
         nextWeek: []
     })
-    
+    id = 2  // USE PARAMSSSS ------------------------------
     useEffect(() => {
         function getCalendar() {
             let prev = []
@@ -39,7 +39,7 @@ function CalendarDisplay() {
         }
         async function getWorkouts(){
             try {
-                let temp = await axiosInstance(`getworkouts`) // getworkouts?user=${user.id}?week=${sfjksdfjds}
+                let temp = await axiosInstance(`getworkouts/${id}`) // getworkouts?user=${user.id}?week=${sfjksdfjds}
                 setWorkouts(temp.data)
             } catch (e) {
                 console.log(e);
