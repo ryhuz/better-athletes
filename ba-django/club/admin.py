@@ -3,10 +3,13 @@ from .models import Club, UserDetail, Workout, WorkoutResult, WorkoutTemplate, S
 
 # Register your models here.
 
+class WorkoutResultAdmin(admin.ModelAdmin):
+    list_display = ("id", "athlete_id")
+
 admin.site.register(Club)
 admin.site.register(UserDetail)
 admin.site.register(Workout)
-admin.site.register(WorkoutResult)
+admin.site.register(WorkoutResult, WorkoutResultAdmin)
 admin.site.register(WorkoutTemplate)
 admin.site.register(SavedWorkout)
 admin.site.register(TrackedAthlete)

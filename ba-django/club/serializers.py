@@ -31,3 +31,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['is_coach'] = user.userdetail.is_coach
         return token
+
+class WorkoutResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkoutResult
+        fields = "__all__"
