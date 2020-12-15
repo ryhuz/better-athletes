@@ -3,7 +3,7 @@ from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDet
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.response import Response
-from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer, WorkoutCommentSerializer
+from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
@@ -71,32 +71,61 @@ class Workouts(APIView):
     def get(self, request):
         try:
             workouts = Workout.objects.all()
-            return JsonResponse([workout.serialize() for workout in workouts], status=200, safe=False)
+            all_workouts = [workout.serialize() for workout in workouts]
+            token = request.headers['Authorization'].split(" ")[1]
+            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            user_id = decoded_token['user_id']
+            user = UserDetail.objects.get(base_user_id=user_id)
+            club = user.club.serialize()
+            members = UserDetail.objects.filter(club=user.club)
+            athletes = [x.serialize_for_club() for x in members.filter(is_coach=False)]
+
+            workout_data = {
+                "workouts": all_workouts,
+                "athletes": athletes
+            }
+            
+            
+            
+            return JsonResponse(workout_data, status=200, safe=False)
         except Workout.DoesNotExist:
             return JsonResponse({"message" : "Data not found"}, status=400)
     
     def post(self, request):
-        print("posting new wo")
-        # user = User.objects.get(username="tyrone")
-        # print(user)
-        workout_name = "Jumping" #body.workout_name
-        exercise = [["50M", "200M"], ["150M", "0M"],["0M", "800M"]]#body.exercise
-        reps = [["2", "5"], ["2", "0"],["0","2"]]#body.reps
-        rests = [["1min","1min"], ["3min", "0min"],["0Min","4min"]]#body.rests
-        targets = [["2rep","25rep"], ["2rep", "0Rep"],["0rep","2rep"]]#body.targets
-        workout_date = "2020-12-05"#body.workout_date, rests=rests
         
-        results = [["2rep","25rep"], ["2rep", "0rep"],["0rep","2rep"]]
-        athlete = request.user
         
-        units = [["meters","meters"],["meters","meters"],["meters","meters"]]
-        comments = [["none","none"],["none","none"],["",""]]
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        
+        athlete_list = body['athletes']
+        
+        workout_name = body['workout_name']
+        exercise = body['exercises'] 
+        reps = body['reps']                 
+        rests =  body['rests']                      
+        targets =  body['targets']                  
+        workout_date = body['workout_date']                                
+        
+        
+        # ======save for WorkoutResult Modal=======#
+        results = body['results']
+        units = body['units']  
+        comments = body['comments'] 
+        
         
         workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
-        workout.save()
-        workout_name2 = Workout.objects.get(pk=18) # can filter by date and get the last save and append to the database
-        workout_result = WorkoutResult(athlete=athlete,workout=workout_name2,results=results, units=units, comments=comments)
-        workout_result.save()
+        # workout.save()
+        
+        
+        workout_name2 = Workout.objects.filter(workout_name=workout_name).latest('created_date')
+        print(workout_name2)
+        
+        for athlete in athlete_list:
+            a = User.objects.get(pk=athlete['user_id'])
+            workout_result = WorkoutResult(athlete=a,workout=workout_name2,results=results, units=units, comments=comments)
+            workout_result.save()
+       
+
         return JsonResponse({"message" : "Data isvalid"}, status=200)
 
 class Clubs(APIView):
