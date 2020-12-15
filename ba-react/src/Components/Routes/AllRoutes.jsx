@@ -43,7 +43,8 @@ function AllRoutes() {
           valid: true,
           refreshed: false,
           coach: decoded.is_coach,
-          user: decoded.username
+          user: decoded.username,
+          user_id: decoded.user_id
         });
       } catch (error) {
         removeToken()
@@ -74,7 +75,7 @@ function AllRoutes() {
   return (
     <Router>
       {isAuth.valid ?
-        <NavBarLoggedIn /> :
+        <NavBarLoggedIn username={isAuth.user} user_id={isAuth.user_id}/> :
         <NavBarNotLoggedIn />}
       <Switch>
         <Route path="/" exact>

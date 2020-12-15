@@ -1,12 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Nova+Square&family=PT+Sans:wght@700&display=swap');
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'PT Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+a, body {
+  color: white !important;
+  text-shadow: 5px 5px 10px #6e0a0a;
+}
+
+.title {
+  font-family: 'Nova Square', cursive;
+  transition: 0.3s;
+}
+
+.bg-contrast {
+  background-color: rgba(0, 0, 0, 0.425);
+}
+
+a.red-shadow{
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+a.red-shadow:hover, a>.red-shadow:hover{
+  color: rgb(190, 121, 121) !important;
+  text-decoration: none;
+}
+
+.full-height {
+  height: calc(100vh - 56px);
+}
+
+.page-center{
+  padding-top: 15%;
+}
+
+.landing{
+  background-image: url("https://www.globuscorporation.com/wp-content/uploads/2017/05/AdobeStock_87609906.jpeg");
+  background-size: cover;
+}
+
+.navbar{
+  background-image: linear-gradient(to bottom right, #5a5f63, #000000);
+}
+
+button.btn-main {
+  background-color: #6e0a0a;
+  color: rgb(173, 173, 173);
+}
+button.btn-main:hover {
+  background-color: #9e4444;
+  color: rgb(173, 173, 173);
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -14,4 +63,8 @@ code {
 
 .wkout-day {
   min-height: 9rem;
+}
+
+.button-addexe {
+  color: purple
 }
