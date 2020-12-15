@@ -3,7 +3,7 @@ from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDet
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.response import Response
-from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer, WorkoutCommentSerializer
+from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer, WorkoutResultSerializer
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
@@ -236,12 +236,15 @@ def single_club(request):
     club['this_month'] = workouts_this_month.count()
     return JsonResponse(club, status=200, safe=False)
 
+@api_view(['GET'])
 def getworkouts(request,id):
     # find workouts of userid, filter by date
-    temp = WorkoutResult.objects.filter(athlete__id=2)
-    
-
-    pass
+    temp = WorkoutResult.objects.filter(athlete_id=id)
+    serialize = [x.serialize() for x in temp]
+    if serialize:
+        return JsonResponse(serialize, status=200, safe=False)
+    else:
+        return JsonResponse({"message": "Fatal Error"}, status=400)
 
 def new_workout(request,id):
     result = WorkoutResult.objects.get(id = resultID)
