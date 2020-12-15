@@ -20,7 +20,7 @@ function CoachDash() {
                         'accept': "application/json"
                     }
                 }
-                let data = await axios.get(`http://localhost:8000/api/testing`, headToken)
+                let data = await axios.get(`http://localhost:8000/api/dashboard`, headToken)
                 setDashData(data.data)
             }
             catch (e) {

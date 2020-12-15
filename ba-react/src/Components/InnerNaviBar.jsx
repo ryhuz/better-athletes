@@ -1,11 +1,21 @@
-import React, { Fragment } from 'react'
-import { NavLink } from "react-router-dom";
-import { Navbar, Button, Form, Nav } from "react-bootstrap";
+import React, { Fragment} from 'react'
+import { NavLink, Redirect } from "react-router-dom";
+import { Navbar, Button, Form, Nav} from "react-bootstrap";
+import {axiosInstance} from "../func/axiosApi";
 
+function InnerNaviBar({setIs_coach ,setAuth, isAuth, user}) {
+    function logout(){
+        localStorage.removeItem("token");
+        axiosInstance.defaults.headers['Authorization'] = null;
+        setAuth(false);
+        setIs_coach(null);
+      }
 
-function InnerNaviBar() {
-    let user = localStorage.getItem("user");
-
+      if(!isAuth){
+        console.log("Redirecting");
+        return <Redirect to="/login" />
+    }
+    
     return (
         <Fragment>
             <Navbar bg="light" expand="lg">
@@ -33,11 +43,9 @@ function InnerNaviBar() {
                         </NavLink>
                     </div>
                     <div className="px-1">
-                        <NavLink to="/logout" style={{ textDecoration: 'none' }} className="alert">
-                            <Button variant="outline-secondary">
-                                Logout
-                            </Button>
-                        </NavLink>
+                        <Button onClick={logout} classname="alert" variant="outline-secondary">
+                            Logout
+                        </Button>
                     </div>
                 </Form>
             </Navbar.Collapse>

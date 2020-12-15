@@ -9,7 +9,7 @@ import AthPendingResults from './AthleteItems/AthPendingResults'
 function AthleteDash() {
     const [dashData, setDashData] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
-
+    console.log(dashData);
     useEffect(() => {
         async function retrieve() {
             try {
@@ -20,7 +20,7 @@ function AthleteDash() {
                         'accept': "application/json"
                     }
                 }
-                let data = await axios.get(`http://localhost:8000/api/testing`, headToken)
+                let data = await axios.get(`http://localhost:8000/api/dashboard`, headToken)
                 setDashData(data.data)
             }
             catch (e) {

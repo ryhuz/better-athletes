@@ -1,12 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
 import { Col, Form, Container, Button } from "react-bootstrap";
 import React, {useState} from 'react';
-import jwt_decode from 'jwt-decode';
 import InnerNaviBar from "../../InnerNaviBar";
 import {axiosInstance} from "../../../func/axiosApi"
+import { useEffect } from "react";
 
-function Login() {
+function Login({load, isAuth, setAuth}) {
   const [user, setUser] = useState({});
+  
+
+  useEffect(() => {
+    check()
+  }, [])
 
   function handleChange(e) {
     setUser((user) => ({ ...user, [e.target.name]: e.target.value }));
@@ -16,52 +21,26 @@ function Login() {
     e.preventDefault();
     try {
       let resp = await axiosInstance.post("login",{username: user.username, password: user.password});
-      axiosInstance.defaults.headers['Authorization'] = "JWT " + resp.data.access;
-      localStorage.setItem("token", resp.data.access);
-      let token = localStorage.getItem("token");
-      let decoded = jwt_decode(token);
-      localStorage.setItem("user", decoded.username);
-      localStorage.setItem("is_coach", decoded.is_coach);
-      // setIsAuth(true);
+      if(resp){
+        axiosInstance.defaults.headers['Authorization'] = "JWT " + resp.data.access;
+        localStorage.setItem("token", resp.data.access);
+        setAuth(true);
+      }
     } catch (error) {
       console.log(error);
     }    
   }
 
-  // Logout button that removes token
-  function logout(){
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("is_coach");
-    axiosInstance.defaults.headers['Authorization'] = null;
-  }
-
-  // Test function to test token and authorization. Remove when done.
-  async function test(){
-    try {
-      let resp = await axiosInstance.get("workouts");
-      console.log(resp)
-      // setIsAuth(true);
-    } catch (error) {
-      console.log(error);
+  function check(){
+    setAuth(false);
+    if(localStorage.getItem("token")!=null){
+      setAuth(true);
+      console.log("Login redirecting");
     }
   }
 
-  async function test2(){
-    try {
-      let resp = await axiosInstance.post("token/verify", {
-        'token': localStorage.getItem('token'),
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-      });
-    } catch (error) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("is_coach");
-      axiosInstance.defaults.headers['Authorization'] = null;
-      // setIsAuth(false);
-      console.log(error);
-    }
+  if(isAuth && load){
+    return <Redirect to="/betterathletes/dashboard" />
   }
 
   return (
@@ -97,20 +76,6 @@ function Login() {
               </Button>
             </Form.Row>
           </Form>
-          {/* Logout button */}
-          <Form.Row className="mb-3">
-          <Button onClick={logout} block>
-                Logout
-          </Button>
-          </Form.Row>
-          <Button onClick={test} block>
-                {/* For you to test the GET function to get workouts list */}
-                Test
-          </Button>
-          <Button onClick={test2} block>
-                {/* For you to test the GET function to get workouts list */}
-                Test2
-          </Button>
           <NavLink to="/register">Sign Up Now </NavLink>
         </Col>
       </Container>

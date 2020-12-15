@@ -49,8 +49,12 @@ class UserCreate(APIView):
                 public_workouts = False
             else:
                 public_workouts = True
+            if request.data['is_coach'] == 'false':
+                is_coach = False
+            else:
+                is_coach = True
             # user detail saved here
-            user_detail = UserDetail(base_user=user,club=club, dob=dob, location=location, phone=phone, weight=weight, height=height, gender=gender, public_workouts=public_workouts)
+            user_detail = UserDetail(base_user=user,club=club, dob=dob, location=location, phone=phone, weight=weight, height=height, gender=gender, public_workouts=public_workouts, is_coach=is_coach)
             if user:
                 user_detail.save()
                 json = serializer.data
@@ -107,11 +111,17 @@ class Clubs(APIView):
     
 def dashboard(request):
     # get user detais ??????????? from token?
-    user = User.objects.get(pk=1)
-    # get user type ?????????????
-    userType = "User"
+    # decode - token => id, username, is_coach
+    try:
+        token = request.headers['Authorization'].split(" ")[1]
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    except:
+        return JsonResponse({"message": "Fatal Error"}, status=400)
+    user_id = decoded_token['user_id']
+    is_coach = decoded_token['is_coach']
+    user = User.objects.get(id=user_id)
 
-    if userType == "Coach":
+    if is_coach == True:
         # Getting coach details and tracked athletes ???????????????? get from token
         all_ath = TrackedAthlete.objects.filter(coach=user)
         

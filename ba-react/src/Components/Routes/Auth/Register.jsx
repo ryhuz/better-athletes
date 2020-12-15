@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
 import { Col, Form, Container, Button } from "react-bootstrap";
 import {axiosInstance} from "../../../func/axiosApi"
+import axios from 'axios';
 
-function Register() {
+function Register(setIsRegis, isRegis) {
     const [user, setUser] = useState({});
     const [club, setClub] = useState();
 
@@ -18,7 +19,7 @@ function Register() {
     // getting club details for user creation
     async function getClub(){
       try {
-        let resp = await axiosInstance.get("clubs");
+        let resp = await axios.get("http://localhost:8000/api/clubs");
         setClub(resp.data);
         } catch (error) {
         console.log(error);
@@ -30,9 +31,14 @@ function Register() {
         e.preventDefault();
         try {
         console.log(user);
-        let resp = await axiosInstance.post("signup",user);
-        console.log(resp)
-        // setIsAuth(true);
+        await axios.post("http://localhost:8000/api/signup",user);
+          try {
+            let resp = await axiosInstance.post("login",{username: user.username, password: user.password});
+            axiosInstance.defaults.headers['Authorization'] = "JWT " + resp.data.access;
+            localStorage.setItem("token", resp.data.access);
+          } catch (err) {
+            console.log(err);
+          }
         } catch (error) {
         console.log(error);
         }    
@@ -144,6 +150,15 @@ function Register() {
             <Form.Row className="mb-3">
             <Form.Label>Do you wish to make your workouts public?</Form.Label>
                 <Form.Control onChange={handleChange} name="public_workouts" as="select">
+                  <option>Select One</option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
+                </Form.Control>
+            </Form.Row>
+            {/* Is Coach Selection */}
+            <Form.Row className="mb-3">
+            <Form.Label>Are you a coach?</Form.Label>
+                <Form.Control onChange={handleChange} name="is_coach" as="select">
                   <option>Select One</option>
                   <option value={true}>Yes</option>
                   <option value={false}>No</option>

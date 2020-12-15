@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Fragment } from 'react'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { Container } from "react-bootstrap"
@@ -10,10 +10,12 @@ import AthleteProfile from './AthleteProfile';
 import ViewClub from './ViewClub';
 import CalendarDisplay from './Calendar/CalendarDisplay'
 
-function BetterAthletes() {
+function BetterAthletes({ load, setUser, setIs_coach, user, is_coach }) {
+    const [isAuth, setAuth] = useState(true)
+
     return (
         <Fragment>
-            <InnerNaviBar />
+            <InnerNaviBar setIs_coach={setIs_coach} isAuth={isAuth} setAuth={setAuth} user={user} />
             <Container className="border mt-5">
                 <Router>
                     <Switch>
@@ -24,7 +26,7 @@ function BetterAthletes() {
                             <ViewWorkOut />
                         </Route>
                         <Route exact path="/betterathletes/dashboard">
-                            <Dashboard name="dashboard" />
+                            <Dashboard name="dashboard" load={load} isAuth={isAuth} setAuth={setAuth} setUser={setUser} setIs_coach={setIs_coach} user={user} is_coach={is_coach} />
                         </Route>
                         <Route exact path="/betterathletes/profile/:id">
                             <AthleteProfile name="profile" />
