@@ -9,7 +9,6 @@ import AthPendingResults from './AthleteItems/AthPendingResults'
 function AthleteDash() {
     const [dashData, setDashData] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
-    console.log(dashData);
     useEffect(() => {
         async function retrieve() {
             try {
