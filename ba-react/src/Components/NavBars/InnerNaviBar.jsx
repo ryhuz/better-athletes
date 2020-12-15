@@ -2,8 +2,7 @@ import React, { Fragment } from 'react'
 import { NavLink } from "react-router-dom";
 import { Navbar, Button, Form, Nav } from "react-bootstrap";
 
-function InnerNaviBar({ user }) {
-    console.log(user)
+function InnerNaviBar() {
     return (
         <Fragment>
             <Navbar bg="light" expand="lg">
@@ -26,7 +25,7 @@ function InnerNaviBar({ user }) {
                     <div className="px-1">
                             <NavLink to="/profile_settings" style={{ textDecoration: 'none' }} className="text-secondary">
                                 <Button variant="outline-info">
-                                    {user}
+                                    username
                                 </Button>
                             </NavLink>
                         </div>

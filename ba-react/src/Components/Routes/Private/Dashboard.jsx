@@ -4,10 +4,10 @@ import AthleteDash from './DashboardItems/AthleteDash'
 import CoachDash from './DashboardItems/CoachDash'
 
 function Dashboard({ isAuth }) {
-    
+
     return (
         <Row>
-            {isAuth.coach == true ?
+            {isAuth.coach ?
                 <CoachDash /> :
                 <AthleteDash />
             }

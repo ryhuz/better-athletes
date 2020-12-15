@@ -19,11 +19,11 @@ function Login({ isAuth, setAuth }) {
         axiosInstance.defaults.headers['Authorization'] = "JWT " + resp.data.access;
         localStorage.setItem("token", resp.data.access);
         let decoded = jwt_decode(resp.data.access);
-        setAuth({
+        return setAuth({
           valid: true,
-          load: true,
+          refreshed: false,
           coach: decoded.is_coach,
-          user: decoded.username,
+          user: decoded.username
         });
       }
     } catch (error) {
@@ -32,8 +32,8 @@ function Login({ isAuth, setAuth }) {
     }
   }
 
-  if (isAuth.valid) {
-    return <Redirect to="/betterathletes/dashboard" />
+  if (isAuth.valid){
+    return <Redirect to="betterathletes/dashboard"/>
   }
 
   return (

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { NavLink } from "react-router-dom";
 import { Navbar, Col, Row, Form, Nav, Container, Button } from "react-bootstrap";
 
-function LandingPage() {
+function LoggedInLanding() {
     return (
         <Fragment>
             <Navbar bg="light" expand="lg">
@@ -26,7 +26,7 @@ function LandingPage() {
                 </Navbar.Collapse>
             </Navbar>
 
-        <h1 className="display-1">NOT LOGGED IN</h1>
+        <h1 className="display-1">YES LOGGED IN</h1>
         
             <Container className="mt-5 text-center">
                 <Row>
@@ -53,4 +53,4 @@ function LandingPage() {
     )
 }
 
-export default LandingPage
+export default LoggedInLanding

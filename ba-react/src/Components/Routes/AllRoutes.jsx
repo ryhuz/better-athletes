@@ -1,54 +1,87 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import React, { useState, useEffect } from 'react'
-import LandingPage from "./LandingPage/LandingPage"
 import BetterAthletes from "./Private/BetterAthletes"
 import Login from "./Auth/Login"
 import Register from "./Auth/Register"
 import jwt_decode from 'jwt-decode';
 import Logout from "./Auth/Logout"
+import InnerNaviBar from "../NavBars/InnerNaviBar"
+import Landing from "./LandingPage/Landing"
+import { axiosInstance } from "../../func/axiosApi";
 
 function AllRoutes() {
   const [isAuth, setAuth] = useState({
     valid: false,
-    load: false,
+    refreshed: true,
     coach: false,
     user: ""
   })
 
   useEffect(() => {
+    let token = localStorage.getItem("token");
+    function removeToken() {
+      localStorage.removeItem("token");
+      axiosInstance.defaults.headers['Authorization'] = null;
+      return setAuth({
+        valid: false,
+        load: false,
+        coach: false,
+        user: ""
+      });
+    }
+
+    async function verifyToken() {
+      try {
+        await axiosInstance.post("token/verify", {
+          'token': token,
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
+        });
+        let decoded = jwt_decode(token);
+        return setAuth({
+          valid: true,
+          refreshed: false,
+          coach: decoded.is_coach,
+          user: decoded.username
+        });
+      } catch (error) {
+        removeToken()
+      }
+    }
+
     function getTokenDetails() {
-      let token = localStorage.getItem("token");
       if (token != null) {
         let decoded = jwt_decode(token);
-        if (decoded.username && decoded.is_coach && decoded.user_id) {
-          return setAuth({
-            valid: true,
-            load: true,
-            coach: decoded.is_coach,
-            user: decoded.username
-          });
+        if (decoded.username && decoded.user_id && decoded.is_coach !== undefined) {
+          verifyToken()
+        } else {
+          removeToken()
         }
       }
     }
+    
     getTokenDetails();
   }, [])
 
   return (
     <Router>
+      <InnerNaviBar />
       <Switch>
         <Route path="/" exact>
-          <LandingPage />
+          <Landing isAuth={isAuth} />
         </Route>
+        {/* Accounts */}
         <Route path="/login">
           <Login isAuth={isAuth} setAuth={setAuth} />
-        </Route>
-        <Route path="/register">
-          <Register isAuth={isAuth} setAuth={setAuth} />
         </Route>
         <Route path="/logout">
           <Logout isAuth={isAuth} setAuth={setAuth} />
         </Route>
-        <BetterAthletes isAuth={isAuth} setAuth={setAuth} is_coach={isAuth.coach} />
+        <Route path="/register">
+          <Register isAuth={isAuth} setAuth={setAuth} />
+        </Route>
+        {/* Logged in route */}
+        <BetterAthletes isAuth={isAuth} />
       </Switch>
     </Router>
   )

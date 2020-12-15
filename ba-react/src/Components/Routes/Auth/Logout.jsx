@@ -3,20 +3,25 @@ import { Redirect } from 'react-router-dom';
 import { axiosInstance } from "../../../func/axiosApi";
 
 function Logout({ isAuth, setAuth }) {
+    function logout() {
+        localStorage.removeItem("token");
+        axiosInstance.defaults.headers['Authorization'] = null;
+        setAuth({
+            valid: false,
+            load: false,
+            coach: false,
+            user: ""
+        });
+    }
 
-    useEffect(() => {
-        function logout() {
-            localStorage.removeItem("token");
-            axiosInstance.defaults.headers['Authorization'] = null;
-            setAuth(false);
-        }
-
+    setTimeout(() => {
         logout()
-    }, [])
+    }, 1500);
 
-    if (!isAuth) {
+    if (!isAuth.valid) {
         return <Redirect to="/" />
     }
+
     return (
         <div>
             LOGGING OUT
