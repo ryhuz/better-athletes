@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from club.models import Workout,WorkoutResult,User,TrackedAthlete, Club, UserDetail
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .serializers import ClubSerializer, UserSerializer, MyTokenObtainPairSerializer
@@ -7,13 +8,13 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status, permissions
 from rest_framework.views import APIView
-from datetime import date
-import json
+from datetime import date, datetime
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.views.decorators.csrf import csrf_exempt
+import json
 import jwt
-from dotenv import load_dotenv
 import os
-
+from dotenv import load_dotenv
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -75,15 +76,26 @@ class Workouts(APIView):
     
     def post(self, request):
        
-        workout_name = [["1"], ["2"]] #body.workout_name
-        exercise = [["1"], ["2"]]#body.exercise
-        reps = [["1"], ["2"]]#body.reps
-        rests = [["1333"], ["2"]]#body.rests
-        targets = [["1"], ["2"]]#body.targets
+        # user = User.objects.get(username="tyrone")
+        # print(user)
+        workout_name = "Running" #body.workout_name
+        exercise = [["100M"], ["150M"],["200M"]]#body.exercise
+        reps = [["2"], ["2"],["2"]]#body.reps
+        rests = [["3min"], ["3min"],["4min"]]#body.rests
+        targets = [["2rep"], ["2rep"],["2rep"]]#body.targets
         workout_date = "2020-12-05"#body.workout_date, rests=rests
         
+        results = [[0],[0],[0]]
+        athlete = request.user
+        workout_name2 = Workout.objects.get(pk=15)
+        units = [["meters"],["meters"],["meters"]]
+        comments = [["None"],["None"],["None"]]
+        
         workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
+        
         workout.save()
+        workout_result = WorkoutResult(athlete=athlete,workout=workout_name2,results=results, units=units, comments=comments)
+        workout_result.save()
         return JsonResponse({"message" : "Data isvalid"}, status=200)
 
 class Clubs(APIView):
@@ -108,7 +120,6 @@ def dashboard(request):
     user_id = decoded_token['user_id']
     is_coach = decoded_token['is_coach']
     user = User.objects.get(id=user_id)
-    # get user type ?????????????
 
     if is_coach == True:
         # Getting coach details and tracked athletes ???????????????? get from token
@@ -144,6 +155,9 @@ def dashboard(request):
     else:
         # Get all workout results
         all_results = WorkoutResult.objects.filter(athlete=user)
+        # serialized_all = [x.serialize() for x in list(all_results)]
+        
+    
         
         # athlete - get today's agenda
         today = all_results.filter(workout__workout_date=date.today())
@@ -166,12 +180,71 @@ def dashboard(request):
             "pending_results": serialized_pending_complete,
             "today": serialized_today,
             "upcoming": serialized_upcoming,
-            "recent_completed": serialized_past
+            "recent_completed": serialized_past,
+            # "all_results": serialized_all
         }
 
     return JsonResponse(dashboard_data, status=200, safe=False)
+
+def profile(request, id):
+    try:
+        user_profile = UserDetail.objects.get(base_user__id=id)
+
+        data = user_profile.serialize()
+        data['recent_workouts'] = []
+        data['public'] = False
+
+        if user_profile.public_workouts:
+            data['public'] = True
+            recent = WorkoutResult.objects.filter(athlete=user_profile.base_user).order_by('-workout__workout_date')[:5]
+            serialized_recent = []
+            for x in recent:
+                serialized_recent.append({
+                    'workout_name': x.workout.workout_name,
+                    'workout_date': x.workout.workout_date,
+                })
+            data['recent_workouts'] = serialized_recent
+        
+        return JsonResponse({
+            "found": True,
+            "valid": True,
+            "profile": data
+            }, status=200, safe=False)
+    except:
+        return JsonResponse({
+            "found": True,
+            "valid": False,
+            }, status=404, safe=False)
+
+def single_club(request):
+    token = request.headers['Authorization'].split(" ")[1]
+    decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    user_id = decoded_token['user_id']
+    user = UserDetail.objects.get(base_user__id=user_id)
+
+    club = user.club.serialize()
+    members = UserDetail.objects.filter(club=user.club)
+    coaches = [x.serialize_for_club() for x in members.filter(is_coach=True)]
+    athletes = [x.serialize_for_club() for x in members.filter(is_coach=False)]
+
+    month = datetime.now().month
+    workouts_this_month = WorkoutResult.objects.filter(athlete__in=(x.base_user for x in members), workout__workout_date__month=month, completed=True)
+
+    club['coaches'] = coaches
+    club['athletes'] = athletes
+    club['this_month'] = workouts_this_month.count()
+    return JsonResponse(club, status=200, safe=False)
+
+def getworkouts(request,id):
+    # find workouts of userid, filter by date
+    temp = WorkoutResult.objects.filter(athlete__id=2)
     
-def new_workout(request):
+
+    pass
+
+def new_workout(request,id):
+    result = WorkoutResult.objects.get(id = resultID)
+
     # get form data
     # need the following data
     # for ATHLETE 
@@ -194,3 +267,35 @@ def new_workout(request):
         # new_result.save()
     
     pass
+@csrf_exempt
+def single_workout(request, id):
+    
+    result = WorkoutResult.objects.get(workout_id=id)
+    
+    if request.method == "GET":
+        return JsonResponse({"result":result.single_workout()}, status=200, safe=False)
+    
+    elif request.method == "POST":
+        print("Hellow")    
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        
+        result.results = body["results"]
+        result.save()
+
+        return JsonResponse({"message" : "Data saved"}, status=200)
+    
+@csrf_exempt  
+def workout_comment(request,id):
+    result = WorkoutResult.objects.get(workout_id=id)
+    
+    if request.method == "POST":
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        result.comments = body["comments"]
+        result.save()
+        return JsonResponse({"message" : "Data saved"}, status=200)
+        
+    
+    
+    

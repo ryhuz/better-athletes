@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
+from datetime import date, timedelta
 
 # Create your models here.
 
@@ -11,6 +12,12 @@ class Club(models.Model):
 
     def __str__(self):
         return self.club_name
+
+    def serialize(self):
+        return {
+            'club_name': self.club_name,
+            'club_desc': self.club_desc,
+        }
 
 class UserDetail(models.Model):
     base_user = models.OneToOneField(User, related_name="userdetail", on_delete=models.CASCADE)
@@ -32,6 +39,22 @@ class UserDetail(models.Model):
 
     def __str__(self):
         return self.base_user.username
+
+    def serialize(self):
+        return {
+            'username': self.base_user.username,
+            'name': self.base_user.first_name + " " + self.base_user.last_name,
+            'club': self.club.club_name,
+            'location': self.location,
+            'age': (date.today() - self.dob) // timedelta(days=365.2425),
+            'gender': self.gender
+            
+        }
+    def serialize_for_club(self):
+        return {
+            'name': self.base_user.first_name + " " + self.base_user.last_name,
+            'user_id': self.base_user.id,
+        }
 
 class WorkoutTemplate(models.Model):
     workout_name = models.CharField(max_length=50)
@@ -148,6 +171,18 @@ class WorkoutResult(models.Model):
             "results": self.results,
             "reviewed": self.reviewed,
         }
+        
+    def single_workout(self):
+        return {
+            "result_id": self.id,
+            "workout_id": self.workout.id,
+            "workout_name": self.workout.workout_name,
+            "exercise": self.workout.exercise,
+            "reps": self.workout.reps,
+            "rests": self.workout.rests,
+            "target": self.workout.targets
+        }
+    
 class SavedWorkout(models.Model):
     coach = models.ForeignKey(User, related_name=("saved"), on_delete=models.CASCADE)
     saved_workouts = models.ManyToManyField(Workout)
