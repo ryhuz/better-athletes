@@ -30,6 +30,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token['username'] = user.username
         token['is_coach'] = user.userdetail.is_coach
+        token['club'] = user.userdetail.club.club_name
         return token
 
 class WorkoutResultSerializer(serializers.ModelSerializer):
