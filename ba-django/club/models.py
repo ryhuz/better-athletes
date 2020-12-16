@@ -207,6 +207,7 @@ class TrackedAthlete(models.Model):
             "athlete_id": self.athlete.id,
             "athlete": self.athlete.username,
             "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
+            "notes": self.notes
         }
     
 class WorkoutComment(models.Model):

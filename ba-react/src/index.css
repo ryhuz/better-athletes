@@ -5,6 +5,10 @@ body {
   font-family: 'PT Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url("https://www.globuscorporation.com/wp-content/uploads/2017/05/AdobeStock_87609906.jpeg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 a, body {
@@ -37,11 +41,6 @@ a.red-shadow:hover, a>.red-shadow:hover{
 
 .page-center{
   padding-top: 15%;
-}
-
-.landing{
-  background-image: url("https://www.globuscorporation.com/wp-content/uploads/2017/05/AdobeStock_87609906.jpeg");
-  background-size: cover;
 }
 
 .bigger-text {
@@ -80,7 +79,13 @@ button.btn-main:hover, .btn.btn-main:hover {
 .cal-container {
   margin: 0 8% 0 8%; 
 }
-
+.DatePicker>input{
+  height: 38px;
+  width: 130px;
+  padding: 0 0 0 15px;
+  font-size: 16px;
+  text-align: left;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
