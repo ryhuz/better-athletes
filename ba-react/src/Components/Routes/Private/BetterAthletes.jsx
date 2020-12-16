@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 import { Container } from "react-bootstrap"
 import AddWorkOut from "./Workout/AddWorkOut"
@@ -10,17 +10,16 @@ import CalendarDisplay from './Calendar/CalendarDisplay'
 import EditProfile from './EditProfile'
 
 function BetterAthletes({ isAuth }) {
-    console.log(isAuth)
     return (
-        <>
+        <div className="full-height landing">
             {isAuth.valid ?
-                <Container className="border mt-5">
+                <>
                     <Router>
                         <Switch>
                             <Route exact path="/betterathletes/add_new_workout">
                                 <AddWorkOut />
                             </Route>
-                            <Route exact path="/betterathletes/view_workout">
+                            <Route exact path="/betterathletes/view_workout/:id">
                                 <ViewWorkOut />
                             </Route>
                             <Route exact path="/betterathletes/dashboard">
@@ -37,11 +36,11 @@ function BetterAthletes({ isAuth }) {
                             </Route>
                         </Switch>
                     </Router>
-                </Container> :
+                </> :
                 !isAuth.refreshed &&
-                < Redirect to='/' />
+                < Redirect to='/login' />
             }
-        </>
+        </div>
     )
 }
 

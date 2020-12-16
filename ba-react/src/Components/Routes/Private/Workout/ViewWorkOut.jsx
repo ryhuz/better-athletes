@@ -1,15 +1,22 @@
 import React, { useState, useEffect, Fragment } from 'react'
+import { useParams } from 'react-router-dom'
 import { Col, Row, Form, Button} from "react-bootstrap";
 import axios from "axios";
 
 function ViewWorkOut() {
-    const [workout, setWorkout] = useState("")
+    const [workout, setWorkout] = useState({results:[]})
     const [results, setResults] = useState({})
-    const [exerciseList, setExerciseList] = useState([])
     const [axiosErr, setAxiosErr] = useState(false)
-    const [indexSet, setIndexSet] = useState(0)
     const [comments, setComments] = useState({})  
-    const [exerciseSelection, setExerciseSelection] = useState([])
+    const [showComments, setshowComments] = useState()
+    const [resultState, setResultState] = useState(false)
+
+    // to updated ID to use params once route is done
+    // let { id } = useParams()
+    //params are WorkoutResults ID
+    let id = 10;
+
+
 
     function resultsHandler(e, i, ii){
         let {name, value, id} = e.target;
@@ -17,101 +24,29 @@ function ViewWorkOut() {
         setResults(obj)
     }
 
-    function getExerciseList(){
-        let arr = []
-            
-         workout.exercise.forEach((item,index)=>{
-            item.forEach((item2,index2)=>{
-                arr.push(item2+": Exer-"+index2+"-"+index)
-            })
-        })
-        setExerciseList(arr)
-    }
-
     function commentHandler(e){
         let { name, value} = e.target
         let obj = {...comments, [name]: value}
         setComments(obj)
     }
-    console.log(comments)
-
+    
   //=========================AXIOS API TO BE UPDATED ================================\\
     async function saveComments(){
             
         try{
-            let max_length_counter = 0;
-            let comment = {...comments}
-            let arr = []
-            let django_comments = {
-                comments: [],
-            }
-
-            workout.exercise.forEach((item,index)=>{
-                arr.push([])
-            })
-            
-            let str = comment.Exercise;
-            console.log(str)
-            let index_of_set = Number(str.substr(str.lastIndexOf('-')+1))
-            let str_arr = str.split("-",2)
-            let index_of_exe = Number(str_arr.pop())
-            console.log(index_of_exe)
-            // console.log(index_of_exe,index_of_set)
-            // arr[index].push(comment.comment)
-            
-            arr[index_of_set].push(comment.comment)
-
-            // arr.forEach((item,index)=>{
-                
-            //     if (item.length == index_of_exe) {
-            //         arr[index_of_set].push(comment.comment)
-            //         console.log(item.length)
-            //     } 
-            //     else if (item.length < index_of_exe){
-                    
-            //         arr[index_of_set].push("")
-            //         console.log(item.length)
-            //     } 
-            //     else if (item.length > index_of_exe){
-            //         arr[index_of_set].push("")
-            //         console.log(item.length)
-            //     }
-            // })
-
-            console.log(arr)
-            arr.forEach((item,index)=>{
-                if (item.length > max_length_counter) {
-                    max_length_counter = item.length
-                    
-                }
-            })
-            
-            arr.forEach((item,index)=>{
-                if (item.length < max_length_counter){
-                    console.log(item.length)
-                    arr[index].push("")
-                }
-            })
-            console.log(arr)
-            console.log(max_length_counter)
-
-            django_comments.comments = arr
-            console.log(django_comments)
-
             let headToken = {
                 headers: {
                     'Authorization': "JWT " + localStorage.getItem('token'),
                     'Content-Type': "application/json",
                     'accept': "application/json"
                 }
-            }
-            let data = await axios.post(`http://localhost:8000/api/singleworkout/comment/${3}`,django_comments, headToken)
+            }// workoutResult ID
+            let data = await axios.post(`http://localhost:8000/api/singleworkout/comment/${id}`,comments, headToken)
+            getWorkout();
         } catch (error){
             console.log(error)
             setAxiosErr(true)
         }
-        
-        
 
     }
     
@@ -125,7 +60,7 @@ function ViewWorkOut() {
                 let django_results = {
                     results: [],
                 }
-                console.log(arr)
+             
                 
                 workout.exercise.forEach((item,index)=>{
                     arr.push([])
@@ -133,17 +68,15 @@ function ViewWorkOut() {
 
 
                 for (const property in obj){
-                    // property = property.charAt(property.length-1)
                     let key = property.charAt(property.length-1);
-                    console.log(property)
                     arr[Number(key)].push(obj[property])
                 }
-                console.log(arr)
+               
 
                 arr.forEach((item,index)=>{
                     if (item.length > max_length_counter) {
                         max_length_counter = item.length
-                        console.log(max_length_counter)
+               
                     }
                 })
                 
@@ -153,7 +86,7 @@ function ViewWorkOut() {
                     }
                 })
                 django_results.results = arr
-                console.log(django_results)
+                
   
                 let headToken = {
                     headers: {
@@ -162,8 +95,11 @@ function ViewWorkOut() {
                         'accept': "application/json"
                     }
                 }
-
-                let data = await axios.post(`http://localhost:8000/api/singleworkout/${3}`,django_results, headToken)
+                // to update workoutResult ID
+                let data = await axios.post(`http://localhost:8000/api/singleworkout/${id}`,django_results, headToken)
+                
+                getWorkout();
+                setResultState(true);
 
             } catch(error) {
                 console.log(error)
@@ -171,8 +107,7 @@ function ViewWorkOut() {
             }     
         }
 
-
-  
+    
 
     async function getWorkout() {
         try {
@@ -183,10 +118,12 @@ function ViewWorkOut() {
                     'accept': "application/json",
                     
                 }
-            }
-            let data = await axios.get(`http://localhost:8000/api/singleworkout/3`, headToken)
+            }// to update workoutResult ID
+            let data = await axios.get(`http://localhost:8000/api/singleworkout/${id}`, headToken)
             setWorkout(data.data.result)
-            
+            setshowComments(data.data.all_comments)
+            resultSetting(); 
+
         }
         catch (e) {
             console.log(e)
@@ -194,12 +131,26 @@ function ViewWorkOut() {
         }
     }
 
+   function resultSetting(){
+    
+       if (workout.results.length === 0){
+            setResultState(false)
+       } else {
+            setResultState(true)
+       }
+   }
+   
    
 
-
-    useEffect(() => {
     
-        getWorkout();       
+   
+//    {(workout.length && workout.lengthaa )? <></> : result.length ? workout.length2 ? <></> : result.length2}
+   
+   
+   useEffect(() => {
+    
+        getWorkout();  
+        
     },[])
 
     return (
@@ -249,59 +200,66 @@ function ViewWorkOut() {
                                 </Row>
 
                                 <Row  className="my-2">
+                                    <Col md={4}>
                                   { workout.exercise === undefined ? <><div>Loading...</div></> : workout.exercise[index].map((item2, index2) => (
-                                    <>
-                                    
-                                        <Col key={index2} md={4} className="d-flex align-items-center my-2">
-                                            <div >
-                                                {item2}
-                                            </div>  
-                                        </Col>
-                                    </>
+                                        <div key={index2} md={4} className="d-flex align-items-center my-3">
+                                            {item2}
+                                        </div>
                                         ))}
-
+                                    </Col>
+                                    <Col md={2}>
                                     { workout.reps === undefined ? <><div>Loading...</div></> : workout.reps[index].map((item2, index2) => (
-                                    <>
-                                    
-                                        <Col key={index2} md={2} className="d-flex align-items-center my-2">
-                                            <div>
+                                        <div key={index2} md={2} className="d-flex align-items-center my-3">
+                                     
                                                 {item2}
-                                            </div>  
-                                        </Col>
-                                    </>
+                                   
+                                        </div>                                   
                                         ))}
-                                    {workout.rests === undefined ? <><div>Loading...</div></> : workout.rests[index].map((item2, index2) => (
-                                    <>
-                                        <Col key={index2} md={2} className="d-flex align-items-center my-2">
-                                            <div>
+                                    </Col>
+                                    <Col md={2}>
+                                        {workout.rests === undefined ? <><div>Loading...</div></> : workout.rests[index].map((item2, index2) => (
+                                            <Col key={index2} md={2} className="d-flex align-items-center my-3">
                                                 {item2}
-                                            </div>  
-                                        </Col>
-                                    </>
+                                            </Col>                   
                                         ))}
-
+                                    </Col >
+                                    <Col md={2}>
                                     {workout.target === undefined ? <><div>Loading...</div></> : workout.target[index].map((item2, index2) => (
-                                    <>
-                                    
-                                        <Col key={index2} md={2} className="d-flex align-items-center my-2">
-                                            <div>
-                                                {item2}
-                                            </div>  
-                                        </Col>
-                                    </>
+                                        <div key={index2} md={2} className="d-flex align-items-center my-3">
+                                            {item2}
+                                        </div>
+                     
                                         ))}
-                                        {workout.exercise === undefined ? <><div>Loading...</div></> : workout.exercise[index].map((item2, index2) => (
-                                    <>
-                                    
-                                        <Col key={index2} md={2} className="d-flex align-items-center my-2">
-                                            <Form.Control
-                                            id={index}
-                                            name={`${item2}-exerindex${index2}-${index}`}
-                                            onChange={(e) => resultsHandler(e,index, index2)}
-                                            placeholder="Results"/>
+                                    </Col >
+                                        <Col md={2}>
+                                        {workout.results === undefined ? <>Loading...</> : 
+                                        
+                                        resultState === true ?  
+                                            workout.results[index].map((item2,index2)=>(
+                                                <Row className="my-3 no-gutters d-flex align-items-center">
+                                                    <Col>
+                                                        {item2}
+                                                    </Col>
+                                                    <Col>
+                                                        <Button 
+                                                        className="btn btn-secondary btn-sm"
+                                                        onClick={()=>setResultState(false)}
+                                                        >Edit</Button>
+                                                    </Col>
+                                                </Row>
+                                            )) : 
+                                            workout.exercise[index].map((item2, index2) => (                                  
+                                            <div key={index2} md={2} className="d-flex align-items-center my-2 d-flex align-items-center">
+                                                <Form.Control
+                                                id={index}
+                                                min={1}
+                                                name={`${item2}-exerindex${index2}-${index}`}
+                                                onChange={(e) => resultsHandler(e,index, index2)}
+                                                placeholder="Results"/>
+                                            </div>
+                            
+                                        ))} 
                                         </Col>
-                                    </>
-                                        ))}   
                                 </Row>
                             </Form.Group>
                         ))} 
@@ -313,34 +271,27 @@ function ViewWorkOut() {
                             onClick={saveResults}
                             >Save Results</Button>
                         </Col>
+                        <Col md={12} className="d-flex flex-row align-items-center my-3">
+                            <div>
+                            {showComments == undefined ? <>Loading ... </> :showComments.map((item,index)=>(
+                                <div className="my-3">
+                                    <div>
+                                        <h6>{item.user}</h6>
+                                    </div>
+                                    <div>
+                                        {item.comment}
+                                    </div>
+                                    
+                                </div>
+                            ))}
+                            </div>
+                            
+                        </Col>
                         <Col md={6} className="d-flex flex-row align-items-center my-2">
                             <h4>Enter Workout Comments</h4>
                         </Col>
                         <Col md={6} className="d-flex flex-row align-items-center my-2">
-                            <Form>
-                                <Form.Group as={Col} controlId="formGridState">
-                                    <Form.Label>Exercise - SET</Form.Label>
-                                    <Form.Control 
-                                    as="select" 
-                                    defaultValue="Choose..."
-                                    // onChange={(e)=>{
-                                    //     commentHandler(e);
-                                    //     selectionHandler(e)
-                                    // }} 
-                                    onChange={(e)=>commentHandler(e)}
-                                    onClick={getExerciseList}
-                                    name="Exercise"
-                                    >
-                                    {exerciseList === undefined ? <>Loading...</> : exerciseList.map((item,index)=>(
-                                            <option
-                                            key={index}
-                                            name={index}
-                                            value={item}                                   
-                                            >{item}</option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Form>
+
                         </Col>
                         <Col md={0} className="d-flex flex-row align-items-center my-2">
                         </Col>
@@ -356,7 +307,7 @@ function ViewWorkOut() {
                         <Col md={12} className="my-2">
                             <Button
                             onClick={saveComments}
-                            >Submit Comment</Button>
+                            >Add a Comment</Button>
                         </Col>
                     </Row>
                 </Col>
@@ -370,59 +321,36 @@ function ViewWorkOut() {
 export default ViewWorkOut
 
 
-/* <Col md={2} className="d-flex align-items-center my-2">
-                                            <div>
-                                                {item2.reps}
-                                            </div>
-
-                                        </Col>
-                                        <Col md={2} className="d-flex align-items-center my-2">
-                                            <div>
-                                                {item2.rest}
-                                            </div>
-                                        </Col>
-                                        <Col md={2} className="d-flex align-items-center my-2">
-                                            <div>
-                                                {item2.target}
-                                            </div>
-
-                                        </Col>
-                                        <Col md={2} className="d-flex align-items-center my-2">
-                                            <Form.Control
-                                            name="results"
-                                            // onChange={(e) => ChangeHandler(e,index, index2)}
-                                            placeholder="Results"/>
-                                        </Col>
-                                        <Col md={12} className="d-flex align-items-center my-2 no-gutters">
-                                           <Col md={12} className="border">
-                                                {item2.comments.map((item3,index)=>(
-                                                    <div key={index}>
-                                                        {item3.username == null ? <text style={{fontWeight: 'bold'}}> No comments</text> : <p><text style={{fontWeight: 'bold'}}>{item3.username}</text><br/>{item3.comment}</p> }
-                                                    </div>
-                                                ))}
-                                           </Col>
-                                        </Col> */
-
-                                        // <option
-                                        //     key={index}
-                                        //     name={index}
-                                        //     value={item}                                   
-                                        //     >Exercise {index+1}</option>    // // console.log(django_wrapper)
-    // function selectionHandler(e){
-    //     let {name, value} = e.target;
-    //     let obj = {...results, value}
-    //     // setResults(obj)
 
 
-     
-    //     // setExerciseSelection(workout1[Number(value)-1].data)
-    // }
-    // console.log(results)
-    // function commentHandler(e){
-    //     let {name, value} = e.target;
-    //     setNewComments({...newComments, [name]: value})
-    // }
 
-    // console.log(indexSet)
-    // console.log(exerciseSelection)
-    // console.log(newComments)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

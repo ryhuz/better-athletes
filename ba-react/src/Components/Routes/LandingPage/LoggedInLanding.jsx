@@ -1,34 +1,11 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { NavLink } from "react-router-dom";
-import { Navbar, Col, Row, Form, Nav, Container, Button } from "react-bootstrap";
+import { Col, Row, Container, Button } from "react-bootstrap";
 
 function LoggedInLanding() {
     return (
-        <Fragment>
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">BETTER ATHLETES</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-
-                    </Nav>
-                    <Form inline>
-                        <div className="px-3">
-                            <NavLink to="/ranking" style={{ textDecoration: 'none' }} className="text-secondary">RANKING</NavLink>
-                        </div>
-                        <div className="px-3">
-                            <NavLink to="/features" style={{ textDecoration: 'none' }} className="text-secondary">FEATURES</NavLink>
-                        </div>
-                        <div className="px-3">
-                            <NavLink to="/about" style={{ textDecoration: 'none' }} className="text-secondary">ABOUT</NavLink>
-                        </div>
-                    </Form>
-                </Navbar.Collapse>
-            </Navbar>
-
-        <h1 className="display-1">YES LOGGED IN</h1>
-        
-            <Container className="mt-5 text-center">
+        <>
+            <Container className="text-center">
                 <Row>
                     <Col md={12} className="my-4">
                         <h6 className="display-1">Better Athletes</h6>
@@ -49,7 +26,7 @@ function LoggedInLanding() {
                     </Col>
                 </Row>
             </Container>
-        </Fragment>
+        </>
     )
 }
 

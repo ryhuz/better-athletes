@@ -1,40 +1,22 @@
 import React from 'react'
 import { NavLink } from "react-router-dom";
-import { Navbar, Button, Form, Nav } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 
-function NavBarLoggedIn() {
+function NavBarLoggedIn({ username, user_id }) {
     return (
         <>
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/">BETTER ATHLETES</Navbar.Brand>
+            <Navbar className="navbar" expand="lg">
+                <Navbar.Brand href="/" className="mx-3"><span className="title red-shadow h5">BETTER ATHLETES</span></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                        <Nav.Link href="/betterathletes/myclub" className="border-right px-3">
-                            Club(Athlete List)
-                        </Nav.Link>
-                        <Nav.Link href="/betterathletes/view_workout" className="border-right px-3">
-                            Workouts
-                        </Nav.Link>
-                        <Nav.Link href="/Rankings" className="px-3">
-                            Rankings
-                        </Nav.Link>
-                    </Nav>
-                    <Form inline>
-                        Logged in as:
-                    <div className="px-1">
-                            <NavLink to="/profile_settings" style={{ textDecoration: 'none' }} className="text-secondary">
-                                <Button variant="outline-info">
-                                    username
-                                </Button>
-                            </NavLink>
+                    <ul className="navbar-nav ml-auto mr-3">
+                        <div className="h6 mx-4">
+                            Logged in as: <NavLink to={`/profile/${user_id}`} className="red-shadow">{username}</NavLink>
                         </div>
-                        <div className="px-1">
-                            <NavLink to='/logout' classname="btn btn-outline-secondary alert">
-                                Logout
-                            </NavLink>
+                        <div className="h6 mx-4">
+                            <NavLink to='/logout' className="red-shadow">Logout</NavLink>
                         </div>
-                    </Form>
+                    </ul>
                 </Navbar.Collapse>
             </Navbar>
         </>
