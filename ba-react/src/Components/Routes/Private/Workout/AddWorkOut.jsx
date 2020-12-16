@@ -167,6 +167,7 @@ function WorkOut({ isAuth }) {
                 commentsSet.push(ex.comments)
                 resultsSet.push(ex.results)
             })
+            /* Rectangularising data */
             if (exerciseSet.length < maxLength) {
                 for (let i = 0; i <= maxLength - exerciseSet.length; i++) {
                     exerciseSet.push("")

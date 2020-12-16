@@ -104,22 +104,36 @@ class Workouts(APIView):
         
         athlete_list = body['athletes']
         valid_reps = body['reps'][:]
+
+        # Replacing empty items with None
         for s in valid_reps:
-            print('set is ', s)
             for rep in s:
-                print('rep is ', rep)
                 if rep == "":
                     valid_reps[valid_reps.index(s)][s.index(rep)] = None
-        
+                    #assign none to result
+                # else:
+                #     the corresponding result = list.push x rep
+        # [
+        #     [1,2,3],
+        #     [1,1, None]
+        # ]
+
+
         workout_name = body['workout_name']
-        exercise = body['exercises'] 
+        exercise = body['exercises']
         reps = valid_reps
-        rests =  body['rests']                      
-        targets =  body['targets']                  
-        workout_date = body['workout_date']                                
-                
+        rests =  body['rests']
+        targets =  body['targets']
+        workout_date = body['workout_date']
+
         # ======save for WorkoutResult Modal=======#
         results = body['results']
+
+        # [
+        #     [ [x], [x, x], [x,x,x],  ],
+        #     [ [x], [x, None], [None, None, None] ]
+        # ]
+
         units = body['units']  
         comments = body['comments']
 
