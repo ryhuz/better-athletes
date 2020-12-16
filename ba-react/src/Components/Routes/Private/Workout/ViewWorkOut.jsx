@@ -14,7 +14,8 @@ function ViewWorkOut() {
     // to updated ID to use params once route is done
     // let { id } = useParams()
     //params are WorkoutResults ID
-    let id = 10;
+    let {id} = useParams()
+    console.log(id)
 
 
 
