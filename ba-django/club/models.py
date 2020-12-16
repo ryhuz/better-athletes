@@ -48,7 +48,8 @@ class UserDetail(models.Model):
             'location': self.location,
             'age': (date.today() - self.dob) // timedelta(days=365.2425),
             'gender': self.gender,
-            'public_workouts': self.public_workouts
+            'public_workouts': self.public_workouts,
+            'dob': self.dob
             
         }
 
@@ -199,6 +200,14 @@ class TrackedAthlete(models.Model):
 
     def __str__(self):
         return self.coach.username + " tracking " + self.athlete.username
+    
+    def serialize(self):
+        return {
+            "coach_id": self.coach.id,
+            "athlete_id": self.athlete.id,
+            "athlete": self.athlete.username,
+            "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
+        }
     
 class WorkoutComment(models.Model):
     comment = models.TextField(null=True)

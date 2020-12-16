@@ -4,12 +4,13 @@ import makeAnimated from 'react-select/animated';
 import DatePicker from 'react-modern-calendar-datepicker';
 import { Col, Row, Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
+import { Redirect } from 'react-router-dom';
 
 function WorkOut() {
     const [selectedOption, setSelectedOption] = useState(null);
-    
-    const [athletes, setAthletes] = useState([])
-    const [date, setDate] = useState(null)
+    const [isSubmit, setisSubmit] = useState(false);
+    const [athletes, setAthletes] = useState([]);
+    const [date, setDate] = useState(null);
     const [inputForm, setForm] = useState(
         {
             athletes: [],
@@ -178,6 +179,9 @@ function WorkOut() {
                     'accept': "application/json"
                 }
             })
+            if(response){
+                setisSubmit(true);
+            }
         } catch (error) {
             return error
         }
@@ -198,15 +202,20 @@ function WorkOut() {
                         'accept': "application/json"
                     }          
                 });
-                setAthletes(response.data.athletes) 
+                setAthletes(response.data.athletes)
+                setisSubmit(false); 
             } catch (error) {
                 return error
             }
         }
 
         getAthletes();
-
+        
     }, [])
+
+    if(isSubmit){
+        return <Redirect to="/betterathletes/dashboard" />
+    }
 
     console.log(athletes)
     return (

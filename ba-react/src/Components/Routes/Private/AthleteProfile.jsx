@@ -8,44 +8,76 @@ import EditProfile from './EditProfile';
 function AthleteProfile() {
     let { id } = useParams()
     let token = localStorage.getItem("token");
+    let decoded = jwt_decode(token);
+    let coach_id = null;
+    let is_coach = false;
+
+    if(decoded.is_coach){
+        coach_id = decoded.user_id;
+        is_coach = decoded.is_coach;
+    }
+
     const [profile, setProfile] = useState({
-        found: false,
+        found: false,   
         valid: false,
         profile: {}
     })
     const [edit, setEdit] = useState(false);
+    const [track, setTrack] = useState({
+        found: false,   
+    })
 
     useEffect(() => {
-        getProfile()
+        getProfile();
+        if(is_coach){
+            getTrack();
+        }
     }, [])
 
     async function getProfile() {
         try {
-            let temp = await axiosInstance(`profile/${id}`)
-            console.log(temp.data)
+            let temp = await axiosInstance.get(`profile/${id}`)
             setProfile(temp.data)
         } catch (e) {
             setProfile(e.response.data)
         }
     }
+    // console.log(jwt_decode(token));
 
+    async function getTrack(){
+        try {
+            let temp = await axiosInstance.get(`track/${id}`)
+            setTrack(temp.data);
+        } catch (e) {
+            console.log(e.response.data);
+        }
+    }
+
+    async function submitTrack(){
+        try {
+            let temp = await axiosInstance.post(`track/${id}`)
+            setTrack(temp.data)
+        } catch (e) {
+            console.log(e.response.data)
+        }
+    }
+    
     return (
         <Container className="p-5">
-            {profile.found ?
+            {profile.found?
                 <>
                     {profile.valid ?
                         <div className="bg-contrast p-4">
-                            <h1 className="mb-3 display-4 title">{profile.profile.name.trim() ? profile.profile.name : profile.profile.username}</h1>
-                            <div className="my-3">
                             {!edit?
                             <>
-                                <h1 className="mb-3 display-4">{profile.profile.name.trim() ? profile.profile.name: profile.profile.username }</h1>
+                                <h1 className="title mb-3 display-4">{profile.profile.name.trim() ? profile.profile.name: profile.profile.username }</h1>
+                                <div className="my-3">
                                 <Row>
                                     <Col>
                                         <div className="my-2"><u>Club</u></div>
                                         <div className="bigger-text ml-3">{profile.profile.club}</div>
-                                        <div className="my-2"><u>Gender</u></div>
-                                        <div className="bigger-text ml-3">{profile.profile.gender}</div>
+                                        <div className="my-2"><u>Gender</u></div>  
+                                        <div className="bigger-text ml-3">{profile.profile.gender=="F"?"Female":profile.profile.gender=="M"?"Male":"Prefer not to Say"}</div>
                                         <div className="my-2"><u>Age</u></div>
                                         <div className="bigger-text ml-3">{profile.profile.age}</div>
                                         <div className="my-2"><u>Location</u></div>
@@ -62,14 +94,26 @@ function AthleteProfile() {
                                     </Button>
                                     }
                                 </Row>
-                                <hr className="my-5 border" />
+                                </div>
                                 </>
                                 : <EditProfile getProfile={getProfile} id={id} edit={edit} setEdit={setEdit} profile={profile} />}
-                                <hr className="my-4"/>
+                                <Row className="justify-content-center">
+                                    {jwt_decode(token).is_coach && !profile.profile.is_coach && jwt_decode(token).club == profile.profile.club && !track.found &&
+                                    <Button onClick={submitTrack}>
+                                        Track Athlete
+                                    </Button>
+                                    }
+                                    {jwt_decode(token).is_coach && !profile.profile.is_coach && jwt_decode(token).club == profile.profile.club && track.found &&
+                                    <Button onClick={submitTrack}>
+                                        Untrack Athlete
+                                    </Button>
+                                    }
+                                </Row>
+                                <hr className="my-5 border" />
                                 <Row className="my-3">
                                     <Col>
                                         <div className="display-5 mb-5">Recent Workouts</div>
-                                        {profile.profile.public ?
+                                        {profile.profile.public || id == jwt_decode(token).user_id ?
                                             profile.profile.recent_workouts.length ?
                                                 <>
                                                     {profile.profile.recent_workouts.map((wkout, index) => (
@@ -97,8 +141,7 @@ function AthleteProfile() {
                                         </div>
                                     </Col>
                                 </Row>
-                            </div>
-                        </div> :
+                            </div> :
                         <>
                             <h1 className="my-3 display-4">Oops, no such user</h1>
                         </>

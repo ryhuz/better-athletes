@@ -22,4 +22,5 @@ urlpatterns = [
     path('profile/<int:id>', views.profile, name='profile'),
     path('club', views.single_club, name='club'),
     path('getworkouts/<int:id>', views.getworkouts, name='getworkouts'),
+    path('track/<int:id>', views.tracked_athletes, name='trackathletes'),
 ]

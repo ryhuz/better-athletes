@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Container, Jumbotron, Row } from 'react-bootstrap'
+import { NavLink } from 'react-router-dom'
 import { axiosInstance } from '../../../func/axiosApi'
 
 function ViewClub() {
@@ -40,14 +41,18 @@ function ViewClub() {
                     <hr />
                     <h6>Coaches</h6>
                     {club.coaches.map(coach => (
-                        <div key={coach.user_id} className="club-coaches">
-                            {coach.name}1
+                        <div>
+                            <NavLink to={`/betterathletes/profile/${coach.user_id}`} style={{textDecoration:"none"}} key={coach.user_id} className="club-coaches">
+                                {coach.name}
+                            </NavLink>
                         </div>
                     ))}
                     <h6>Athletes</h6>
                     {club.athletes.map(a => (
-                        <div key={a.user_id} className="club-coaches">
-                            {a.name}
+                        <div>
+                            <NavLink to={`/betterathletes/profile/${a.user_id}`} style={{textDecoration:"none"}} key={a.user_id} className="club-coaches">
+                                {a.name}
+                            </NavLink>
                         </div>
                     ))}
                 </> :

@@ -49,7 +49,12 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         as="select"
                         onChange={changeHandler}
                         name="club">
-                        <option>Select one</option>
+                        {club && club.map(el => (
+                        el.club_name==userprofile.club? 
+                            <>
+                            <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                            </> : ""
+                        ))}
                         {club && club.map(el => (
                         el.club_name!=userprofile.club? 
                             <>
@@ -61,10 +66,10 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                     <Form.Row>
                     <Form.Label>Edit Gender</Form.Label>
                     <Form.Control onChange={changeHandler} name="gender" as="select">
-                        <option>Select One</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                        <option value="P">Prefer not to say</option>
+                        <option value={userprofile.gender}>{userprofile.gender=='M'?"Male":userprofile.gender=="F"?"Female":"Prefer Not To Say"}</option>
+                        {userprofile.gender!='M' && <option value="M">Male</option>}
+                        {userprofile.gender!='F' && <option value="F">Female</option>}
+                        {userprofile.gender!='P' && <option value="P">Prefer not to say</option>}
                     </Form.Control>
                     </Form.Row>
                     <Form.Row className="mb-3">
@@ -73,6 +78,7 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         onChange={changeHandler}
                         name="dob"
                         type="date"
+                        value={userprofile.dob}
                     />
                     </Form.Row>
                     <Form.Row className="mb-3">
@@ -87,9 +93,8 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                     <Form.Row>
                     <Form.Label>Do you want to make your Workout Public?</Form.Label>
                     <Form.Control onChange={changeHandler} name="public_workouts" as="select">
-                        <option>Select One</option>
-                        <option value={true}>Yes</option>
-                        <option value={false}>No</option>
+                        <option value={userprofile.public_workouts}>{userprofile.public_workouts==true?"Yes":"No"}</option>
+                        {userprofile.public_workouts==true?<option value={false}>No</option>:<option value={true}>Yes</option>}
                     </Form.Control>
                     </Form.Row>
                 </Col>
