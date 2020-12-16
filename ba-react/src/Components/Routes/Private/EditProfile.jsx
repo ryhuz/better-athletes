@@ -4,7 +4,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap'
 import { axiosInstance } from '../../../func/axiosApi';
 
 function EditProfile({getProfile, id, edit, setEdit, profile}) {
-    const [userprofile, setUserProfile] = useState()
+    const [userprofile, setUserProfile] = useState(profile.profile)
     const [club, setClub] = useState();
 
     useEffect(() => {
@@ -14,6 +14,7 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
           try {
             let resp = await axiosInstance.get("clubs");
             setClub(resp.data);
+            console.log(resp.data);
           } catch (error) {
             console.log(error);
           }
@@ -27,7 +28,6 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
 
     async function submit(){
         try {
-            console.log(userprofile);
             let resp = await axiosInstance.put(`profile/${id}`, userprofile);
             setEdit(!edit);
             getProfile();
@@ -35,7 +35,8 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
             console.log(error);
         }
     }
-    
+
+    console.log(profile);
     return (
         <div>
             <Form>
@@ -48,9 +49,12 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         as="select"
                         onChange={changeHandler}
                         name="club">
-                        <option>Select One</option>
+                        <option>Select one</option>
                         {club && club.map(el => (
-                        <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                        el.club_name!=userprofile.club? 
+                            <>
+                            <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                            </> : ""
                         ))}
                     </Form.Control>
                     </Form.Row>
@@ -77,6 +81,7 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         onChange={changeHandler}
                         name="location"
                         type="text"
+                        value={userprofile.location}
                     />
                     </Form.Row>
                     <Form.Row>
