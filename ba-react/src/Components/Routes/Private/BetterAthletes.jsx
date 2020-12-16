@@ -17,7 +17,7 @@ function BetterAthletes({ isAuth }) {
                     <Router>
                         <Switch>
                             <Route exact path="/betterathletes/add_new_workout">
-                                <AddWorkOut />
+                                <AddWorkOut isAuth={isAuth}/>
                             </Route>
                             <Route exact path="/betterathletes/view_workout/:id">
                                 <ViewWorkOut />
