@@ -4,7 +4,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap'
 import { axiosInstance } from '../../../func/axiosApi';
 
 function EditProfile({getProfile, id, edit, setEdit, profile}) {
-    const [userprofile, setUserProfile] = useState()
+    const [userprofile, setUserProfile] = useState(profile.profile)
     const [club, setClub] = useState();
 
     useEffect(() => {
@@ -14,6 +14,7 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
           try {
             let resp = await axiosInstance.get("clubs");
             setClub(resp.data);
+            console.log(resp.data);
           } catch (error) {
             console.log(error);
           }
@@ -27,7 +28,6 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
 
     async function submit(){
         try {
-            console.log(userprofile);
             let resp = await axiosInstance.put(`profile/${id}`, userprofile);
             setEdit(!edit);
             getProfile();
@@ -35,7 +35,8 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
             console.log(error);
         }
     }
-    
+
+    console.log(profile);
     return (
         <div>
             <Form>
@@ -48,19 +49,27 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         as="select"
                         onChange={changeHandler}
                         name="club">
-                        <option>Select One</option>
                         {club && club.map(el => (
-                        <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                        el.club_name==userprofile.club? 
+                            <>
+                            <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                            </> : ""
+                        ))}
+                        {club && club.map(el => (
+                        el.club_name!=userprofile.club? 
+                            <>
+                            <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                            </> : ""
                         ))}
                     </Form.Control>
                     </Form.Row>
                     <Form.Row>
                     <Form.Label>Edit Gender</Form.Label>
                     <Form.Control onChange={changeHandler} name="gender" as="select">
-                        <option>Select One</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                        <option value="P">Prefer not to say</option>
+                        <option value={userprofile.gender}>{userprofile.gender=='M'?"Male":userprofile.gender=="F"?"Female":"Prefer Not To Say"}</option>
+                        {userprofile.gender!='M' && <option value="M">Male</option>}
+                        {userprofile.gender!='F' && <option value="F">Female</option>}
+                        {userprofile.gender!='P' && <option value="P">Prefer not to say</option>}
                     </Form.Control>
                     </Form.Row>
                     <Form.Row className="mb-3">
@@ -69,6 +78,7 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         onChange={changeHandler}
                         name="dob"
                         type="date"
+                        value={userprofile.dob}
                     />
                     </Form.Row>
                     <Form.Row className="mb-3">
@@ -77,14 +87,14 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         onChange={changeHandler}
                         name="location"
                         type="text"
+                        value={userprofile.location}
                     />
                     </Form.Row>
                     <Form.Row>
                     <Form.Label>Do you want to make your Workout Public?</Form.Label>
                     <Form.Control onChange={changeHandler} name="public_workouts" as="select">
-                        <option>Select One</option>
-                        <option value={true}>Yes</option>
-                        <option value={false}>No</option>
+                        <option value={userprofile.public_workouts}>{userprofile.public_workouts==true?"Yes":"No"}</option>
+                        {userprofile.public_workouts==true?<option value={false}>No</option>:<option value={true}>Yes</option>}
                     </Form.Control>
                     </Form.Row>
                 </Col>

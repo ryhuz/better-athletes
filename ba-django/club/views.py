@@ -114,7 +114,7 @@ class Workouts(APIView):
         # ======save for WorkoutResult Modal=======#
         results = body['results']
         units = body['units']  
-        comments = body['comments'] 
+        comments = body['comments']
 
         for athlete in athlete_list:
             
@@ -371,37 +371,34 @@ def workout_comment(request,id):
     
     return JsonResponse({"message" : "Data saved"}, status=200)
     
-    
-    
-    
-    
+@api_view(['GET','POST'])
+def tracked_athletes(request, id):
+    token = request.headers['Authorization'].split(" ")[1]
+    decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    coach_id = decoded_token['user_id']
 
-    #     # print("hello")
-    #     # WorkoutComment
-    #     body_unicode = request.body.decode('utf-8')
-    #     body = json.loads(body_unicode)
-    #     comment = body["comment"]
-    #     workout = workout
-    #     workout_result = result
-    #     user = user
-       
-    
-    #     workout_comment = WorkoutComment(
-    #         comment=comment,
-    #         workout=workout,
-    #         workout_result=workout_result,
-    #         user=user      
-    #         )
+    if request.method == "POST":
+        tracked_ath = TrackedAthlete.objects.filter(coach_id=coach_id,athlete_id=id)
+        if(not tracked_ath):
+            token = request.headers['Authorization'].split(" ")[1]
+            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            user_id = decoded_token['user_id']
+            coach = User.objects.get(pk=user_id)
+            athlete = User.objects.get(pk=id)
+            tracked_ath = TrackedAthlete(coach=coach, athlete=athlete)
+            if(tracked_ath):
+                tracked_ath.save()
+                serialize = tracked_ath.serialize()
+                return JsonResponse({"found": True}, status=200, safe=False)
+            else:
+                return JsonResponse({'message':'Something went wrong'},status=400)
+        else:
+            tracked_ath.delete()
+            return JsonResponse({"found": False}, status=204, safe=False)
 
-    #     workout_comment.save()
-
-    
-    
-        
-# def add_workouts(request, id):
-#     if request.method == "POST":
-#         print("yes")
-        # result.comments = body["comments"]
-        # result.save()
-    
+    tracked_ath = TrackedAthlete.objects.filter(coach_id=coach_id,athlete_id=id)
+    if(tracked_ath):
+        return JsonResponse({"found":True}, status=200, safe=False)
+    else:
+        return JsonResponse({"found": False}, status=204, safe=False)
     

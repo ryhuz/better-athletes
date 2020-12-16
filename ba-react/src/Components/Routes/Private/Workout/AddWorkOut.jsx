@@ -4,14 +4,15 @@ import makeAnimated from 'react-select/animated';
 import DatePicker from 'react-modern-calendar-datepicker';
 import { Col, Row, Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
+import { Redirect } from 'react-router-dom';
 
 function WorkOut({ isAuth }) {
     const [selectedOption, setSelectedOption] = useState(null);
-
+    const [isSubmit, setisSubmit] = useState(false);
     const [athletes, setAthletes] = useState([{
         name: ""
     }])
-    const [date, setDate] = useState(null)
+    const [date, setDate] = useState(null);
     const [inputForm, setForm] = useState(
         {
             athletes: [],
@@ -103,10 +104,14 @@ function WorkOut({ isAuth }) {
 
         let { name, value } = e.target;
         let temp = { ...inputForm };
+
         if (name === "athletes") {
             temp.athletes.push(value)
         } else if (name === "workout_name") {
             temp.workout_name = value
+        } else if (name === "reps" && value === "") {
+
+            temp.sets[i][ii][name] = 0;
         } else if (name !== "athletes") {
             temp.sets[i][ii][name] = value
         }
@@ -180,15 +185,19 @@ function WorkOut({ isAuth }) {
             djangoFormVersion.units.push(unitsSet)
             djangoFormVersion.comments.push(commentsSet)
             djangoFormVersion.results.push(resultsSet)
+            console.log(djangoFormVersion)
         })
         try {
-            await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
+            let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
                 headers: {
                     'Authorization': "JWT " + localStorage.getItem('token'),
                     'Content-Type': 'application/json',
                     'accept': "application/json"
                 }
             })
+            if (response) {
+                setisSubmit(true);
+            }
         } catch (error) {
             console.log(error)
         }
@@ -198,7 +207,7 @@ function WorkOut({ isAuth }) {
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
-
+    console.log(selectedOption)
     useEffect(() => {
         async function getAthletes() {
             try {
@@ -210,15 +219,19 @@ function WorkOut({ isAuth }) {
                     }
                 });
                 setAthletes(response.data.athletes)
-                !isAuth.coach && setSelectedOption(athletes[0].name)
+                !isAuth.coach && setSelectedOption([response.data.athletes[0]])
+                setisSubmit(false);
             } catch (error) {
                 return error
             }
         }
-
         getAthletes();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    if (isSubmit) {
+        return <Redirect to="/betterathletes/dashboard" />
+    }
     return (
         <Container className="p-5">
             <Row className="mb-3">
@@ -302,6 +315,8 @@ function WorkOut({ isAuth }) {
                                             <Col>
                                                 <Form.Control
                                                     name="reps"
+                                                    type="number"
+                                                    min={1}
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
                                                     id={index2}
                                                     value={item2.reps}

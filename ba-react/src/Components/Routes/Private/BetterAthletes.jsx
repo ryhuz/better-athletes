@@ -29,7 +29,7 @@ function BetterAthletes({ isAuth }) {
                             <Route exact path="/betterathletes/myclub">
                                 <ViewClub name="view_club" />
                             </Route>
-                            <Route exact path="/betterathletes/calendar">
+                            <Route exact path="/betterathletes/calendar/:id">
                                 <CalendarDisplay name="calendar" />
                             </Route>
                         </Switch>
