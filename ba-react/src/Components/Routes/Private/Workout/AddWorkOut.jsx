@@ -7,7 +7,7 @@ import axios from "axios";
 
 function WorkOut({ isAuth }) {
     const [selectedOption, setSelectedOption] = useState(null);
-
+    console.log(isAuth)
     const [athletes, setAthletes] = useState([{
         name: ""
     }])
@@ -102,13 +102,17 @@ function WorkOut({ isAuth }) {
     }
 
     function ChangeHandler(e, i, ii) {
-
+        
         let { name, value } = e.target;
         let temp = { ...inputForm };
+
         if (name === "athletes") {
             temp.athletes.push(value)
         } else if (name === "workout_name") {
             temp.workout_name = value
+        } else if (name === "reps" && value === ""){
+
+            temp.sets[i][ii][name] = 0;
         } else if (name !== "athletes") {
             temp.sets[i][ii][name] = value
         }
@@ -182,6 +186,7 @@ function WorkOut({ isAuth }) {
             djangoFormVersion.units.push(unitsSet)
             djangoFormVersion.comments.push(commentsSet)
             djangoFormVersion.results.push(resultsSet)
+            console.log(djangoFormVersion)
         })
         try {
             await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
@@ -200,7 +205,7 @@ function WorkOut({ isAuth }) {
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
-
+    console.log(selectedOption)
     useEffect(() => {
         async function getAthletes() {
             try {
@@ -211,8 +216,9 @@ function WorkOut({ isAuth }) {
                         'accept': "application/json"
                     }
                 });
+                console.log(response.data.athletes)
                 setAthletes(response.data.athletes)
-                !isAuth.coach && setSelectedOption(athletes[0].name)
+                !isAuth.coach && setSelectedOption([response.data.athletes[0]])
             } catch (error) {
                 return error
             }
@@ -305,6 +311,8 @@ function WorkOut({ isAuth }) {
                                             <Col>
                                                 <Form.Control
                                                     name="reps"
+                                                    type="number"
+                                                    min={1}
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
                                                     id={index2}
                                                     value={item2.reps}

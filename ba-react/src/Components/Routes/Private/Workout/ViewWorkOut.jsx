@@ -16,7 +16,7 @@ function ViewWorkOut() {
     //params are WorkoutResults ID
     let {id} = useParams()
     console.log(id)
-
+    
 
 
     function resultsHandler(e, i, ii){
