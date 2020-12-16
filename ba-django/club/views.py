@@ -115,7 +115,7 @@ class Workouts(APIView):
         results = body['results']
         units = body['units']  
         comments = body['comments'] 
-
+        print(body)
         for athlete in athlete_list:
             
             workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
