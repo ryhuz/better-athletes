@@ -4,6 +4,7 @@ import moment from 'moment'
 import DisplayMonth from './DisplayMonth'
 import DisplayWeek from './DisplayWeek'
 import { axiosInstance } from '../../../../func/axiosApi'
+import { useParams } from 'react-router-dom'
 
 function CalendarDisplay() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',]
@@ -15,7 +16,7 @@ function CalendarDisplay() {
         currWeek: [],
         nextWeek: []
     })
-    let id = 2  // USE PARAMSSSS ------------------------------
+    let {id} = useParams();
     useEffect(() => {
         function getCalendar() {
             let prev = []

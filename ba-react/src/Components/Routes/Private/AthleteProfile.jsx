@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import { axiosInstance } from '../../../func/axiosApi'
 import jwt_decode from 'jwt-decode';
@@ -9,11 +9,9 @@ function AthleteProfile() {
     let { id } = useParams()
     let token = localStorage.getItem("token");
     let decoded = jwt_decode(token);
-    let coach_id = null;
     let is_coach = false;
 
     if(decoded.is_coach){
-        coach_id = decoded.user_id;
         is_coach = decoded.is_coach;
     }
 
@@ -42,7 +40,7 @@ function AthleteProfile() {
             setProfile(e.response.data)
         }
     }
-    // console.log(jwt_decode(token));
+    console.log(profile);
 
     async function getTrack(){
         try {
@@ -86,12 +84,20 @@ function AthleteProfile() {
                                     <Col>
                                         Photo
                                     </Col>
-                                </Row>
-                                <Row className="justify-content-center">
+                                </Row><Row className="justify-content-center">
                                     {id == jwt_decode(token).user_id &&
                                     <Button onClick={()=>{setEdit(!edit)}}>
                                         Edit Profile
                                     </Button>
+                                    }
+                                </Row>
+                                <Row className="justify-content-center">
+                                    {(is_coach || profile.profile.public || id == jwt_decode(token).user_id ) &&
+                                    <Link to={`/betterathletes/calendar/${id}`} >
+                                        <Button>
+                                            Workout Calendar
+                                        </Button>
+                                    </Link>
                                     }
                                 </Row>
                                 </div>
