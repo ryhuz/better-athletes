@@ -60,6 +60,9 @@ a.red-shadow:hover, a>.red-shadow:hover{
   font-size: 1.2rem;
   font-weight:300;
 }
+.ml-7{
+  margin-left: 58px!important;
+}
 .navbar{
   background-image: linear-gradient(to bottom right, #5a5f63, #000000);
 }
@@ -80,7 +83,7 @@ button.btn-main:hover, .btn.btn-main:hover {
 }
 
 .dash-card-scroll {
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -106,14 +109,7 @@ code {
   min-height: 11rem;
   position:relative;
 }
-/* 
-.content{
-  width:500px;
-  height:300px;
-  
-  color:#fff;
-  overflow:hidden;
-} */
+
 .cal-gradient-next, .cal-gradient-prev{
   position:absolute;
   bottom:0px;
