@@ -76,23 +76,26 @@ class Workouts(APIView):
             decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
             user_id = decoded_token['user_id']
             user = UserDetail.objects.get(base_user_id=user_id)
-            club = user.club.serialize()
-            members = UserDetail.objects.filter(club=user.club)
-            athletes = [x.serialize_for_club() for x in members.filter(is_coach=False)]
+            
+            if user.is_coach:
+                athletes = TrackedAthlete.objects.filter(coach=user.base_user)
+                athletes_serialized = [x.athlete.userdetail.serialize_for_club() for x in athletes]
 
-            workout_data = {
-                "workouts": all_workouts,
-                "athletes": athletes
-            }
-            
-            
-            
+                workout_data = {
+                    "workouts": all_workouts,
+                    "athletes": athletes_serialized
+                }
+            else:
+                workout_data = {
+                    "workouts": all_workouts,
+                    "athletes": [user.serialize_for_club()]
+                }
+
             return JsonResponse(workout_data, status=200, safe=False)
         except Workout.DoesNotExist:
             return JsonResponse({"message" : "Data not found"}, status=400)
     
     def post(self, request):
-        
         
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
@@ -105,14 +108,12 @@ class Workouts(APIView):
         rests =  body['rests']                      
         targets =  body['targets']                  
         workout_date = body['workout_date']                                
-        
-        
+                
         # ======save for WorkoutResult Modal=======#
         results = body['results']
         units = body['units']  
         comments = body['comments'] 
-        
-        
+                
         workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
         # workout.save()
         
