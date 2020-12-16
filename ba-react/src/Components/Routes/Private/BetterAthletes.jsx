@@ -7,6 +7,7 @@ import Dashboard from './Dashboard';
 import AthleteProfile from './AthleteProfile';
 import ViewClub from './ViewClub';
 import CalendarDisplay from './Calendar/CalendarDisplay'
+import EditProfile from './EditProfile'
 
 function BetterAthletes({ isAuth }) {
     return (

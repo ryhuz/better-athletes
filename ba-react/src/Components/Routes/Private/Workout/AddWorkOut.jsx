@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 import DatePicker from 'react-modern-calendar-datepicker';
-import { Col, Row, Form, Button, DropdownButton, Dropdown, Container } from "react-bootstrap";
+import { Col, Row, Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
 
 function WorkOut() {
+    const [selectedOption, setSelectedOption] = useState(null);
+    
     const [athletes, setAthletes] = useState([])
     const [date, setDate] = useState(null)
     const [inputForm, setForm] = useState(
@@ -16,23 +20,43 @@ function WorkOut() {
                         exercise: "",
                         reps: "",
                         rests: "",
-                        targets: ""
+                        targets: "",
+                        units: "",
+                        comments: "",
+                        results: ""
                     }
                 ]
             ]
         })
+    
+    const animatedComponents = makeAnimated();
+    // console.log(selectedOption)
 
-    function AddSet(i, item = [{
-        exercise: "",
-        reps: "",
-        rests: "",
-        targets: ""
-    }]) {
+    function AddSet(i, item){
         let temp = { ...inputForm }
-        temp.sets.splice(i, 0, item)
+        console.log(item)
+        if (item === undefined){
+            
+            item = [{
+                exercise: "",
+                reps: "",
+                rests: "",
+                targets: "",
+                units: "",
+                comments: "",
+                results: ""
+            }]
+            temp.sets.splice(i+1, 0, item)
+            setForm(temp)
+        } else if (item !== undefined) {
+            // let cloned_item = [{...item}]
+            // console.log(item)
+            // console.log(cloned_item)
+            temp.sets.splice(i+1, 0, item)
+            setForm(temp)
+        }      
+    } 
 
-        setForm(temp)
-    }
 
     function RemoveSet(i) {
         let obj = { ...inputForm };
@@ -42,11 +66,14 @@ function WorkOut() {
 
     function AddInput(i, ii) {
         let temp = { ...inputForm }
-        temp.sets[i].splice(ii, 0, {
+        temp.sets[i].splice(ii+1, 0, {
             exercise: "",
             reps: "",
             rests: "",
-            targets: ""
+            targets: "",
+            units: "",
+            comments: "",
+            results: ""
         })
         setForm(temp)
     }
@@ -58,6 +85,7 @@ function WorkOut() {
     }
 
     function ChangeHandler(e, i, ii) {
+        
         let { name, value } = e.target;
         let temp = { ...inputForm };
         if (name === "athletes") {
@@ -70,6 +98,8 @@ function WorkOut() {
 
         setForm(temp)
     }
+    console.log(inputForm)
+
 
     // =========================== TO UPDATE AXIOS ONCE API ROUTES FINALISED ================================\\
     /**
@@ -83,13 +113,24 @@ function WorkOut() {
         })
         console.log(maxLength)
         let djangoFormVersion = {
-            athletes: inputForm.athletes,
+            athletes: selectedOption,
             workout_name: inputForm.workout_name,
-            workout_date: date,
+            workout_date: "",
             exercises: [],
             reps: [],
             rests: [],
             targets: [],
+            units: [],
+            comments: [],
+            results: []
+        }
+
+
+        if (date === null){
+            djangoFormVersion.workout_date = ""
+        } else {
+            let formated_date = date.year+"-"+date.month+"-"+date.day
+            djangoFormVersion.workout_date = formated_date
         }
 
         inputForm.sets.forEach(set => {
@@ -97,58 +138,77 @@ function WorkOut() {
             let repSet = []
             let restSet = []
             let targetsSet = []
+            let unitsSet = []
+            let commentsSet = []
+            let resultsSet = []
+
             set.forEach(ex => {
                 exerciseSet.push(ex.exercise)
                 repSet.push(ex.reps)
-                restSet.push(ex.rest)
+                restSet.push(ex.rests)
                 targetsSet.push(ex.targets)
+                unitsSet.push(ex.units)
+                commentsSet.push(ex.comments)
+                resultsSet.push(ex.results)
             })
             if (exerciseSet.length < maxLength) {
                 for (let i = 0; i <= maxLength - exerciseSet.length; i++) {
                     exerciseSet.push("")
-                    repSet.push("")
+                    repSet.push(0)
                     restSet.push("")
                     targetsSet.push("")
+                    unitsSet.push("")
+                    commentsSet.push("")
+                    resultsSet.push("")
                 }
             }
             djangoFormVersion.exercises.push(exerciseSet)
             djangoFormVersion.reps.push(repSet)
             djangoFormVersion.rests.push(restSet)
             djangoFormVersion.targets.push(targetsSet)
+            djangoFormVersion.units.push(unitsSet)
+            djangoFormVersion.comments.push(commentsSet)
+            djangoFormVersion.results.push(resultsSet)
         })
+        try {
+            let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
+                headers: {
+                    'Authorization': "JWT " + localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'accept': "application/json"
+                }
+            })
+        } catch (error) {
+            return error
+        }
+
     }
 
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
 
-    async function getAthletes() {
-        try {
-            let response = await axios.get(process.env.REACT_APP_LOCALHOST + `/`);
-            setAthletes(response.data) // response.data? or smtg less, check it later
-        } catch (error) {
-            return error
-        }
-    }
-
     useEffect(() => {
-        // getAthletes();
-        async function getData() {
+        async function getAthletes() {
             try {
                 let response = await axios.get("http://localhost:8000/api/workouts", {
                     headers: {
                         'Authorization': "JWT " + localStorage.getItem('token'),
                         'Content-Type': 'application/json',
                         'accept': "application/json"
-                    }
+                    }          
                 });
+                setAthletes(response.data.athletes) 
             } catch (error) {
                 return error
             }
         }
-        getData();
+
+        getAthletes();
+
     }, [])
 
+    console.log(athletes)
     return (
         <Container className="p-5">
             <Row className="mb-3">
@@ -176,27 +236,21 @@ function WorkOut() {
                                 />
                             </Col>
                             <Col>
-                                <DropdownButton
-                                    id="dropdown-basic-button"
-                                    variant="info"
-                                    title="Athletes"
-                                    className="d-flex justify-content-end"
-                                    onChange={(e) => ChangeHandler(e)}
-                                >
-                                    <Dropdown.Item >
-                                        <Form.Group controlId="formBasicCheckbox">
-                                            <Form.Check type="checkbox" label="Select One" name="athletes" value={1} />
-                                        </Form.Group>
-                                    </Dropdown.Item>
-                                    {athletes.map((item, index) => (
-                                        <Dropdown.Item key={index} >
-                                            <Form.Group controlId="formBasicCheckbox">
-                                                <Form.Check type="checkbox" label={item} value={item} />
-                                            </Form.Group>
-                                        </Dropdown.Item>
-                                    ))}
 
-                                </DropdownButton>
+                                <Select
+                                    isMulti
+                                    name="colors"
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    // value={athletes.name}
+                                    placeholder="Athletes"
+                                    closeMenuOnSelect={false}
+                                    components={animatedComponents}
+                                    options={athletes}
+                                    getOptionLabel ={(option)=>option.name}
+                                    getOptionValue ={(option)=>option.name}
+                                    onChange={setSelectedOption}
+                                />
                             </Col>
                         </Row>
                         {/* ------------------- EACH SET ------------------- */}
@@ -302,3 +356,44 @@ function WorkOut() {
 }
 
 export default WorkOut
+
+
+
+        // async function getData() {
+        //     try {
+        //         let response = await axios.get("http://localhost:8000/api/workouts", {
+        //             headers: {
+        //                 'Authorization': "JWT " + localStorage.getItem('token'),
+        //                 'Content-Type': 'application/json',
+        //                 'accept': "application/json"
+        //             }
+                   
+        //         });
+        //         console.log(response)
+        //     } catch (error) {
+        //         return error
+        //     }
+        // }
+        // getData();
+
+                                        {/* <DropdownButton
+                                    id="dropdown-basic-button"
+                                    variant="info"
+                                    title="Athletes"
+                                    className="d-flex justify-content-end"
+                                    onChange={(e) => ChangeHandler(e)}
+                                >
+                                    <Dropdown.Item >
+                                        <Form.Group controlId="formBasicCheckbox">
+                                            <Form.Check type="checkbox" label="Select One" name="athletes" value={1} />
+                                        </Form.Group>
+                                    </Dropdown.Item>
+                                    {athletes.map((item, index) => (
+                                        <Dropdown.Item key={index} >
+                                            <Form.Group controlId="formBasicCheckbox">
+                                                <Form.Check type="checkbox" name={item.name} label={item.name} value={item.name} />
+                                            </Form.Group>
+                                        </Dropdown.Item>
+                                    ))}
+
+                                </DropdownButton> */}

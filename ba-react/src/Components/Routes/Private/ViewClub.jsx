@@ -9,7 +9,6 @@ function ViewClub() {
         async function getClub() {
             try {
                 let temp = await axiosInstance(`club`)
-                console.log(temp.data)
                 setClub(temp.data)
             } catch (e) {
 
@@ -17,6 +16,8 @@ function ViewClub() {
         }
         getClub()
     }, [])
+
+    console.log(club);
 
     return (
         <Container>

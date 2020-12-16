@@ -47,9 +47,11 @@ class UserDetail(models.Model):
             'club': self.club.club_name,
             'location': self.location,
             'age': (date.today() - self.dob) // timedelta(days=365.2425),
-            'gender': self.gender
+            'gender': self.gender,
+            'public_workouts': self.public_workouts
             
         }
+
     def serialize_for_club(self):
         return {
             'name': self.base_user.first_name + " " + self.base_user.last_name,
@@ -65,7 +67,7 @@ class WorkoutTemplate(models.Model):
     )
     reps = ArrayField( # number of sets
         ArrayField( # reps per exercise
-            models.IntegerField(validators=[MinValueValidator(1)], blank=True)
+            models.IntegerField(validators=[MinValueValidator(0)], blank=True)
         )
     )
     rests = ArrayField( # number of sets
@@ -179,6 +181,7 @@ class WorkoutResult(models.Model):
             "workout_id": self.workout.id,
             "workout_name": self.workout.workout_name,
             "exercise": self.workout.exercise,
+            "results": self.results,
             "reps": self.workout.reps,
             "rests": self.workout.rests,
             "target": self.workout.targets
@@ -196,3 +199,21 @@ class TrackedAthlete(models.Model):
 
     def __str__(self):
         return self.coach.username + " tracking " + self.athlete.username
+    
+class WorkoutComment(models.Model):
+    comment = models.TextField(null=True)
+    workout = models.ForeignKey(Workout, related_name=("comments"),on_delete=models.CASCADE, null=True)
+    workout_result = models.ForeignKey(WorkoutResult, related_name=("result_comments"),on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name=("user_comment"), on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.user.username
+    
+    def serialize(self):
+        return {
+            "comment": self.comment,
+            "user": self.user.username,
+            "user_id": self.user.id,
+            "workout_name": self.workout.workout_name,
+            "workout_results_id": self.workout_result.id,
+        }
