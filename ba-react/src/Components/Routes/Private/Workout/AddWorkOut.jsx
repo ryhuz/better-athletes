@@ -170,7 +170,7 @@ function WorkOut({ isAuth }) {
             if (exerciseSet.length < maxLength) {
                 for (let i = 0; i <= maxLength - exerciseSet.length; i++) {
                     exerciseSet.push("")
-                    repSet.push(0)
+                    repSet.push("")
                     restSet.push("")
                     targetsSet.push("")
                     unitsSet.push("")
@@ -200,6 +200,7 @@ function WorkOut({ isAuth }) {
             }
         } catch (error) {
             console.log(error)
+            // set error state to whatever and show modal
         }
 
     }

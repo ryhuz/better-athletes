@@ -125,7 +125,6 @@ function ViewWorkOut() {
     useEffect(() => {
         getWorkout();
     }, [])
-    console.log(workout)
     return (
         <Container className="bg-contrast px-4">
             <Row className="">

@@ -96,18 +96,18 @@ class Workout(models.Model):
     )
     reps = ArrayField( # number of sets
         ArrayField( # reps per exercise
-            models.IntegerField(validators=[MinValueValidator(1)], blank=True)
-        )
+            models.IntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
+        ), blank=True, null=True
     )
     rests = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
-        )
+        ), blank=True, null=True
     )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
-        )
+        ), blank=True, null=True
     )
     created_date = models.DateTimeField(auto_now=True)
     

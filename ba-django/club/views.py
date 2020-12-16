@@ -103,10 +103,17 @@ class Workouts(APIView):
         body = json.loads(body_unicode)
         
         athlete_list = body['athletes']
+        valid_reps = body['reps'][:]
+        for s in valid_reps:
+            print('set is ', s)
+            for rep in s:
+                print('rep is ', rep)
+                if rep == "":
+                    valid_reps[valid_reps.index(s)][s.index(rep)] = None
         
         workout_name = body['workout_name']
         exercise = body['exercises'] 
-        reps = body['reps']                 
+        reps = valid_reps
         rests =  body['rests']                      
         targets =  body['targets']                  
         workout_date = body['workout_date']                                
@@ -128,6 +135,7 @@ class Workouts(APIView):
        
 
         return JsonResponse({"message" : "Data isvalid"}, status=200)
+        # Include a error JsonResponse
 
 class Clubs(APIView):
     permission_classes = (permissions.AllowAny,)

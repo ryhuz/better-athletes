@@ -75,7 +75,7 @@ function AllRoutes() {
   return (
     <Router>
       {isAuth.valid ?
-        <NavBarLoggedIn coach={isAuth.coach} username={isAuth.user} user_id={isAuth.user_id}/> :
+        <NavBarLoggedIn coach={isAuth.coach} username={isAuth.user} user_id={isAuth.user_id} /> :
         <NavBarNotLoggedIn />}
       <Switch>
         <Route path="/" exact>
@@ -92,7 +92,9 @@ function AllRoutes() {
           <Register isAuth={isAuth} setAuth={setAuth} />
         </Route>
         {/* Logged in route */}
-        <BetterAthletes isAuth={isAuth} />
+        <Route path="/betterathletes">
+          <BetterAthletes isAuth={isAuth} />
+        </Route>
       </Switch>
     </Router>
   )
