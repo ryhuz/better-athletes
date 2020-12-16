@@ -6,7 +6,7 @@ function NavBarLoggedIn({ coach, username, user_id }) {
     return (
         <>
             <Navbar className="navbar" expand="lg">
-                <Navbar.Brand href="/" className="mx-3"><span className="title red-shadow h5">BETTER ATHLETES</span></Navbar.Brand>
+                <Navbar.Brand href="/betterathletes/dashboard" className="mx-3"><span className="title red-shadow h5">BETTER ATHLETES</span></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <ul className="navbar-nav ml-auto mr-3">
