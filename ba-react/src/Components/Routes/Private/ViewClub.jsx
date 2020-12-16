@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Jumbotron, Row } from 'react-bootstrap'
+import { Col, Container, Jumbotron, Row } from 'react-bootstrap'
 import { axiosInstance } from '../../../func/axiosApi'
 
 function ViewClub() {
@@ -20,7 +20,7 @@ function ViewClub() {
     console.log(club);
 
     return (
-        <>
+        <Container>
             {Object.keys(club).length ?
                 <>
                     <Jumbotron>
@@ -56,7 +56,7 @@ function ViewClub() {
                 </Jumbotron>
             }
 
-        </>
+        </Container>
 
     )
 }

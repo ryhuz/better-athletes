@@ -52,138 +52,176 @@ function Register({ isAuth, setAuth }) {
     }
   }
 
-  if (isAuth.valid){
-    return <Redirect to="betterathletes/dashboard"/>
+  if (isAuth.valid) {
+    return <Redirect to="betterathletes/dashboard" />
   }
 
   return (
-    <div className="d-flex align-items-center">
-      <Container className="text-center">
+    <div className="d-flex align-items-center landing full-height">
+      <Container className="text-center bg-contrast px-5 py-2">
+        <div className="my-4">
+          <h2>Better Athletes</h2>
+          <h4>User Registration</h4>
+        </div>
         <Col>
-          <h3>Better Athletes</h3>
           <Form onSubmit={handleSubmit}>
-            <div>User Registration</div>
-            {/* Username Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                placeholder="username"
-                onChange={handleChange}
-                name="username"
-              />
+            <Form.Row className="my-4 text-left">
+              {/* Username Input */}
+              <Col className="mx-3">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="username"
+                />
+              </Col>
+              {/* Email Input */}
+              <Col className="mx-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="email"
+                />
+              </Col>
             </Form.Row>
-            {/* Email Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                placeholder="email"
-                onChange={handleChange}
-                name="email"
-              />
+            <Form.Row className="my-4 text-left">
+              <Col className="mx-3">
+                {/* Password Input */}
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  placeholder="type password"
+                  name="password"
+                  type="password"
+                />
+              </Col>
+              <Col className="mx-3">
+                {/* Password Confirmation */}
+                <Form.Label>Password Confirmation</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  placeholder="type password again"
+                  name="password2"
+                  type="password"
+                />
+              </Col>
             </Form.Row>
-            <Form.Row className="mb-3">
-              {/* Password Input */}
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                onChange={handleChange}
-                placeholder="password"
-                name="password"
-                type="password"
-              />
+            <Form.Row className="my-4 text-left">
+              {/* Username Input */}
+              <Col className="mx-3">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="first_name"
+                />
+              </Col>
+              {/* Email Input */}
+              <Col className="mx-3">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="last_name"
+                />
+              </Col>
+              {/* Date of Birth Input */}
+              <Col className="mx-3">
+                <Form.Label>Date of Birth</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="dob"
+                  type="date"
+                />
+              </Col>
             </Form.Row>
-            {/* Date of Birth Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Date of Birth</Form.Label>
-              <Form.Control
-                onChange={handleChange}
-                name="dob"
-                type="date"
-              />
+            <Form.Row className="my-4 text-left">
+              <Col className="mx-3">
+                {/* Gender Selection */}
+                <Form.Label>Gender</Form.Label>
+                <Form.Control onChange={handleChange} name="gender" as="select">
+                  <option>Select One</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                  <option value="P">Prefer not to say</option>
+                </Form.Control>
+              </Col>
+              <Col className="mx-3">
+                {/* Location Input */}
+                <Form.Label>Location</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="location"
+                  placeholder="location"
+                />
+              </Col>
+              <Col className="mx-3">
+                {/* Contact Input */}
+                <Form.Label>Contact Number</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="phone"
+                  placeholder="phone"
+                />
+              </Col>
             </Form.Row>
-            {/* Location Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                onChange={handleChange}
-                name="location"
-                placeholder="location"
-              />
+            <Form.Row className="my-4">
+              {/* Club Selection */}
+              <Col className="mx-3">
+                <Form.Label>Club</Form.Label>
+                <Form.Control onChange={handleChange} name="club" as="select">
+                  <option>Select One</option>
+                  {club && club.map(el => (
+                    <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
+                  ))}
+                </Form.Control>
+              </Col>
+              <Col className="mx-3">
+                {/* Height Input */}
+                <Form.Label>Height</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="height"
+                  placeholder="height"
+                  type="number"
+                />
+              </Col>
+              <Col className="mx-3">
+                {/* Weight Input */}
+                <Form.Label>Weight</Form.Label>
+                <Form.Control
+                  onChange={handleChange}
+                  name="weight"
+                  placeholder="weight"
+                  type="number"
+                />
+              </Col>
             </Form.Row>
-            {/* Contact Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Contact Number</Form.Label>
-              <Form.Control
-                onChange={handleChange}
-                name="phone"
-                placeholder="phone"
-              />
+            <Form.Row className="my-4">
+              {/* Public Workout Selection */}
+              <Col className="mx-3">
+                <Form.Label>Do you wish to make your workouts public?</Form.Label>
+                <Form.Control onChange={handleChange} name="public_workouts" as="select">
+                  <option>Select One</option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
+                </Form.Control>
+              </Col>
+              {/* Is Coach Selection */}
+              <Col className="mx-3">
+                <Form.Label>Are you a coach?</Form.Label>
+                <Form.Control onChange={handleChange} name="is_coach" as="select">
+                  <option>Select One</option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
+                </Form.Control>
+              </Col>
             </Form.Row>
-            {/* Height Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Height</Form.Label>
-              <Form.Control
-                onChange={handleChange}
-                name="height"
-                placeholder="height"
-                type="number"
-              />
-            </Form.Row>
-            {/* Weight Input */}
-            <Form.Row className="mb-3">
-              <Form.Label>Weight</Form.Label>
-              <Form.Control
-                onChange={handleChange}
-                name="weight"
-                placeholder="weight"
-                type="number"
-              />
-            </Form.Row>
-            {/* Gender Selection */}
-            <Form.Row className="mb-3">
-              <Form.Label>Gender</Form.Label>
-              <Form.Control onChange={handleChange} name="gender" as="select">
-                <option>Select One</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                <option value="P">Prefer not to say</option>
-              </Form.Control>
-            </Form.Row>
-            {/* Club Selection */}
-            <Form.Row className="mb-3">
-              <Form.Label>Club</Form.Label>
-              <Form.Control onChange={handleChange} name="club" as="select">
-                <option>Select One</option>
-                {club && club.map(el => (
-                  <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
-                ))}
-              </Form.Control>
-            </Form.Row>
-            {/* Public Workout Selection */}
-            <Form.Row className="mb-3">
-              <Form.Label>Do you wish to make your workouts public?</Form.Label>
-              <Form.Control onChange={handleChange} name="public_workouts" as="select">
-                <option>Select One</option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
-              </Form.Control>
-            </Form.Row>
-            {/* Is Coach Selection */}
-            <Form.Row className="mb-3">
-              <Form.Label>Are you a coach?</Form.Label>
-              <Form.Control onChange={handleChange} name="is_coach" as="select">
-                <option>Select One</option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
-              </Form.Control>
-            </Form.Row>
-            <Form.Row className="mb-3">
-              <Button type="submit" block>
+            <Form.Row className="mt-4 mx-3">
+              <Button type="submit" variant="main" block>
                 Register
               </Button>
             </Form.Row>
+            <div className="text-right px-4">Have an account?<NavLink to="/login"> Login</NavLink></div>
           </Form>
           {/* Re-route to Login Page */}
-          <NavLink to="/login">Login</NavLink>
         </Col>
       </Container>
     </div>
