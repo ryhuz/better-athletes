@@ -67,7 +67,7 @@ class WorkoutTemplate(models.Model):
     )
     reps = ArrayField( # number of sets
         ArrayField( # reps per exercise
-            models.IntegerField(validators=[MinValueValidator(1)], blank=True)
+            models.IntegerField(validators=[MinValueValidator(0)], blank=True)
         )
     )
     rests = ArrayField( # number of sets
