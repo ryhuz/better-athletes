@@ -156,7 +156,7 @@ def dashboard(request):
         
         # coach - get pending coach review
         ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
-        pending_coach_review = ath_workouts.filter(completed = True, reviewed = False)
+        pending_coach_review = ath_workouts.filter(completed = True, reviewed = False).order_by('-workout__workout_date')[:5]
 
         serialized_ppr = [x.serialize() for x in list(pending_coach_review)]
 
@@ -165,13 +165,13 @@ def dashboard(request):
         serialized_today = [x.serialize() for x in list(today)]
 
         # coach - get pending athlete
-        pending_athlete = ath_workouts.filter(completed = False, workout__workout_date__lt=date.today())
+        pending_athlete = ath_workouts.filter(completed = False, workout__workout_date__lt=date.today()).order_by('-workout__workout_date')
         serialized_pending_athlete = [x.serialize() for x in list(pending_athlete)]
 
         # coach - get recently completed (both coach and athlete done)
         # get past entries
         past = ath_workouts.filter(completed = True, reviewed = True)
-        re_com = past.order_by('-workout__workout_date')[:3]
+        re_com = past.order_by('-workout__workout_date')[:5]
         serialized_past = [x.serialize() for x in list(re_com)]
 
         dashboard_data = {
@@ -184,25 +184,22 @@ def dashboard(request):
     else:
         # Get all workout results
         all_results = WorkoutResult.objects.filter(athlete=user)
-        # serialized_all = [x.serialize() for x in list(all_results)]
-        
-    
-        
+                
         # athlete - get today's agenda
         today = all_results.filter(workout__workout_date=date.today())
         serialized_today = [x.serialize() for x in list(today)]
 
         # athlete - get pending results (must be before today)
-        pending_complete = all_results.filter(completed = False, workout__workout_date__lt=date.today())
+        pending_complete = all_results.filter(completed = False, workout__workout_date__lt=date.today()).order_by('-workout__workout_date')[:5]
         serialized_pending_complete = [x.serialize() for x in list(pending_complete)]
         
         # athlete - get upcoming
-        future = all_results.exclude(workout__workout_date__lte=date.today()).order_by('workout__workout_date')[:3]
+        future = all_results.exclude(workout__workout_date__lte=date.today()).order_by('workout__workout_date')[:5]
         serialized_upcoming = [x.serialize() for x in list(future)]
         
         # athlete - recently completed
         past = all_results.filter(completed = True)
-        re_com = past.order_by('-workout__workout_date')[:3]
+        re_com = past.order_by('-workout__workout_date').order_by('-workout__workout_date')[:5]
         serialized_past = [x.serialize() for x in list(re_com)]
 
         dashboard_data = {
@@ -294,32 +291,6 @@ def getworkouts(request,id):
         return JsonResponse(serialize, status=200, safe=False)
     else:
         return JsonResponse({"message": "Fatal Error"}, status=400)
-
-def new_workout(request,id):
-    result = WorkoutResult.objects.get(id = resultID)
-
-    # get form data
-    # need the following data
-    # for ATHLETE 
-    # for WORKOUT_DATE
-    # workout_name
-    # array of exercises
-    # array of reps
-    # array of targets
-    # if based_on_template
-
-    # save workout
-        # workout.save()
-
-    # initialise workout result
-        # new_result = WorkoutResult(athlete=ATHLETE, workout=WORKOUT)
-        # new_result.save()
-    # if multiple athletes
-        # foreach athlete
-        # new_result = WorkoutResult(athlete=ATHLETE, workout=WORKOUT)
-        # new_result.save()
-    pass
-
 
 @csrf_exempt
 def single_workout(request, id):

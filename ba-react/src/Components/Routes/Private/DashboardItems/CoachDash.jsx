@@ -43,7 +43,7 @@ function CoachDash() {
                 <>
                     {keys.map((card, index) => (
                         <Col xs={12} md={6} key={index}>
-                            <div className="border m-3 dash-card">
+                            <div className={`border m-3 dash-card ${(card==="today" || card==="pending_athlete") && 'dash-card-scroll'}`}>
                                 <div className="h4 py-3 px-2 text-center border">
                                     {title[index]}
                                 </div>

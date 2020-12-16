@@ -43,12 +43,11 @@ function WorkOut({ isAuth }) {
         results: ""
     }]) {
         let temp = { ...inputForm }
-        
+
         // let repeated = []
         // repeated.push(item[0])
-        console.log(item)
         let arr = []
-        item.forEach((itemA,index)=>{
+        item.forEach((itemA, index) => {
             arr.push([
                 {
                     exercise: "",
@@ -61,15 +60,14 @@ function WorkOut({ isAuth }) {
                 }
             ])
         })
-        item.forEach((itemB,indexB)=>{
-        console.log(arr[0])
-           arr[indexB].exercise = itemB.exercise
-           arr[indexB].reps = itemB.reps
-           arr[indexB].rests = itemB.rests
-           arr[indexB].targets = itemB.targets
-           arr[indexB].units = itemB.units
-           arr[indexB].comments = itemB.comments
-           arr[indexB].results = itemB.results
+        item.forEach((itemB, indexB) => {
+            arr[indexB].exercise = itemB.exercise
+            arr[indexB].reps = itemB.reps
+            arr[indexB].rests = itemB.rests
+            arr[indexB].targets = itemB.targets
+            arr[indexB].units = itemB.units
+            arr[indexB].comments = itemB.comments
+            arr[indexB].results = itemB.results
         })
         temp.sets.splice(i + 1, 0, arr)
         setForm(temp)
@@ -221,7 +219,6 @@ function WorkOut({ isAuth }) {
         getAthletes();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
     return (
         <Container className="p-5">
             <Row className="mb-3">

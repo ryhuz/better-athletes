@@ -56,7 +56,10 @@ a.red-shadow:hover, a>.red-shadow:hover{
   font-size: 1.7rem;
   font-weight:300;
 }
-
+.display-7{
+  font-size: 1.2rem;
+  font-weight:300;
+}
 .navbar{
   background-image: linear-gradient(to bottom right, #5a5f63, #000000);
 }
@@ -71,9 +74,14 @@ button.btn-main:hover, .btn.btn-main:hover {
 }
 
 .dash-card {
-  min-height: 23rem;
+  height: 23rem;
   background-color: rgba(80, 76, 76, 0.425);
   box-shadow: 3px 5px 30px 5px #ffffff54;
+}
+
+.dash-card-scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .cal-container {
