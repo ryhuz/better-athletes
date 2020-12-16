@@ -10,7 +10,7 @@ function NavBarLoggedIn() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="/betterathletes/Club" className="border-right px-3">
+                        <Nav.Link href="/betterathletes/myclub" className="border-right px-3">
                             Club(Athlete List)
                         </Nav.Link>
                         <Nav.Link href="/betterathletes/view_workout" className="border-right px-3">

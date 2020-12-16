@@ -15,7 +15,7 @@ function CalendarDisplay() {
         currWeek: [],
         nextWeek: []
     })
-    id = 2  // USE PARAMSSSS ------------------------------
+    let id = 2  // USE PARAMSSSS ------------------------------
     useEffect(() => {
         function getCalendar() {
             let prev = []

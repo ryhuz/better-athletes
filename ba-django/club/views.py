@@ -187,7 +187,27 @@ def dashboard(request):
 
     return JsonResponse(dashboard_data, status=200, safe=False)
 
+@api_view(['GET','PUT'])
 def profile(request, id):
+    # if request.method == "PUT":
+    #     pass
+    if request.method == "PUT":
+        user_profile= UserDetail.objects.get(base_user__id=id)
+        club = Club.objects.get(club_name=request.data['club'])
+        user_profile.club = club
+        user_profile.gender = request.data['gender']
+        user_profile.dob = request.data['dob']
+        user_profile.location = request.data['location']
+        if request.data['public_workouts'] == "true":
+            user_profile.public_workouts = True
+        else:
+            user_profile.public_workouts = False
+        user_profile.save()
+        return JsonResponse({
+        "message": "sucess"
+        }, status=200, safe=False)
+    
+
     try:
         user_profile = UserDetail.objects.get(base_user__id=id)
 
@@ -225,9 +245,10 @@ def single_club(request):
 
     club = user.club.serialize()
     members = UserDetail.objects.filter(club=user.club)
+    print(members)
     coaches = [x.serialize_for_club() for x in members.filter(is_coach=True)]
     athletes = [x.serialize_for_club() for x in members.filter(is_coach=False)]
-
+   
     month = datetime.now().month
     workouts_this_month = WorkoutResult.objects.filter(athlete__in=(x.base_user for x in members), workout__workout_date__month=month, completed=True)
 
