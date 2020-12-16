@@ -132,8 +132,6 @@ function WorkOut() {
             let formated_date = date.year+"-"+date.month+"-"+date.day
             djangoFormVersion.workout_date = formated_date
         }
-        
-        
 
         inputForm.sets.forEach(set => {
             let exerciseSet = []
@@ -172,8 +170,6 @@ function WorkOut() {
             djangoFormVersion.comments.push(commentsSet)
             djangoFormVersion.results.push(resultsSet)
         })
-
-        console.log(djangoFormVersion)
         try {
             let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
                 headers: {
@@ -191,8 +187,6 @@ function WorkOut() {
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
-
-
 
     useEffect(() => {
         async function getAthletes() {
