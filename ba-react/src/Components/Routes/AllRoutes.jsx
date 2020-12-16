@@ -75,7 +75,7 @@ function AllRoutes() {
   return (
     <Router>
       {isAuth.valid ?
-        <NavBarLoggedIn username={isAuth.user} user_id={isAuth.user_id}/> :
+        <NavBarLoggedIn coach={isAuth.coach} username={isAuth.user} user_id={isAuth.user_id}/> :
         <NavBarNotLoggedIn />}
       <Switch>
         <Route path="/" exact>
