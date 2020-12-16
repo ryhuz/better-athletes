@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 
 function AthDashItems({ data, empty }) {
-
+    console.log(data)
     return (
         <>
             {data.length ?
@@ -19,7 +19,7 @@ function AthDashItems({ data, empty }) {
                         <Col key={el.result_id}>
                             <Row>
                                 <Col className="">
-                                    <NavLink className="h6 nav-link" to={`betterathletes/view_workout/${el.workout_id}`}>
+                                    <NavLink className="h6 nav-link" to={`view_workout/${el.result_id}`}>
                                         {el.workout_name}
                                     </NavLink>
                                 </Col>
@@ -27,7 +27,7 @@ function AthDashItems({ data, empty }) {
                                     <div className="pt-2">{el.workout_date}</div>
                                 </Col>
                                 <Col className="text-center ">
-                                    <NavLink className="btn btn-main btn-sm mt-1" to={`betterathletes/view_workout/${el.workout_id}`}>View Workout</NavLink>
+                                    <NavLink className="btn btn-main btn-sm mt-1" to={`view_workout/${el.result_id}`}>View Workout</NavLink>
                                 </Col>
                             </Row>
                         </Col>

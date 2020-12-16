@@ -7,7 +7,7 @@ import axios from "axios";
 
 function WorkOut() {
     const [selectedOption, setSelectedOption] = useState(null);
-    
+
     const [athletes, setAthletes] = useState([])
     const [date, setDate] = useState(null)
     const [inputForm, setForm] = useState(
@@ -28,34 +28,54 @@ function WorkOut() {
                 ]
             ]
         })
-    
+
     const animatedComponents = makeAnimated();
     // console.log(selectedOption)
 
-    function AddSet(i, item){
+    function AddSet(i, item = [{
+        exercise: "",
+        reps: "",
+        rests: "",
+        targets: "",
+        units: "",
+        comments: "",
+        results: ""
+    }]) {
         let temp = { ...inputForm }
+        
+        // let repeated = []
+        // repeated.push(item[0])
         console.log(item)
-        if (item === undefined){
-            
-            item = [{
-                exercise: "",
-                reps: "",
-                rests: "",
-                targets: "",
-                units: "",
-                comments: "",
-                results: ""
-            }]
-            temp.sets.splice(i+1, 0, item)
-            setForm(temp)
-        } else if (item !== undefined) {
-            // let cloned_item = [{...item}]
-            // console.log(item)
-            // console.log(cloned_item)
-            temp.sets.splice(i+1, 0, item)
-            setForm(temp)
-        }      
-    } 
+        let arr = []
+        item.forEach((itemA,index)=>{
+            arr.push([
+                {
+                    exercise: "",
+                    reps: "",
+                    rests: "",
+                    targets: "",
+                    units: "",
+                    comments: "",
+                    results: ""
+                }
+            ])
+        })
+        item.forEach((itemB,indexB)=>{
+        console.log(arr[0])
+           arr[indexB].exercise = itemB.exercise
+           arr[indexB].reps = itemB.reps
+           arr[indexB].rests = itemB.rests
+           arr[indexB].targets = itemB.targets
+           arr[indexB].units = itemB.units
+           arr[indexB].comments = itemB.comments
+           arr[indexB].results = itemB.results
+        })
+        console.log(item)
+        console.log(arr)
+
+        temp.sets.splice(i + 1, 0, arr)
+        setForm(temp)
+    }
 
 
     function RemoveSet(i) {
@@ -66,7 +86,7 @@ function WorkOut() {
 
     function AddInput(i, ii) {
         let temp = { ...inputForm }
-        temp.sets[i].splice(ii+1, 0, {
+        temp.sets[i].splice(ii + 1, 0, {
             exercise: "",
             reps: "",
             rests: "",
@@ -126,10 +146,10 @@ function WorkOut() {
         }
 
 
-        if (date === null){
+        if (date === null) {
             djangoFormVersion.workout_date = ""
         } else {
-            let formated_date = date.year+"-"+date.month+"-"+date.day
+            let formated_date = date.year + "-" + date.month + "-" + date.day
             djangoFormVersion.workout_date = formated_date
         }
 
@@ -196,9 +216,9 @@ function WorkOut() {
                         'Authorization': "JWT " + localStorage.getItem('token'),
                         'Content-Type': 'application/json',
                         'accept': "application/json"
-                    }          
+                    }
                 });
-                setAthletes(response.data.athletes) 
+                setAthletes(response.data.athletes)
             } catch (error) {
                 return error
             }
@@ -247,17 +267,17 @@ function WorkOut() {
                                     closeMenuOnSelect={false}
                                     components={animatedComponents}
                                     options={athletes}
-                                    getOptionLabel ={(option)=>option.name}
-                                    getOptionValue ={(option)=>option.name}
+                                    getOptionLabel={(option) => option.name}
+                                    getOptionValue={(option) => option.name}
                                     onChange={setSelectedOption}
                                 />
                             </Col>
                         </Row>
                         {/* ------------------- EACH SET ------------------- */}
                         {inputForm.sets.map((item, index) => (
-                            <>
+                            <div key={index}>
                                 <hr />
-                                <Form.Group className="my-5 form_set" key={index}>
+                                <Form.Group className="my-5 form_set" >
                                     <Row className="no-gutters">
                                         <Col md="auto">
                                             <h4>SET {index + 1}</h4>
@@ -278,6 +298,7 @@ function WorkOut() {
                                                 <Form.Control
                                                     name="exercise"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={`${index}-${index2}`}
                                                     value={item2.exercise}
                                                     placeholder="Exercise type" />
                                             </Col>
@@ -285,6 +306,7 @@ function WorkOut() {
                                                 <Form.Control
                                                     name="reps"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={index2}
                                                     value={item2.reps}
                                                     placeholder="Reps" />
                                             </Col>
@@ -292,6 +314,7 @@ function WorkOut() {
                                                 <Form.Control
                                                     name="rests"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={index2}
                                                     value={item2.rests}
                                                     placeholder="Rest" />
                                             </Col>
@@ -299,6 +322,7 @@ function WorkOut() {
                                                 <Form.Control
                                                     name="targets"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={index2}
                                                     value={item2.targets}
                                                     placeholder="Target" />
                                             </Col>
@@ -334,7 +358,7 @@ function WorkOut() {
                                         </Col>
                                     </Row>
                                 </Form.Group>
-                            </>
+                            </div>
                         ))}
                     </Form>
 
@@ -359,24 +383,24 @@ export default WorkOut
 
 
 
-        // async function getData() {
-        //     try {
-        //         let response = await axios.get("http://localhost:8000/api/workouts", {
-        //             headers: {
-        //                 'Authorization': "JWT " + localStorage.getItem('token'),
-        //                 'Content-Type': 'application/json',
-        //                 'accept': "application/json"
-        //             }
-                   
-        //         });
-        //         console.log(response)
-        //     } catch (error) {
-        //         return error
-        //     }
-        // }
-        // getData();
+// async function getData() {
+//     try {
+//         let response = await axios.get("http://localhost:8000/api/workouts", {
+//             headers: {
+//                 'Authorization': "JWT " + localStorage.getItem('token'),
+//                 'Content-Type': 'application/json',
+//                 'accept': "application/json"
+//             }
 
-                                        {/* <DropdownButton
+//         });
+//         console.log(response)
+//     } catch (error) {
+//         return error
+//     }
+// }
+// getData();
+
+{/* <DropdownButton
                                     id="dropdown-basic-button"
                                     variant="info"
                                     title="Athletes"
