@@ -49,7 +49,7 @@ function AthleteDash() {
                                 </div>
                                 <Row xs={1} className="px-4 pt-3">
                                     {Object.keys(dashData).length ?
-                                        <AthDashItems data={dashData[card]} empty={empty[index]} /> :
+                                        <AthDashItems data={dashData[card]} empty={empty[index]} key={card}/> :
                                         <>Loading....</>
                                     }
                                 </Row>

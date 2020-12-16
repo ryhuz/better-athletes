@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 
-function AthDashItems({ data, empty }) {
+function AthDashItems({ data, empty, card }) {
 
     return (
         <>
@@ -14,6 +14,7 @@ function AthDashItems({ data, empty }) {
                             <Col><h6>Date</h6></Col>
                             <Col></Col>
                         </Row>
+                        <span className="text-danger small mx-3">*Pending coach review</span>
                     </Col>
                     {data.map(el => (
                         <Col key={el.result_id}>
@@ -28,6 +29,9 @@ function AthDashItems({ data, empty }) {
                                 </Col>
                                 <Col className="text-center ">
                                     <NavLink className="btn btn-main btn-sm mt-1" to={`betterathletes/view_workout/${el.workout_id}`}>View Workout</NavLink>
+                                    {(card === 'recent_completed' && !el.reviewed) &&
+                                        <span className="text-danger small mx-3">*</span>
+                                    }
                                 </Col>
                             </Row>
                         </Col>
