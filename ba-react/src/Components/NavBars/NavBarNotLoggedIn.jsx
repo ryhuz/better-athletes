@@ -10,9 +10,6 @@ function NavBarNotLoggedIn() {
             <Navbar.Collapse id="basic-navbar-nav">
                 <ul className="navbar-nav ml-auto mr-3">
                     <div className="h6 mx-4">
-                        <NavLink to="/ranking" className="red-shadow">Ranking</NavLink>
-                    </div>
-                    <div className="h6 mx-4">
                         <NavLink to="/features" className="red-shadow">Features</NavLink>
                     </div>
                     <div className="h6 mx-4">
