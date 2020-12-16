@@ -200,6 +200,17 @@ class TrackedAthlete(models.Model):
     def __str__(self):
         return self.coach.username + " tracking " + self.athlete.username
     
+    def serialize(self):
+        return {
+            "coach": self.coach.first_name+" "+self.coach.last_name,
+            "coach_id": self.coach.id,
+            "athlete": self.athlete.firstname+" "+self.athlete.lastname,
+            "athlete_id": self.athlete.id,
+            "notes": self.notes
+        }
+    
+    
+    
 class WorkoutComment(models.Model):
     comment = models.TextField(null=True)
     workout = models.ForeignKey(Workout, related_name=("comments"),on_delete=models.CASCADE, null=True)

@@ -33,29 +33,46 @@ function WorkOut({ isAuth }) {
 
     const animatedComponents = makeAnimated();
 
-    function AddSet(i, item) {
+    function AddSet(i, item = [{
+        exercise: "",
+        reps: "",
+        rests: "",
+        targets: "",
+        units: "",
+        comments: "",
+        results: ""
+    }]) {
         let temp = { ...inputForm }
+        
+        // let repeated = []
+        // repeated.push(item[0])
         console.log(item)
-        if (item === undefined) {
-
-            item = [{
-                exercise: "",
-                reps: "",
-                rests: "",
-                targets: "",
-                units: "",
-                comments: "",
-                results: ""
-            }]
-            temp.sets.splice(i + 1, 0, item)
-            setForm(temp)
-        } else if (item !== undefined) {
-            // let cloned_item = [{...item}]
-            // console.log(item)
-            // console.log(cloned_item)
-            temp.sets.splice(i + 1, 0, item)
-            setForm(temp)
-        }
+        let arr = []
+        item.forEach((itemA,index)=>{
+            arr.push([
+                {
+                    exercise: "",
+                    reps: "",
+                    rests: "",
+                    targets: "",
+                    units: "",
+                    comments: "",
+                    results: ""
+                }
+            ])
+        })
+        item.forEach((itemB,indexB)=>{
+        console.log(arr[0])
+           arr[indexB].exercise = itemB.exercise
+           arr[indexB].reps = itemB.reps
+           arr[indexB].rests = itemB.rests
+           arr[indexB].targets = itemB.targets
+           arr[indexB].units = itemB.units
+           arr[indexB].comments = itemB.comments
+           arr[indexB].results = itemB.results
+        })
+        temp.sets.splice(i + 1, 0, arr)
+        setForm(temp)
     }
 
     function RemoveSet(i) {
@@ -260,7 +277,7 @@ function WorkOut({ isAuth }) {
                         {inputForm.sets.map((item, index) => (
                             <div key={index}>
                                 <hr />
-                                <Form.Group className="my-5 form_set">
+                                <Form.Group className="my-5 form_set" >
                                     <Row className="no-gutters">
                                         <Col md="auto">
                                             <h4>SET {index + 1}</h4>
@@ -281,6 +298,7 @@ function WorkOut({ isAuth }) {
                                                 <Form.Control
                                                     name="exercise"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={`${index}-${index2}`}
                                                     value={item2.exercise}
                                                     placeholder="Exercise type" />
                                             </Col>
@@ -288,6 +306,7 @@ function WorkOut({ isAuth }) {
                                                 <Form.Control
                                                     name="reps"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={index2}
                                                     value={item2.reps}
                                                     placeholder="Reps" />
                                             </Col>
@@ -295,6 +314,7 @@ function WorkOut({ isAuth }) {
                                                 <Form.Control
                                                     name="rests"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={index2}
                                                     value={item2.rests}
                                                     placeholder="Rest" />
                                             </Col>
@@ -302,6 +322,7 @@ function WorkOut({ isAuth }) {
                                                 <Form.Control
                                                     name="targets"
                                                     onChange={(e) => ChangeHandler(e, index, index2)}
+                                                    id={index2}
                                                     value={item2.targets}
                                                     placeholder="Target" />
                                             </Col>

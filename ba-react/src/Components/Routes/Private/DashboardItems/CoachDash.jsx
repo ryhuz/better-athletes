@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Row, Col } from 'react-bootstrap'
-import PendingCoachReview from './CoachItems/PendingCoachReview'
-import TodaysAgenda from './CoachItems/TodaysAgenda'
-import PendingAthlete from './CoachItems/PendingAthlete'
-import RecentlyCompleted from './CoachItems/RecentlyCompleted'
+import CoachDashItems from './CoachDashItems'
 
 function CoachDash() {
+    const title = ["Pending Your Review", "Today's Agenda", "Workouts Pending Athlete's Results", 'Recently Completed']
+    const keys = ['pending_coach_review', 'today', 'pending_athlete', 'recent_completed']
+    const empty = ["You're all caught up!", "Nothing on today!", "Your athletes are on the ball!", "No workout records"]
     const [dashData, setDashData] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
 
@@ -32,70 +32,32 @@ function CoachDash() {
     }, [])
     return (
         <>
-        {axiosErr ?
-            /* shows error if can't fetch axios */
-            <Col>
-                <div className="border border-danger m-3">
-                    <div className="h6 mt-2 mx-2 text-center">
-                        Error fetching data
+            {axiosErr ?
+                <Col>
+                    <div className="border border-danger m-3">
+                        <div className="h6 mt-2 mx-2 text-center">
+                            Error fetching data
                     </div>
-                </div>
-            </Col> :
-            <>
-                <Col xs={12} md={6}>
-                    <div className="border m-3">
-                        <div className="h6 mt-2 mx-2">
-                            Pending Your Review
-                        </div>
-                        <Row xs={1}>
-                            {Object.keys(dashData).length ?
-                                <PendingCoachReview data={dashData.pending_coach_review} /> :
-                                <>Loading....</>
-                            }
-                        </Row>
                     </div>
-                </Col>
-                <Col xs={12} md={6}>
-                    <div className="border m-3">
-                        <div className="h6 mt-2 mx-2">
-                            Today's Agenda
-                </div>
-                        <Row xs={1}>
-                            {Object.keys(dashData).length ?
-                                <TodaysAgenda data={dashData.today} /> :
-                                <>Loading....</>
-                            }
-                        </Row>
-                    </div>
-                </Col>
-                <Col xs={12} md={6}>
-                    <div className="border m-3">
-                        <div className="h6 mt-2 mx-2">
-                            Workouts Pending Athlete's Results
-                </div>
-                        <Row xs={1}>
-                            {Object.keys(dashData).length ?
-                                <PendingAthlete data={dashData.pending_athlete} /> :
-                                <>Loading....</>
-                            }
-                        </Row>
-                    </div>
-                </Col>
-                <Col xs={12} md={6}>
-                    <div className="border m-3">
-                        <div className="h6 mt-2 mx-2">
-                            Recently Completed
-                </div>
-                        <Row xs={1}>
-                            {Object.keys(dashData).length ?
-                                <RecentlyCompleted data={dashData.recent_completed} /> :
-                                <>Loading....</>
-                            }
-                        </Row>
-                    </div>
-                </Col>
-            </>
-        }
+                </Col> :
+                <>
+                    {keys.map((card, index) => (
+                        <Col xs={12} md={6} key={index}>
+                            <div className="border m-3 dash-card">
+                                <div className="h4 py-3 px-2 text-center border">
+                                    {title[index]}
+                                </div>
+                                <Row xs={1} className="px-4 pt-3">
+                                    {Object.keys(dashData).length ?
+                                        <CoachDashItems data={dashData[card]} empty={empty[index]} key={card}/> :
+                                        <>Loading....</>
+                                    }
+                                </Row>
+                            </div>
+                        </Col>
+                    ))}
+                </>
+            }
         </>
     )
 }

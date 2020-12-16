@@ -2,8 +2,7 @@ import React from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 
-function AthDashItems({ data, empty, card }) {
-
+function CoachDashItems({ data, empty, card }) {
     return (
         <>
             {data.length ?
@@ -14,9 +13,6 @@ function AthDashItems({ data, empty, card }) {
                             <Col><h6>Date</h6></Col>
                             <Col></Col>
                         </Row>
-                        {card === 'recent_completed' &&
-                            <span className="text-danger">*<span className="small">Pending coach review</span></span>
-                        }
                     </Col>
                     {data.map(el => (
                         <Col key={el.result_id}>
@@ -31,9 +27,6 @@ function AthDashItems({ data, empty, card }) {
                                 </Col>
                                 <Col className="text-center ">
                                     <NavLink className="btn btn-main btn-sm mt-1" to={`view_workout/${el.workout_id}`}>View Workout</NavLink>
-                                    {(card === 'recent_completed' && !el.reviewed) &&
-                                        <span className="text-danger small mx-3">*</span>
-                                    }
                                 </Col>
                             </Row>
                         </Col>
@@ -47,4 +40,4 @@ function AthDashItems({ data, empty, card }) {
     )
 }
 
-export default AthDashItems
+export default CoachDashItems

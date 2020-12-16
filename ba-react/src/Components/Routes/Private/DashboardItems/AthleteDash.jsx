@@ -29,7 +29,6 @@ function AthleteDash() {
         }
         retrieve()
     }, [])
-    console.log(dashData)
     return (
         <>
             {axiosErr ?
