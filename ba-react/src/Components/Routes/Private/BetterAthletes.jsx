@@ -1,13 +1,11 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
-import { Container } from "react-bootstrap"
 import AddWorkOut from "./Workout/AddWorkOut"
 import ViewWorkOut from "./Workout/ViewWorkOut"
 import Dashboard from './Dashboard';
 import AthleteProfile from './AthleteProfile';
 import ViewClub from './ViewClub';
 import CalendarDisplay from './Calendar/CalendarDisplay'
-import EditProfile from './EditProfile'
 
 function BetterAthletes({ isAuth }) {
     return (
@@ -17,7 +15,7 @@ function BetterAthletes({ isAuth }) {
                     <Router>
                         <Switch>
                             <Route exact path="/betterathletes/add_new_workout">
-                                <AddWorkOut isAuth={isAuth}/>
+                                <AddWorkOut isAuth={isAuth} />
                             </Route>
                             <Route exact path="/betterathletes/view_workout/:id">
                                 <ViewWorkOut />

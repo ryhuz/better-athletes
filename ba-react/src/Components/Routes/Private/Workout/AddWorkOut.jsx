@@ -47,7 +47,6 @@ function WorkOut({ isAuth }) {
 
         // let repeated = []
         // repeated.push(item[0])
-        console.log(item)
         let arr = []
         item.forEach((itemA, index) => {
             arr.push([
@@ -63,7 +62,6 @@ function WorkOut({ isAuth }) {
             ])
         })
         item.forEach((itemB, indexB) => {
-            console.log(arr[0])
             arr[indexB].exercise = itemB.exercise
             arr[indexB].reps = itemB.reps
             arr[indexB].rests = itemB.rests

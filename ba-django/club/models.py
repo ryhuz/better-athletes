@@ -185,7 +185,8 @@ class WorkoutResult(models.Model):
             "results": self.results,
             "reps": self.workout.reps,
             "rests": self.workout.rests,
-            "target": self.workout.targets
+            "target": self.workout.targets,
+            "completed": self.completed,
         }
     
 class SavedWorkout(models.Model):
