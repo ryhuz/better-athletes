@@ -47,9 +47,11 @@ class UserDetail(models.Model):
             'club': self.club.club_name,
             'location': self.location,
             'age': (date.today() - self.dob) // timedelta(days=365.2425),
-            'gender': self.gender
+            'gender': self.gender,
+            'public_workouts': self.public_workouts
             
         }
+
     def serialize_for_club(self):
         return {
             'name': self.base_user.first_name + " " + self.base_user.last_name,
