@@ -21,12 +21,14 @@ function AthleteProfile() {
         profile: {}
     })
     const [edit, setEdit] = useState(false);
+    const [notes, setNotes] = useState(false);
     const [track, setTrack] = useState({
         found: false,   
     })
 
     useEffect(() => {
         setEdit(false);
+        setNotes(false);
         getProfile();
         if(is_coach){
             getTrack();

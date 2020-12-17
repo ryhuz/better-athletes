@@ -55,6 +55,22 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
             <h1 className="mb-3 display-4">{profile.profile.name.trim() ? profile.profile.name: profile.profile.username }</h1>
             <Row>
                 <Col>
+                    <Form.Row className="mb-3">
+                    <Form.Label>Edit First Name</Form.Label>
+                    <Form.Control
+                        onChange={changeHandler}
+                        name="first_name"
+                        type="text"
+                        value={userprofile.first_name}
+                    />
+                    <Form.Label>Edit Last Name</Form.Label>
+                    <Form.Control
+                        onChange={changeHandler}
+                        name="last_name"
+                        type="text"
+                        value={userprofile.last_name}
+                    />
+                    </Form.Row>
                     <Form.Row>
                     <Form.Label>Edit Club</Form.Label>
                     <Form.Control 

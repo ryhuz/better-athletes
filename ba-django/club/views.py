@@ -238,8 +238,6 @@ def dashboard(request):
 
 @api_view(['GET','PUT'])
 def profile(request, id):
-    # if request.method == "PUT":
-    #     pass
     if request.method == "PUT":
         user_profile= UserDetail.objects.get(base_user__id=id)
         club = Club.objects.get(club_name=request.data['club'])
@@ -251,6 +249,8 @@ def profile(request, id):
             user_profile.public_workouts = True
         else:
             user_profile.public_workouts = False
+        user_profile.base_user.first_name = request.data['first_name']
+        user_profile.base_user.last_name = request.data['last_name']
         user_profile.save()
         return JsonResponse({
         "message": "sucess"
