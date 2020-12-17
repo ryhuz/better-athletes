@@ -92,7 +92,7 @@ function AthleteProfile() {
                                     }
                                 </Row>
                                 <Row className="justify-content-center">
-                                    {(is_coach || profile.profile.public || id == jwt_decode(token).user_id ) &&
+                                    {(track.found || profile.profile.public || id == jwt_decode(token).user_id ) &&
                                     <Link to={`/betterathletes/calendar/${id}`} >
                                         <Button>
                                             Workout Calendar

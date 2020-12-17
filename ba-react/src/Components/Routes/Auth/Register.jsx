@@ -4,6 +4,8 @@ import { Col, Form, Container, Button } from "react-bootstrap";
 import { axiosInstance } from "../../../func/axiosApi"
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import * as Yup from "yup";
+import { useFormik } from "formik";
 
 function Register({ isAuth, setAuth }) {
   const [user, setUser] = useState({});
@@ -23,13 +25,87 @@ function Register({ isAuth, setAuth }) {
     getClub();
   }, [])
 
-  function handleChange(e) {
-    setUser((user) => ({ ...user, [e.target.name]: e.target.value }));
-  }
+  let Schema = Yup.object().shape({
+    firstname: Yup.string()
+      .required("Required")
+      .min(1, "Specified field is too short")
+      .max(70, "Specified field is too long"),
+    lastname: Yup.string()
+      .min(1, "Specified field is too short")
+      .max(70, "Specified field is too long")
+      .required("Required"),
+
+    username: Yup.string()
+      .min(2, "Specified field is too short")
+      .max(70, "Specified field is too long")
+      .required("Required"),
+
+    email: Yup.string().email("Invalid email").required("Required"),
+
+    password: Yup.string()
+      .label("Password")
+      .required("Required")
+      .min(2, "Password is too short"),
+
+    password2: Yup.string()
+      .oneOf([yup.ref('password')], 'Passwords do not match')
+      .required('Confirm password is required'),
+
+    dob: Yup.date()
+      .required('Date of birth is required'),
+
+    gender: Yup.string()
+    .required('Gender is required'),
+
+    location: Yup.string()
+    .required('Gender is required')
+    .min(1, "Specified field is too short")
+    .max(50, "Specified field is too long"),
+
+    phone: Yup.string()
+      .required('Phone number is required'),
+
+    height: Yup.number()
+      .require('Height is required'),
+
+    weight: Yup.number()
+      .require('Height is required'),
+      
+  });
+
+  const {
+    handleSubmit,
+    handleChange,
+    errors,
+    values,
+    touched,
+  } = useFormik({
+    initialValues: {
+      firstname: "",
+      lastname: "",
+      username: "",
+      email: "",
+      password: "",
+      password2: "",
+      dob: "",
+      gender: "",
+      location: "",
+      phone: "",
+      height: "",
+      weight: "",
+      club: "",
+      public_workouts: "",
+      is_coach: "",
+    },
+    validationSchema: Schema,
+    onSubmit: (values) => {
+      console.log(values);
+      // submit(values);
+    },
+  });
 
   //submits and sends user creation request to Django
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function submit(user) {
     try {
       console.log(user);
       await axios.post("http://localhost:8000/api/signup", user);
