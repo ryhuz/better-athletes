@@ -8,6 +8,10 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 function Register({ isAuth, setAuth }) {
+  const [userExists, setUserExists] = useState({
+    checking: false,
+    found: false
+  });
   const [clubErr, setClubErr] = useState(false);
   const [club, setClub] = useState();
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
@@ -140,6 +144,25 @@ function Register({ isAuth, setAuth }) {
     }
   }
 
+  async function checkUserExists(username) {
+    setUserExists({
+      found: false,
+      checking: true,
+    })
+    let exists = await axios.put("http://localhost:8000/api/user_exists", { username: username });
+    if (exists.data.found) {
+      setUserExists({
+        checking: false,
+        found: true
+      });
+    } else {
+      setUserExists({
+        checking: false,
+        found: false,
+      })
+    }
+  }
+
   if (isAuth.valid) {
     return <Redirect to="betterathletes/dashboard" />
   }
@@ -162,6 +185,7 @@ function Register({ isAuth, setAuth }) {
                   onChange={handleChange}
                   name="username"
                   values={values.username}
+                  onBlur={() => checkUserExists(values.username)}
                   className={
                     touched.username && errors.username ? `is-invalid` : null
                   }
@@ -169,6 +193,8 @@ function Register({ isAuth, setAuth }) {
                 {touched.username && errors.username ? (
                   <div className="invalid-feedback">{errors.username}</div>
                 ) : null}
+                {userExists.found && <div className="text-danger text-small">Username already exists</div>}
+                {userExists.checking && <div className="text-success text-small">Checking...</div>}
               </Col>
               {/* Email Input */}
               <Col className="mx-3">

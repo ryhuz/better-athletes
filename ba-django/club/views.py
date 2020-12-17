@@ -32,6 +32,14 @@ def not_found(request):
 class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
 
+    def put(self, request, format='json'):
+        print(request.data)
+        try:
+            found = User.objects.get(username=request.data['username'])
+            return JsonResponse({"found": True}, status=200, safe=False)
+        except Exception as e:
+            return JsonResponse({"found": False}, status=200, safe=False)
+
     def post(self, request, format='json'):
         # serialize and check for the basic user details
         serializer = UserSerializer(data=request.data)
@@ -432,4 +440,3 @@ def tracked_athletes(request, id):
         return JsonResponse({"found":True}, status=200, safe=False)
     else:
         return JsonResponse({"found": False}, status=204, safe=False)
-    
