@@ -50,7 +50,10 @@ a.red-shadow:hover, a>.red-shadow:hover{
   font-size: 2.3rem;
   font-weight:300;
 }
-
+.bigger-text2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
 .display-5{
   font-size: 2.5rem;
   font-weight:300;
