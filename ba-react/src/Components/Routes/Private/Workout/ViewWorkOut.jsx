@@ -1,9 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
 import axios from "axios";
+import { axiosInstance } from '../../../../func/axiosApi';
 
-function ViewWorkOut() {
+function ViewWorkOut({isAuth}) {
     const [workout, setWorkout] = useState({ results: [] })
     const [results, setResults] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
@@ -273,6 +274,16 @@ function ViewWorkOut() {
         getWorkout();
     }, [])
 
+    async function delWorkout(){
+        try {
+            let resp = await axiosInstance.delete(`singleworkout/${id}`);
+            if(resp){
+                console.log("Please help to redirect");
+            };
+        } catch (error) {
+            alert("Something went wrong!");
+        };
+    };
 
     return (
         <Container className="bg-contrast px-4">
@@ -281,9 +292,9 @@ function ViewWorkOut() {
                 <Col md={6}>
                     <h4 className="title display-5">{workout.workout_name}</h4>
                 </Col>
-                <Col md={6} className="d-flex justify-content-end mt-2">
+                {isAuth.coach&&<Col md={6} className="d-flex justify-content-end mt-2">
                     <Button variant="main" onClick={handleShow}>Delete Workout</Button>
-                </Col>
+                </Col>}
                 <Col md={12}>
                     <h4 className="display-6">{workout.athlete_name}</h4>
                 </Col>
@@ -382,16 +393,16 @@ function ViewWorkOut() {
                     </Col>
                 </Row>
             </Form>
-            <Modal show={show} onHide={handleClose} style={{backgroundColor:"#212529"}}>
-                <Modal.Header closeButton>
+            <Modal show={show} onHide={handleClose} >
+                <Modal.Header style={{backgroundColor:"#0d0e10"}} closeButton>
                     <Modal.Title>Delete WorkOut</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Do you really wish to delete this workout?</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                <Modal.Body style={{backgroundColor:"#0d0e10"}}>Do you really wish to delete this workout?</Modal.Body>
+                <Modal.Footer style={{backgroundColor:"#0d0e10"}}>
+                    <Button variant="danger" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={delWorkout}>
                         Confirm
                     </Button>
                 </Modal.Footer>
