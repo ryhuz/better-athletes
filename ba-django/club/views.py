@@ -137,7 +137,6 @@ class Workouts(APIView):
         rests =  body['rests']
         targets =  body['targets']
         workout_date = body['workout_date']
-
         # ======save for WorkoutResult Modal=======#
         
 
@@ -252,22 +251,30 @@ def dashboard(request):
 @api_view(['GET','PUT'])
 def profile(request, id):
     if request.method == "PUT":
-        user_profile= UserDetail.objects.get(base_user__id=id)
-        club = Club.objects.get(club_name=request.data['club'])
-        user_profile.club = club
-        user_profile.gender = request.data['gender']
-        user_profile.dob = request.data['dob']
-        user_profile.location = request.data['location']
-        if request.data['public_workouts'] == "true":
-            user_profile.public_workouts = True
-        else:
-            user_profile.public_workouts = False
-        user_profile.base_user.first_name = request.data['first_name']
-        user_profile.base_user.last_name = request.data['last_name']
-        user_profile.save()
-        return JsonResponse({
-        "message": "sucess"
-        }, status=200, safe=False)
+        try:
+            user_profile= UserDetail.objects.get(base_user__id=id)
+            user = User.objects.get(pk=id)
+            club = Club.objects.get(club_name=request.data['club'])
+            user_profile.club = club
+            user_profile.gender = request.data['gender']
+            user_profile.dob = request.data['dob']
+            user_profile.location = request.data['location']
+            if request.data['public_workouts'] == "true":
+                user_profile.public_workouts = True
+            else:
+                user_profile.public_workouts = False
+            user.first_name = request.data['first_name']
+            user.last_name = request.data['last_name']
+            user_profile.save()
+            if user_profile:
+                user.save()
+            return JsonResponse({
+            "message": "sucess"
+            }, status=200, safe=False)
+        except:
+            return JsonResponse({"message":"something went wrong"}, status=400, safe=False)
+           
+        
     
 
     try:
@@ -408,11 +415,22 @@ def workout_comment(request,id):
     
     return JsonResponse({"message" : "Data saved"}, status=200)
     
-@api_view(['GET','POST'])
+@api_view(['GET', 'PUT','POST'])
 def tracked_athletes(request, id):
     token = request.headers['Authorization'].split(" ")[1]
     decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     coach_id = decoded_token['user_id']
+
+    if request.method == "PUT":
+        try:
+            notes = TrackedAthlete.objects.get(pk=id)
+            content = request.body.decode('utf-8')
+            notes.notes = content
+            notes.save()
+            return JsonResponse({"message":"sucess"}, status=200, safe=False)
+        except expression as identifier:
+            return JsonResponse({"message":"something went wrong"}, status=400, safe=False)
+        
 
     if request.method == "POST":
         tracked_ath = TrackedAthlete.objects.filter(coach_id=coach_id,athlete_id=id)
