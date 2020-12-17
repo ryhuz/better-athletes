@@ -290,6 +290,12 @@ function WorkOut({ isAuth }) {
     if (isSubmit) {
         return <Redirect to="/betterathletes/dashboard" />
     }
+
+    function dateHandler(e){
+        setDate(e.target.value);
+    }
+
+    console.log(date);
     return (
         <Container className="p-5">
             <Row className="mb-3">
@@ -311,15 +317,11 @@ function WorkOut({ isAuth }) {
                             </Col>
                             {/* Select Date */}
                             <Col className="text-center" md='auto'>
-                                <DatePicker
-                                    inputClassName="form-control date-picker"
+                                <Form.Control
                                     value={date}
-                                    onChange={setDate}
+                                    onChange={dateHandler}
                                     inputPlaceholder="Workout Day"
-                                    shouldHighlightWeekends
-                                    colorPrimary="#000000"
-                                    calendarPopperPosition="bottom"
-                                />
+                                    type='date'/>
                             </Col>
                             {/* Select Athlete to assign */}
                             <Col className="px-3">
