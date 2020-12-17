@@ -49,7 +49,8 @@ class UserDetail(models.Model):
             'age': (date.today() - self.dob) // timedelta(days=365.2425),
             'gender': self.gender,
             'public_workouts': self.public_workouts,
-            'dob': self.dob
+            'dob': self.dob,
+            'is_coach': self.is_coach,
             
         }
 

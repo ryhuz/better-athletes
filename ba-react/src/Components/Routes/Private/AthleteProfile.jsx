@@ -26,6 +26,7 @@ function AthleteProfile() {
     })
 
     useEffect(() => {
+        setEdit(false);
         getProfile();
         if(is_coach){
             getTrack();
@@ -40,7 +41,6 @@ function AthleteProfile() {
             setProfile(e.response.data)
         }
     }
-    console.log(profile);
 
     async function getTrack(){
         try {
@@ -59,7 +59,6 @@ function AthleteProfile() {
             console.log(e.response.data)
         }
     }
-    
     return (
         <Container className="p-5">
             {profile.found?
@@ -75,7 +74,7 @@ function AthleteProfile() {
                                         <div className="my-2"><u>Club</u></div>
                                         <div className="bigger-text ml-3">{profile.profile.club}</div>
                                         <div className="my-2"><u>Gender</u></div>  
-                                        <div className="bigger-text ml-3">{profile.profile.gender=="F"?"Female":profile.profile.gender=="M"?"Male":"Prefer not to Say"}</div>
+                                        <div className="bigger-text ml-3">{profile.profile.gender==="F"?"Female":profile.profile.gender==="M"?"Male":"Prefer not to Say"}</div>
                                         <div className="my-2"><u>Age</u></div>
                                         <div className="bigger-text ml-3">{profile.profile.age}</div>
                                         <div className="my-2"><u>Location</u></div>
@@ -85,14 +84,14 @@ function AthleteProfile() {
                                         Photo
                                     </Col>
                                 </Row><Row className="justify-content-center">
-                                    {id == jwt_decode(token).user_id &&
+                                    {parseInt(id) === parseInt(jwt_decode(token).user_id) &&
                                     <Button onClick={()=>{setEdit(!edit)}}>
                                         Edit Profile
                                     </Button>
                                     }
                                 </Row>
                                 <Row className="justify-content-center">
-                                    {(track.found || profile.profile.public || id == jwt_decode(token).user_id ) &&
+                                    {(track.found || profile.profile.public || parseInt(id) === parseInt(jwt_decode(token).user_id)) && !profile.profile.is_coach &&
                                     <Link to={`/betterathletes/calendar/${id}`} >
                                         <Button>
                                             Workout Calendar
@@ -104,12 +103,12 @@ function AthleteProfile() {
                                 </>
                                 : <EditProfile getProfile={getProfile} id={id} edit={edit} setEdit={setEdit} profile={profile} />}
                                 <Row className="justify-content-center">
-                                    {jwt_decode(token).is_coach && !profile.profile.is_coach && jwt_decode(token).club == profile.profile.club && !track.found &&
+                                    {jwt_decode(token).is_coach && !profile.profile.is_coach && jwt_decode(token).club === profile.profile.club && !track.found && parseInt(id) !== parseInt(jwt_decode(token).user_id) && 
                                     <Button onClick={submitTrack}>
                                         Track Athlete
                                     </Button>
                                     }
-                                    {jwt_decode(token).is_coach && !profile.profile.is_coach && jwt_decode(token).club == profile.profile.club && track.found &&
+                                    {jwt_decode(token).is_coach && !profile.profile.is_coach && jwt_decode(token).club === profile.profile.club && track.found && parseInt(id) !== parseInt(jwt_decode(token).user_id) &&
                                     <Button onClick={submitTrack}>
                                         Untrack Athlete
                                     </Button>
@@ -119,7 +118,7 @@ function AthleteProfile() {
                                 <Row className="my-3">
                                     <Col>
                                         <div className="display-5 mb-5">Recent Workouts</div>
-                                        {profile.profile.public || id == jwt_decode(token).user_id ?
+                                        {profile.profile.public || parseInt(id) === parseInt(jwt_decode(token).user_id) ?
                                             profile.profile.recent_workouts.length ?
                                                 <>
                                                     {profile.profile.recent_workouts.map((wkout, index) => (

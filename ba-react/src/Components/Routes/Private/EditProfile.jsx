@@ -25,8 +25,8 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
     
       
     function changeHandler(e) {
-        if(e.target.name == "location"){
-            if(e.target.value == ""){
+        if(e.target.name === "location"){
+            if(e.target.value === ""){
                 setError("Location cannot be empty")
             }else{
                 setError();
@@ -36,11 +36,11 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
       }
 
     async function submit(){
-        if(userprofile.location == ""){
+        if(userprofile.location === ""){
             return setError("Please input your location before saving");
         }
         try {
-            let resp = await axiosInstance.put(`profile/${id}`, userprofile);
+            await axiosInstance.put(`profile/${id}`, userprofile);
             setEdit(!edit);
             getProfile();
         } catch (error) {
@@ -62,13 +62,13 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         onChange={changeHandler}
                         name="club">
                         {club && club.map(el => (
-                        el.club_name==userprofile.club? 
+                        el.club_name===userprofile.club? 
                             <>
                             <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
                             </> : ""
                         ))}
                         {club && club.map(el => (
-                        el.club_name!=userprofile.club? 
+                        el.club_name!==userprofile.club? 
                             <>
                             <option key={`key${el.id}`} value={el.id}>{el.club_name}</option>
                             </> : ""
@@ -78,10 +78,10 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                     <Form.Row>
                     <Form.Label>Edit Gender</Form.Label>
                     <Form.Control onChange={changeHandler} name="gender" as="select">
-                        <option value={userprofile.gender}>{userprofile.gender=='M'?"Male":userprofile.gender=="F"?"Female":"Prefer Not To Say"}</option>
-                        {userprofile.gender!='M' && <option value="M">Male</option>}
-                        {userprofile.gender!='F' && <option value="F">Female</option>}
-                        {userprofile.gender!='P' && <option value="P">Prefer not to say</option>}
+                        <option value={userprofile.gender}>{userprofile.gender==='M'?"Male":userprofile.gender==="F"?"Female":"Prefer Not To Say"}</option>
+                        {userprofile.gender!=='M' && <option value="M">Male</option>}
+                        {userprofile.gender!=='F' && <option value="F">Female</option>}
+                        {userprofile.gender!=='P' && <option value="P">Prefer not to say</option>}
                     </Form.Control>
                     </Form.Row>
                     <Form.Row className="mb-3">
@@ -106,8 +106,8 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                     <Form.Row>
                     <Form.Label>Do you want to make your Workout Public?</Form.Label>
                     <Form.Control onChange={changeHandler} name="public_workouts" as="select">
-                        <option value={userprofile.public_workouts}>{userprofile.public_workouts==true?"Yes":"No"}</option>
-                        {userprofile.public_workouts==true?<option value={false}>No</option>:<option value={true}>Yes</option>}
+                        <option value={userprofile.public_workouts}>{userprofile.public_workouts===true?"Yes":"No"}</option>
+                        {userprofile.public_workouts===true?<option value={false}>No</option>:<option value={true}>Yes</option>}
                     </Form.Control>
                     </Form.Row>
                 </Col>
@@ -115,9 +115,14 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                     Photo
                 </Col>
             </Row>
-            <Row className="justify-content-center">
+            <Row className="justify-content-center mt-2">
                 <Button onClick={submit}>
                     Save Profile
+                </Button>
+            </Row>
+            <Row className="justify-content-center mt-2">
+                <Button onClick={()=>{setEdit(!edit)}}>
+                    Back
                 </Button>
             </Row>
             </Form>

@@ -8,7 +8,6 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 function Register({ isAuth, setAuth }) {
-  const [user, setUser] = useState({});
   const [club, setClub] = useState();
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
   useEffect(() => {
@@ -56,7 +55,7 @@ function Register({ isAuth, setAuth }) {
       .required('Date of birth is required'),
 
     gender: Yup.string()
-    .test('empty-check','Gender cannot be empty',value=>(value == "M" || value== "F" || value=="P"))
+    .test('empty-check','Gender cannot be empty',value=>(value === "M" || value=== "F" || value==="P"))
     .required('Gender is required'),
 
     location: Yup.string()
@@ -76,15 +75,15 @@ function Register({ isAuth, setAuth }) {
 
     club: Yup.string()
     .required('Club is required')
-    .test('empty-check','Club cannot be empty',value=>value != " "),
+    .test('empty-check','Club cannot be empty',value=>value !== " "),
 
     public_workouts: Yup.string()
       .required('Please confirm your profile privacy setting')
-      .test('empty-check','Please confirm your profile privacy setting',value=>value != " "),
+      .test('empty-check','Please confirm your profile privacy setting',value=>value !== " "),
 
     is_coach: Yup.string()
       .required('Please confirm whether you are a coach')
-      .test('empty-check','Please confirm whether you are a coach',value=>value != " "),
+      .test('empty-check','Please confirm whether you are a coach',value=>value !== " "),
   });
 
   const {
