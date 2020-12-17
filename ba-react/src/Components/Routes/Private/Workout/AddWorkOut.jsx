@@ -145,8 +145,7 @@ function WorkOut({ isAuth }) {
         if (date === null) {
             djangoFormVersion.workout_date = ""
         } else {
-            let formated_date = date.year + "-" + date.month + "-" + date.day
-            djangoFormVersion.workout_date = formated_date
+            djangoFormVersion.workout_date = date;
         }
         let max_rectangular_len = 0
         
@@ -272,6 +271,12 @@ function WorkOut({ isAuth }) {
     if (isSubmit) {
         return <Redirect to="/betterathletes/dashboard" />
     }
+
+    function dateHandler(e){
+        setDate(e.target.value);
+    }
+
+    console.log(date);
     return (
         <Container className="p-5">
             <Row className="mb-3">
@@ -293,14 +298,11 @@ function WorkOut({ isAuth }) {
                             </Col>
                             {/* Select Date */}
                             <Col className="text-center" md='auto'>
-                                <DatePicker
-                                    inputClassName="form-control date-picker"
+                                <Form.Control
                                     value={date}
-                                    onChange={setDate}
+                                    onChange={dateHandler}
                                     inputPlaceholder="Workout Day"
-                                    shouldHighlightWeekends
-                                    colorPrimary="#000000"
-                                    calendarPopperPosition = "bottom"
+                                    type='date'
                                 />
                             </Col>
                             {/* Select Athlete to assign */}
