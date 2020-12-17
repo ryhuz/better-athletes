@@ -209,7 +209,6 @@ function WorkOut({ isAuth }) {
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
-    console.log(selectedOption)
     useEffect(() => {
         async function getAthletes() {
             try {
@@ -228,9 +227,19 @@ function WorkOut({ isAuth }) {
             }
         }
         getAthletes();
+        /* Get date from URL */
+        if(window.location.search){
+            let params = window.location.search.split('?').slice(1)
+            let dateFromURL = {}
+            params.forEach(x=>{
+                let temp = x.split('=')
+                dateFromURL[temp[0]] = Number(temp[1])
+            })
+            setDate(dateFromURL)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
+console.log(date)
     if (isSubmit) {
         return <Redirect to="/betterathletes/dashboard" />
     }
@@ -245,6 +254,7 @@ function WorkOut({ isAuth }) {
                 <Col md={12} className="outer_form">
                     <Form>
                         <Row className="no-gutters">
+                            {/* Workout Name */}                            
                             <Col md={6} className="mx-4">
                                 <Form.Control
                                     name="workout_name"
@@ -252,6 +262,7 @@ function WorkOut({ isAuth }) {
                                     placeholder="Workout Name"
                                 />
                             </Col>
+                            {/* Select Date */}
                             <Col className="text-center" md='auto'>
                                 <DatePicker
                                     inputClassName="form-control date-picker"
@@ -259,8 +270,11 @@ function WorkOut({ isAuth }) {
                                     onChange={setDate}
                                     inputPlaceholder="Workout Day"
                                     shouldHighlightWeekends
+                                    colorPrimary="#000000"
+                                    calendarPopperPosition = "bottom"
                                 />
                             </Col>
+                            {/* Select Athlete to assign */}
                             <Col className="px-3">
                                 {isAuth.coach ?
                                     <Select

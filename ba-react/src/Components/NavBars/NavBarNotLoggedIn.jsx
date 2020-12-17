@@ -9,10 +9,11 @@ function NavBarNotLoggedIn() {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <ul className="navbar-nav ml-auto mr-3">
-                    <div className="h6 mx-4">
+                    <div className="h6 mx-3">
                         <NavLink to="/features" className="red-shadow">Features</NavLink>
                     </div>
-                    <div className="h6 mx-4">
+                    <div className="h6">|</div>
+                    <div className="h6 mx-3">
                         <NavLink to="/about" className="red-shadow">About</NavLink>
                     </div>
                 </ul>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
+import { Route, Redirect } from "react-router-dom"
 
 
 function BetterAthletes({ component: Component, isAuth, ...rest }) {
@@ -11,8 +11,6 @@ function BetterAthletes({ component: Component, isAuth, ...rest }) {
                 < Redirect to='/login' />
         )}>
         </Route>
-        // <div className="full-height landing">
-        // </div>
     )
 }
 
