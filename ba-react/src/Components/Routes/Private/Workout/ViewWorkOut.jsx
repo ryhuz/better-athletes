@@ -202,8 +202,6 @@ function ViewWorkOut() {
             setAxiosErr(true)
         }
     }
-    console.log(formState)
-    console.log(workout)
 
     function displayExercise(exercise, i) {
         let line = []
@@ -243,7 +241,7 @@ function ViewWorkOut() {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${i}-${r}`} name={`${exercise.exercise}-exerindex${i}-${r}`}
+                                        <Form.Control size="sm" id={`${i}-${r}`} name={`exerindex${i}-${r}`}
                                             onChange={(e) => resultsHandler(e, i, r)} placeholder="Results" />
                                 }
                             </td>
@@ -284,7 +282,7 @@ function ViewWorkOut() {
         }
         return line;
     }
-
+console.log(results)
     useEffect(() => {
         getWorkout();
     }, [])
