@@ -1,9 +1,13 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import { useParams } from 'react-router-dom'
-import { Col, Row, Form, Button, Container, Accordion } from "react-bootstrap";
+import { useParams, Redirect } from 'react-router-dom'
+import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
 import axios from "axios";
 
 function ViewWorkOut() {
+    const [showEmpty, setShowEmpty] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [isSubmit, setisSubmit] = useState(false);
+    const [saving, setSaving] = useState(false);
     const [workout, setWorkout] = useState({ results: [] })
     const [results, setResults] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
@@ -13,8 +17,25 @@ function ViewWorkOut() {
     const [formState, setFormState] = useState({
         sets: []
     })
+    const handleClose = () => setShowEmpty(false);
+    const handleShow = () => setShowEmpty(true);
+    const handleCloseError = () => setShowError(false);
+    const handleShowError = () => setShowError(true);
 
     let { id } = useParams()
+
+    function anyEmptyInputs() {
+        let allInputs = document.querySelectorAll('input');
+        let any = false
+        allInputs.forEach(x => {
+            if (!x.value) {
+                x.classList.add('empty');
+                x.addEventListener('click', () => x.classList.remove('empty'));
+                any = true;
+            }
+        })
+        return any;
+    }
 
     function resultsHandler(e, i, ii) {
         let { name, value, id } = e.target;
@@ -44,41 +65,68 @@ function ViewWorkOut() {
         }
 
     }
+    console.log(showComments)
+    
     async function saveResults() {
-        // try {
+    if (anyEmptyInputs()) {
+            handleShow()
+        } else {
+            setSaving(true)
+        try {
             let max_length_counter = 0;
             let obj = { ...results }
-            let arr = []
+            let resultsSet = []
             let django_results = {
                 results: [],
             }
+            let max_rectangular_len = 0
 
 
-            workout.exercise.forEach((item, index) => {
-                arr.push([])
+            formState.sets.forEach(set => {
+                set.forEach(ex => {
+                    if (Number(ex.reps) > max_rectangular_len){
+                        max_rectangular_len = Number(ex.reps)
+                    }
+                })
             })
-            console.log(obj)
+            console.log(max_rectangular_len)
 
-            // for (const property in obj) {
-            //     let key = property.charAt(property.length - 1);
-            //     arr[Number(key)].push(obj[property])
-            // }
-
-
-            arr.forEach((item, index) => {
-                if (item.length > max_length_counter) {
-                    max_length_counter = item.length
-
-                }
+            formState.sets.forEach(set => {
+                let result_arr = []
+                set.forEach(ex => {
+                    result_arr.push(new Array(max_rectangular_len).fill(""))  
+                })
+            resultsSet.push(result_arr)
             })
 
-            arr.forEach((item, index) => {
-                if (item.length < max_length_counter) {
-                    arr[index].push("")
-                }
+            console.log(resultsSet)
+        
+
+            for (const property in obj){
+                let key = property.split("-")
+                let zero = Number(key[0])
+                let one = Number(key[1])
+                let two = Number(key[2])-1 < 0 ? Number(key[2]) : Number(key[2])-1
+                resultsSet[zero][one][two] = obj[property]
+                
+            }
+            console.log(resultsSet)
+
+            let clone = [...resultsSet]
+            // console.log(clone)
+            clone.forEach(cloneset =>{
+                cloneset.forEach(item => {
+                    if(item.length < max_rectangular_len){
+                        for (let i = 0; i <= max_rectangular_len; i++){
+                            item.push("")
+                        }
+                    }
+                })
             })
-            django_results.results = arr
-            console.log(django_results)
+            console.log(clone)
+            django_results.results = clone;
+
+
 
             let headToken = {
                 headers: {
@@ -89,16 +137,21 @@ function ViewWorkOut() {
             }
             console.log(django_results)
             // to update workoutResult ID
-            // await axios.post(`http://localhost:8000/api/singleworkout/${id}`, django_results, headToken)
+            let response = await axios.post(`http://localhost:8000/api/singleworkout/${id}`, django_results, headToken)
 
+            if (response) {
+                setisSubmit(true);
+            }
             getWorkout();
             setResultState(true);
 
-        // } catch (error) {
-        //     console.log(error)
-        //     setAxiosErr(true)
-        // }
+        } catch (error) {
+            handleShowError()
+            setSaving(false)
+            setAxiosErr(true)
+        }
     }
+}
 
     async function getWorkout() {
         try {
@@ -111,8 +164,10 @@ function ViewWorkOut() {
                 }
             }// to update workoutResult ID
             let data = await axios.get(`http://localhost:8000/api/singleworkout/${id}`, headToken)
+            setisSubmit(false);
             setWorkout(data.data.result)
             setshowComments(data.data.all_comments)
+          
             setResultState(data.data.result.completed);
             /** CREATE FORM IN OBJ FORM*/
             let exercise = data.data.result.exercise;
@@ -204,29 +259,29 @@ function ViewWorkOut() {
         }
     }
 
-    function displayExercise(exercise, i) {
+    function displayExercise(exercise, i, ii) {
         let line = []
         if (exercise.exercise) {
             for (let r = 0; r < Number(exercise.reps); r++) {
                 if (r === 0) {
                     line.push(
-                        <tr key={`${i}${r}`}>
-                            <td className="text-center" width="1%">
-                                {i + 1}
+                        <tr key={`${ii}${r}`}>
+                            <td className="text-center align-middle" width="1%">
+                                {ii + 1}
                             </td>
-                            <td width="40%">
+                            <td width="40%" className="align-middle">
                                 {exercise.exercise}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center align-middle">
                                 {exercise.reps}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center align-middle">
                                 {exercise.rests}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center align-middle">
                                 {exercise.target}
                             </td>
-                            <td className="text-center" width="1%">{r + 1}</td>
+                            <td className="text-center align-middle" width="1%">{r + 1}</td>
                             <td width="5%">
                                 {workout.results === undefined ? <>Loading...</> :
                                     resultState === true ?
@@ -242,21 +297,21 @@ function ViewWorkOut() {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${i}-${r}`} name={`exerindex${i}-${r}`}
-                                            onChange={(e) => resultsHandler(e, i, r)} placeholder="Results" />
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii}`}
+                                            onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>
                         </tr>
                     )
                 } else {
                     line.push(
-                        <tr key={`${i}${r}`}>
+                        <tr key={`${ii}${r}`}>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td className="text-center">{r + 1}</td>
+                            <td className="text-center align-middle">{r + 1}</td>
                             <td>
                                 {workout.results === undefined ? <>Loading...</> :
                                     resultState === true ?
@@ -272,8 +327,8 @@ function ViewWorkOut() {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${i}-${r}`} name={`${exercise.exercise}-exerindex${i}-${r}`}
-                                            onChange={(e) => resultsHandler(e, i, r)} placeholder="Results" />
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii+r}`}
+                                            onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>
                         </tr>
@@ -287,6 +342,12 @@ console.log(results)
     useEffect(() => {
         getWorkout();
     }, [])
+    
+    if (isSubmit) {
+        return <Redirect to="/betterathletes/dashboard" />
+    }
+
+
     return (
         <Container className="bg-contrast px-4">
             {/* ---------------- Heading -------------------- */}
@@ -341,7 +402,7 @@ console.log(results)
                                         {/* ------------------- EACH EXERCISE LINE ------------------- */}
                                         {item.map((item2, index2) => (
                                             <tbody className="bigger-text2" key={index2}>
-                                                {displayExercise(item2, index2)}
+                                                {displayExercise(item2, index, index2)}
                                             </tbody>
                                         ))}
                                     </table>
@@ -392,6 +453,30 @@ console.log(results)
                     </Col>
                 </Row>
             </Form>
+             {/* Any empty fields modal */}
+             <Modal show={showEmpty} onHide={handleClose} centered >
+                <Modal.Header className="bg-dark">
+                    <Modal.Title>Oops</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="bg-dark bigger-text2">Please make sure you fill in all fields before saving the workout</Modal.Body>
+                <Modal.Footer className="bg-dark">
+                    <Button variant="main" onClick={handleClose}>
+                        Ok
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* Add error */}
+            <Modal show={showError} onHide={handleCloseError} centered >
+                <Modal.Header className="bg-dark">
+                    <Modal.Title>Something went wrong</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="bg-dark bigger-text2">We could not save this workout</Modal.Body>
+                <Modal.Footer className="bg-dark">
+                    <Button variant="main" onClick={handleCloseError}>
+                        Ok
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     )
 }

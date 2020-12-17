@@ -339,9 +339,9 @@ def getworkouts(request,id):
 def single_workout(request, id):
     # to check with shawn later
     result = WorkoutResult.objects.get(workout_id=id)
-    all_comments = WorkoutComment.objects.filter(workout_result_id=id)
+    all_comments = WorkoutComment.objects.filter(workout_id=id)
     serialized_comments = [x.serialize() for x in all_comments]
-    print(result)
+    # print(result)
     if request.method == "GET":
         
         single_workout_data = {
@@ -358,6 +358,8 @@ def single_workout(request, id):
         body = json.loads(body_unicode)
         
         result.results = body["results"]
+        result.completed = True
+        result.completed_on = datetime.now()
         result.save()
 
         return JsonResponse({"message" : "Data saved"}, status=200)
@@ -372,7 +374,7 @@ def workout_comment(request,id):
     user_id = decoded_token['user_id']  
     print(decoded_token)  
     user = User.objects.get(id=user_id)
-    result = WorkoutResult.objects.get(pk=id)
+    result = WorkoutResult.objects.get(workout_id=id)
     workout_id = result.workout_id
     workout = Workout.objects.get(pk=workout_id)
     print(workout)
