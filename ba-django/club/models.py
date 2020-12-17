@@ -189,7 +189,8 @@ class WorkoutResult(models.Model):
             "rests": self.workout.rests,
             "target": self.workout.targets,
             "completed": self.completed,
-            "athlete_name": self.athlete.first_name + " " + self.athlete.last_name
+            "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
+            "athlete_id": self.athlete.id
         }
     
 class SavedWorkout(models.Model):
