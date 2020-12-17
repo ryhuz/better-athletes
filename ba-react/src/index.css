@@ -144,3 +144,6 @@ td {
   color: black!important;
   font-weight: bolder;
 }
+.form-control.empty{
+  border: red 2px solid;
+}
