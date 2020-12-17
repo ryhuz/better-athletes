@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import { useParams } from 'react-router-dom'
-import { Col, Row, Form, Button, Container, Accordion } from "react-bootstrap";
+import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
 import axios from "axios";
 
 function ViewWorkOut() {
@@ -13,6 +13,9 @@ function ViewWorkOut() {
     const [formState, setFormState] = useState({
         sets: []
     })
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     let { id } = useParams()
 
@@ -287,12 +290,17 @@ console.log(results)
     useEffect(() => {
         getWorkout();
     }, [])
+
+
     return (
         <Container className="bg-contrast px-4">
             {/* ---------------- Heading -------------------- */}
             <Row className="my-5">
-                <Col md={12}>
+                <Col md={6}>
                     <h4 className="title display-5">{workout.workout_name}</h4>
+                </Col>
+                <Col md={6} className="d-flex justify-content-end mt-2">
+                    <Button variant="main" onClick={handleShow}>Delete Workout</Button>
                 </Col>
                 <Col md={12}>
                     <h4 className="display-6">{workout.athlete_name}</h4>
@@ -392,6 +400,20 @@ console.log(results)
                     </Col>
                 </Row>
             </Form>
+            <Modal show={show} onHide={handleClose} style={{backgroundColor:"#212529"}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete WorkOut</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Do you really wish to delete this workout?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleClose}>
+                        Confirm
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     )
 }
