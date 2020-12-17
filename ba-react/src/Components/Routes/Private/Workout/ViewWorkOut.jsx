@@ -4,7 +4,12 @@ import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-boots
 import axios from "axios";
 import { axiosInstance } from '../../../../func/axiosApi';
 
-function ViewWorkOut({isAuth}) {
+function ViewWorkOut({ isAuth }) {
+    const [deleting, setDeleting] = useState({
+        loading: false,
+        deleted: false,
+        error: false,
+    })
     const [workout, setWorkout] = useState({ results: [] })
     const [results, setResults] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
@@ -49,42 +54,42 @@ function ViewWorkOut({isAuth}) {
     }
     async function saveResults() {
         // try {
-            let max_length_counter = 0;
-            let obj = { ...results }
-            let arr = []
-            let django_results = {
-                results: [],
+        let max_length_counter = 0;
+        let obj = { ...results }
+        let arr = []
+        let django_results = {
+            results: [],
+        }
+
+
+        workout.exercise.forEach((item, index) => {
+            arr.push([])
+        })
+
+        arr.forEach((item, index) => {
+            if (item.length > max_length_counter) {
+                max_length_counter = item.length
+
             }
+        })
 
-
-            workout.exercise.forEach((item, index) => {
-                arr.push([])
-            })
-
-            arr.forEach((item, index) => {
-                if (item.length > max_length_counter) {
-                    max_length_counter = item.length
-
-                }
-            })
-
-            arr.forEach((item, index) => {
-                if (item.length < max_length_counter) {
-                    arr[index].push("")
-                }
-            })
-            django_results.results = arr
-
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json"
-                }
+        arr.forEach((item, index) => {
+            if (item.length < max_length_counter) {
+                arr[index].push("")
             }
+        })
+        django_results.results = arr
 
-            getWorkout();
-            setResultState(true);
+        let headToken = {
+            headers: {
+                'Authorization': "JWT " + localStorage.getItem('token'),
+                'Content-Type': "application/json",
+                'accept': "application/json"
+            }
+        }
+
+        getWorkout();
+        setResultState(true);
 
     }
 
@@ -274,17 +279,29 @@ function ViewWorkOut({isAuth}) {
         getWorkout();
     }, [])
 
-    async function delWorkout(){
+    async function delWorkout() {
+        setDeleting({
+            ...deleting,
+            loading: true,
+        })
         try {
             let resp = await axiosInstance.delete(`singleworkout/${id}`);
-            if(resp){
-                console.log("Please help to redirect");
+            if (resp.data.deleted) {
+                setDeleting({
+                    deleted: true
+                })
             };
         } catch (error) {
-            alert("Something went wrong!");
+            setDeleting({
+                ...deleting,
+                loading: false,
+                error: true
+            })
         };
     };
-
+    if (deleting.deleted){
+        return <Redirect to='/betterathletes/dashboard'/>
+    }
     return (
         <Container className="bg-contrast px-4">
             {/* ---------------- Heading -------------------- */}
@@ -292,7 +309,7 @@ function ViewWorkOut({isAuth}) {
                 <Col md={6}>
                     <h4 className="title display-5">{workout.workout_name}</h4>
                 </Col>
-                {isAuth.coach&&<Col md={6} className="d-flex justify-content-end mt-2">
+                {isAuth.coach && <Col md={6} className="d-flex justify-content-end mt-2">
                     <Button variant="main" onClick={handleShow}>Delete Workout</Button>
                 </Col>}
                 <Col md={12}>
@@ -394,16 +411,19 @@ function ViewWorkOut({isAuth}) {
                 </Row>
             </Form>
             <Modal show={show} onHide={handleClose} >
-                <Modal.Header style={{backgroundColor:"#0d0e10"}} closeButton>
+                <Modal.Header className="bg-dark" closeButton>
                     <Modal.Title>Delete WorkOut</Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{backgroundColor:"#0d0e10"}}>Do you really wish to delete this workout?</Modal.Body>
-                <Modal.Footer style={{backgroundColor:"#0d0e10"}}>
+                <Modal.Body className="bg-dark">
+                    <div>Do you really wish to delete this workout?</div>
+                    {deleting.error && <div className="text-danger">Error deleting workout</div>}
+                </Modal.Body>
+                <Modal.Footer className="bg-dark">
                     <Button variant="danger" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button variant="secondary" onClick={delWorkout}>
-                        Confirm
+                    <Button variant="secondary" onClick={delWorkout} disabled={deleting.loading}>
+                        {deleting.loading ? "Deleting..." : "Confirm"}
                     </Button>
                 </Modal.Footer>
             </Modal>

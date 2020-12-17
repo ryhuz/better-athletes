@@ -33,7 +33,6 @@ class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def put(self, request, format='json'):
-        print(request.data)
         try:
             found = User.objects.get(username=request.data['username'])
             return JsonResponse({"found": True}, status=200, safe=False)
@@ -353,7 +352,7 @@ def single_workout(request, id):
     
     elif request.method == "DELETE":
         result.delete()
-        return JsonResponse({"message":"Deleted"}, status=200)
+        return JsonResponse({"deleted": True}, status=200)
 
 
 @csrf_exempt  
