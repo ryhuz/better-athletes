@@ -44,6 +44,8 @@ class UserDetail(models.Model):
         return {
             'username': self.base_user.username,
             'name': self.base_user.first_name + " " + self.base_user.last_name,
+            'first_name': self.base_user.first_name,
+            'last_name': self.base_user.last_name,
             'club': self.club.club_name,
             'location': self.location,
             'age': (date.today() - self.dob) // timedelta(days=365.2425),
@@ -205,6 +207,7 @@ class TrackedAthlete(models.Model):
     
     def serialize(self):
         return {
+            "id": self.id,
             "coach_id": self.coach.id,
             "athlete_id": self.athlete.id,
             "athlete": self.athlete.username,

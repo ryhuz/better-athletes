@@ -6,7 +6,9 @@ import { axiosInstance } from '../../../func/axiosApi';
 function EditProfile({getProfile, id, edit, setEdit, profile}) {
     const [userprofile, setUserProfile] = useState(profile.profile)
     const [club, setClub] = useState();
-    const [locError, setError] = useState();
+    const [locError, setLocError] = useState();
+    const [fnError, setFnError] = useState();
+    const [lnError, setLnError] = useState();
 
     useEffect(() => {
 
@@ -27,9 +29,23 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
     function changeHandler(e) {
         if(e.target.name === "location"){
             if(e.target.value === ""){
-                setError("Location cannot be empty")
+                setLocError("Location cannot be empty")
             }else{
-                setError();
+                setLocError();
+            }    
+        }
+        if(e.target.name === "first_name"){
+            if(e.target.value === ""){
+                setFnError("First name cannot be empty")
+            }else{
+                setFnError();
+            }    
+        }
+        if(e.target.name === "last_name"){
+            if(e.target.value === ""){
+                setLnError("Last name cannot be empty")
+            }else{
+                setLnError();
             }    
         }
         setUserProfile((user) => ({ ...user, [e.target.name]: e.target.value }));
@@ -37,7 +53,16 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
 
     async function submit(){
         if(userprofile.location === ""){
-            return setError("Please input your location before saving");
+            setLocError("Please input your location before saving");
+        }
+        if(userprofile.first_name === ""){
+            setFnError("Please input your first name before saving");
+        }
+        if(userprofile.last_name === ""){
+            setLnError("Please input your last name before saving");
+        }
+        if(userprofile.location === "" || userprofile.first_name === "" || userprofile.last_name === ""){
+            return;
         }
         try {
             await axiosInstance.put(`profile/${id}`, userprofile);
@@ -55,6 +80,26 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
             <h1 className="mb-3 display-4">{profile.profile.name.trim() ? profile.profile.name: profile.profile.username }</h1>
             <Row>
                 <Col>
+                    <Form.Row className="mb-3">
+                    <Form.Label>Edit First Name</Form.Label>
+                    <Form.Control
+                        onChange={changeHandler}
+                        name="first_name"
+                        type="text"
+                        value={userprofile.first_name}
+                    />
+                    {fnError&& <div className="text-danger">{fnError}</div>}
+                    </Form.Row>
+                    <Form.Row>
+                    <Form.Label>Edit Last Name</Form.Label>
+                    <Form.Control
+                        onChange={changeHandler}
+                        name="last_name"
+                        type="text"
+                        value={userprofile.last_name}
+                    />
+                    {lnError&& <div className="text-danger">{lnError}</div>}
+                    </Form.Row>
                     <Form.Row>
                     <Form.Label>Edit Club</Form.Label>
                     <Form.Control 

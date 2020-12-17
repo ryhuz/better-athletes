@@ -136,7 +136,7 @@ function Register({ isAuth, setAuth }) {
         console.log(err);
       }
     } catch (error) {
-      console.log(error);
+      alert('Oh no! Something went wrong! Try to change your username');
     }
   }
 
