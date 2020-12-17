@@ -109,13 +109,7 @@ class Workouts(APIView):
             for rep in s:
                 if rep == "":
                     valid_reps[valid_reps.index(s)][s.index(rep)] = None
-                    #assign none to result
-                # else:
-                #     the corresponding result = list.push x rep
-        # [
-        #     [1,2,3],
-        #     [1,1, None]
-        # ]
+
         results = body['results']
         
         for r in results:
@@ -123,12 +117,6 @@ class Workouts(APIView):
                 for rrr in rr:
                     if rrr == "":
                         results[results.index(r)][r.index(rr)][rr.index(rrr)] = None
-        
-        
-        print(results)
-        print(valid_reps)
-    
-    
 
         workout_name = body['workout_name']
         exercise = body['exercises']
@@ -146,16 +134,13 @@ class Workouts(APIView):
 
         units = body['units']  
         comments = body['comments']
-        print(athlete_list)
         for athlete in athlete_list:
             
             workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
             workout.save()
             
             a = User.objects.get(pk=athlete['user_id'])
-            print(a)
             workout_result = WorkoutResult(athlete=a,workout=workout,results=results, units=units, comments=comments)
-            print(workout_result)
             workout_result.save()
         
 
@@ -313,7 +298,6 @@ def single_club(request):
 
     club = user.club.serialize()
     members = UserDetail.objects.filter(club=user.club)
-    print(members)
     coaches = [x.serialize_for_club() for x in members.filter(is_coach=True)]
     athletes = [x.serialize_for_club() for x in members.filter(is_coach=False)]
    
@@ -341,7 +325,6 @@ def single_workout(request, id):
     result = WorkoutResult.objects.get(workout_id=id)
     all_comments = WorkoutComment.objects.filter(workout_result_id=id)
     serialized_comments = [x.serialize() for x in all_comments]
-    print(result)
     if request.method == "GET":
         
         single_workout_data = {
@@ -352,8 +335,6 @@ def single_workout(request, id):
         return JsonResponse(single_workout_data, status=200, safe=False)
     
     elif request.method == "POST":
-        print("Hellow")    
-        print("1")   
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         
@@ -370,12 +351,10 @@ def workout_comment(request,id):
     token = request.headers['Authorization'].split(" ")[1]
     decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     user_id = decoded_token['user_id']  
-    print(decoded_token)  
     user = User.objects.get(id=user_id)
     result = WorkoutResult.objects.get(pk=id)
     workout_id = result.workout_id
     workout = Workout.objects.get(pk=workout_id)
-    print(workout)
     
     if request.method == "POST":
         
@@ -386,7 +365,6 @@ def workout_comment(request,id):
         workout_result = result
         user = user
         date_now = datetime.now()
-        print(date_now)
         
         if decoded_token['is_coach'] is True:
             workout_comment = WorkoutComment(
