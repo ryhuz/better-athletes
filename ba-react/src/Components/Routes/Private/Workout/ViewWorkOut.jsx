@@ -11,6 +11,7 @@ function ViewWorkOut({ isAuth }) {
     })
     const [isSubmit, setisSubmit] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [show, setShow] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
     const [showError, setShowError] = useState(false);
     const [workout, setWorkout] = useState({ results: [] })
@@ -26,9 +27,7 @@ function ViewWorkOut({ isAuth }) {
     const handleShow = () => setShowEmpty(true);
     const handleCloseError = () => setShowError(false);
     const handleShowError = () => setShowError(true);
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+
 
     let { id } = useParams()
 
@@ -67,75 +66,75 @@ function ViewWorkOut({ isAuth }) {
 
     }
     console.log(showComments)
-    
+
     async function saveResults() {
-    if (anyEmptyInputs()) {
+        if (anyEmptyInputs()) {
             handleShow()
         } else {
             setSaving(true)
-        try {
-            let max_length_counter = 0;
-            let obj = { ...results }
-            let resultsSet = []
-            let django_results = {
-                results: [],
-            }
-            let max_rectangular_len = 0
+            try {
+                let max_length_counter = 0;
+                let obj = { ...results }
+                let resultsSet = []
+                let django_results = {
+                    results: [],
+                }
+                let max_rectangular_len = 0
 
 
-            formState.sets.forEach(set => {
-                set.forEach(ex => {
-                    if (Number(ex.reps) > max_rectangular_len){
-                        max_rectangular_len = Number(ex.reps)
-                    }
-                })
-            })
-
-            formState.sets.forEach(set => {
-                let result_arr = []
-                set.forEach(ex => {
-                    result_arr.push(new Array(max_rectangular_len).fill(""))  
-                })
-            resultsSet.push(result_arr)
-            })
-
-            for (const property in obj){
-                let key = property.split("-")
-                let zero = Number(key[0])
-                let one = Number(key[1])
-                let two = Number(key[2])-1 < 0 ? Number(key[2]) : Number(key[2])-1
-                resultsSet[zero][one][two] = obj[property]
-                
-            }
-            let clone = [...resultsSet]
-            // console.log(clone)
-            clone.forEach(cloneset =>{
-                cloneset.forEach(item => {
-                    if(item.length < max_rectangular_len){
-                        for (let i = 0; i <= max_rectangular_len; i++){
-                            item.push("")
+                formState.sets.forEach(set => {
+                    set.forEach(ex => {
+                        if (Number(ex.reps) > max_rectangular_len) {
+                            max_rectangular_len = Number(ex.reps)
                         }
-                    }
+                    })
                 })
-            })
-            django_results.results = clone;
 
-            // to update workoutResult ID
-            let response = await axiosInstance.post(`singleworkout/${id}`, django_results)
+                formState.sets.forEach(set => {
+                    let result_arr = []
+                    set.forEach(ex => {
+                        result_arr.push(new Array(max_rectangular_len).fill(""))
+                    })
+                    resultsSet.push(result_arr)
+                })
 
-            if (response) {
-                setisSubmit(true);
+                for (const property in obj) {
+                    let key = property.split("-")
+                    let zero = Number(key[0])
+                    let one = Number(key[1])
+                    let two = Number(key[2]) - 1 < 0 ? Number(key[2]) : Number(key[2]) - 1
+                    resultsSet[zero][one][two] = obj[property]
+
+                }
+                let clone = [...resultsSet]
+                // console.log(clone)
+                clone.forEach(cloneset => {
+                    cloneset.forEach(item => {
+                        if (item.length < max_rectangular_len) {
+                            for (let i = 0; i <= max_rectangular_len; i++) {
+                                item.push("")
+                            }
+                        }
+                    })
+                })
+                django_results.results = clone;
+
+                // to update workoutResult ID
+                let response = await axiosInstance.post(`singleworkout/${id}`, django_results)
+
+                if (response) {
+                    setisSubmit(true);
+                }
+                getWorkout();
+                setResultState(true);
+
+            } catch (error) {
+                handleShowError()
+                setSaving(false)
+                setAxiosErr(true)
             }
-            getWorkout();
-            setResultState(true);
-
-        } catch (error) {
-            handleShowError()
-            setSaving(false)
-            setAxiosErr(true)
         }
     }
-}
 
     async function getWorkout() {
         try {
@@ -143,7 +142,7 @@ function ViewWorkOut({ isAuth }) {
             let data = await axiosInstance.get(`singleworkout/${id}`)
             setWorkout(data.data.result)
             setshowComments(data.data.all_comments)
-          
+
             setResultState(data.data.result.completed);
             /** CREATE FORM IN OBJ FORM*/
             let exercise = data.data.result.exercise;
@@ -302,7 +301,7 @@ function ViewWorkOut({ isAuth }) {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii+r}`}
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii + r}`}
                                             onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>
@@ -337,8 +336,8 @@ function ViewWorkOut({ isAuth }) {
             })
         };
     };
-    if (deleting.deleted){
-        return <Redirect to='/betterathletes/dashboard'/>
+    if (deleting.deleted) {
+        return <Redirect to='/betterathletes/dashboard' />
     }
     //if (isSubmit) {
     //    return <Redirect to="/betterathletes/dashboard" />
@@ -431,7 +430,6 @@ function ViewWorkOut({ isAuth }) {
                                 </div>
                             ))}
                         </div>
-
                     </Col>
                     <Col md={6} className="d-flex flex-row align-items-center my-2 title">
                         <h4>Enter Workout Comments</h4>
@@ -451,8 +449,8 @@ function ViewWorkOut({ isAuth }) {
                     </Col>
                 </Row>
             </Form>
-             {/* Any empty fields modal */}
-             <Modal show={showEmpty} onHide={handleClose} centered >
+            {/* Any empty fields modal */}
+            <Modal show={showEmpty} onHide={handleClose} centered >
                 <Modal.Header className="bg-dark">
                     <Modal.Title>Oops</Modal.Title>
                 </Modal.Header>
@@ -472,6 +470,9 @@ function ViewWorkOut({ isAuth }) {
                 <Modal.Footer className="bg-dark">
                     <Button variant="main" onClick={handleCloseError}>
                         Ok
+                        </Button>
+                </Modal.Footer>
+            </Modal>
             {/* Delete workout confirmation */}
             <Modal show={show} onHide={handleClose} >
                 <Modal.Header className="bg-dark" closeButton>
@@ -484,7 +485,7 @@ function ViewWorkOut({ isAuth }) {
                 <Modal.Footer className="bg-dark">
                     <Button variant="danger" onClick={handleClose}>
                         Cancel
-                    </Button>
+                        </Button>
                     <Button variant="secondary" onClick={delWorkout} disabled={deleting.loading}>
                         {deleting.loading ? "Deleting..." : "Confirm"}
                     </Button>
