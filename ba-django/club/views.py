@@ -132,13 +132,7 @@ class Workouts(APIView):
         targets =  body['targets']
         workout_date = body['workout_date']
         # ======save for WorkoutResult Modal=======#
-        
-
-        # [
-        #     [ [x], [x, x], [x,x,x],  ],
-        #     [ [x], [x, None], [None, None, None] ]
-        # ]
-
+ 
         units = body['units']  
         comments = body['comments']
         for athlete in athlete_list:
@@ -149,7 +143,6 @@ class Workouts(APIView):
             a = User.objects.get(pk=athlete['user_id'])
             workout_result = WorkoutResult(athlete=a,workout=workout,results=results, units=units, comments=comments)
             workout_result.save()
-        
 
         return JsonResponse({"message" : "Data isvalid"}, status=200)
         # Include a error JsonResponse
@@ -326,9 +319,8 @@ def getworkouts(request,id):
 
 @csrf_exempt
 def single_workout(request, id):
-    # to check with shawn later
     result = WorkoutResult.objects.get(workout_id=id)
-    all_comments = WorkoutComment.objects.filter(workout_result_id=id)
+    all_comments = WorkoutComment.objects.filter(workout_id=id)
     serialized_comments = [x.serialize() for x in all_comments]
     if request.method == "GET":
         
@@ -344,6 +336,8 @@ def single_workout(request, id):
         body = json.loads(body_unicode)
         
         result.results = body["results"]
+        result.completed = True
+        result.completed_on = datetime.now()
         result.save()
 
         return JsonResponse({"message" : "Data saved"}, status=200)
@@ -355,17 +349,15 @@ def single_workout(request, id):
 
 @csrf_exempt  
 def workout_comment(request,id):
-    
-    # workout = Workout.objects.get(pk=id)
 
     token = request.headers['Authorization'].split(" ")[1]
     decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     user_id = decoded_token['user_id']  
     user = User.objects.get(id=user_id)
-    result = WorkoutResult.objects.get(pk=id)
+    result = WorkoutResult.objects.get(workout_id=id)
     workout_id = result.workout_id
-    workout = Workout.objects.get(pk=workout_id)
-    
+    workout = Workout.objects.get(pk=workout_id)    
+
     if request.method == "POST":
         
         body_unicode = request.body.decode('utf-8')
@@ -416,7 +408,6 @@ def tracked_athletes(request, id):
             return JsonResponse({"message":"sucess"}, status=200, safe=False)
         except expression as identifier:
             return JsonResponse({"message":"something went wrong"}, status=400, safe=False)
-        
 
     if request.method == "POST":
         tracked_ath = TrackedAthlete.objects.filter(coach_id=coach_id,athlete_id=id)

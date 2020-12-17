@@ -9,6 +9,10 @@ function ViewWorkOut({ isAuth }) {
         deleted: false,
         error: false,
     })
+    const [isSubmit, setisSubmit] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [showEmpty, setShowEmpty] = useState(false);
+    const [showError, setShowError] = useState(false);
     const [workout, setWorkout] = useState({ results: [] })
     const [results, setResults] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
@@ -18,11 +22,28 @@ function ViewWorkOut({ isAuth }) {
     const [formState, setFormState] = useState({
         sets: []
     })
+    const handleClose = () => setShowEmpty(false);
+    const handleShow = () => setShowEmpty(true);
+    const handleCloseError = () => setShowError(false);
+    const handleShowError = () => setShowError(true);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     let { id } = useParams()
+
+    function anyEmptyInputs() {
+        let allInputs = document.querySelectorAll('input');
+        let any = false
+        allInputs.forEach(x => {
+            if (!x.value) {
+                x.classList.add('empty');
+                x.addEventListener('click', () => x.classList.remove('empty'));
+                any = true;
+            }
+        })
+        return any;
+    }
 
     function resultsHandler(e, i, ii) {
         let { name, value } = e.target;
@@ -45,35 +66,76 @@ function ViewWorkOut({ isAuth }) {
         }
 
     }
+    console.log(showComments)
+    
     async function saveResults() {
-        let max_length_counter = 0;
-        let arr = []
-        let django_results = {
-            results: [],
+    if (anyEmptyInputs()) {
+            handleShow()
+        } else {
+            setSaving(true)
+        try {
+            let max_length_counter = 0;
+            let obj = { ...results }
+            let resultsSet = []
+            let django_results = {
+                results: [],
+            }
+            let max_rectangular_len = 0
+
+
+            formState.sets.forEach(set => {
+                set.forEach(ex => {
+                    if (Number(ex.reps) > max_rectangular_len){
+                        max_rectangular_len = Number(ex.reps)
+                    }
+                })
+            })
+
+            formState.sets.forEach(set => {
+                let result_arr = []
+                set.forEach(ex => {
+                    result_arr.push(new Array(max_rectangular_len).fill(""))  
+                })
+            resultsSet.push(result_arr)
+            })
+
+            for (const property in obj){
+                let key = property.split("-")
+                let zero = Number(key[0])
+                let one = Number(key[1])
+                let two = Number(key[2])-1 < 0 ? Number(key[2]) : Number(key[2])-1
+                resultsSet[zero][one][two] = obj[property]
+                
+            }
+            let clone = [...resultsSet]
+            // console.log(clone)
+            clone.forEach(cloneset =>{
+                cloneset.forEach(item => {
+                    if(item.length < max_rectangular_len){
+                        for (let i = 0; i <= max_rectangular_len; i++){
+                            item.push("")
+                        }
+                    }
+                })
+            })
+            django_results.results = clone;
+
+            // to update workoutResult ID
+            let response = await axiosInstance.post(`singleworkout/${id}`, django_results)
+
+            if (response) {
+                setisSubmit(true);
+            }
+            getWorkout();
+            setResultState(true);
+
+        } catch (error) {
+            handleShowError()
+            setSaving(false)
+            setAxiosErr(true)
         }
-
-        workout.exercise.forEach((item, index) => {
-            arr.push([])
-        })
-
-        arr.forEach((item, index) => {
-            if (item.length > max_length_counter) {
-                max_length_counter = item.length
-
-            }
-        })
-
-        arr.forEach((item, index) => {
-            if (item.length < max_length_counter) {
-                arr[index].push("")
-            }
-        })
-        django_results.results = arr
-
-        getWorkout();
-        setResultState(true);
-
     }
+}
 
     async function getWorkout() {
         try {
@@ -81,6 +143,7 @@ function ViewWorkOut({ isAuth }) {
             let data = await axiosInstance.get(`singleworkout/${id}`)
             setWorkout(data.data.result)
             setshowComments(data.data.all_comments)
+          
             setResultState(data.data.result.completed);
             /** CREATE FORM IN OBJ FORM*/
             let exercise = data.data.result.exercise;
@@ -171,29 +234,29 @@ function ViewWorkOut({ isAuth }) {
         }
     }
 
-    function displayExercise(exercise, i) {
+    function displayExercise(exercise, i, ii) {
         let line = []
         if (exercise.exercise) {
             for (let r = 0; r < Number(exercise.reps); r++) {
                 if (r === 0) {
                     line.push(
-                        <tr key={`${i}${r}`}>
-                            <td className="text-center" width="1%">
-                                {i + 1}
+                        <tr key={`${ii}${r}`}>
+                            <td className="text-center align-middle" width="1%">
+                                {ii + 1}
                             </td>
-                            <td width="40%">
+                            <td width="40%" className="align-middle">
                                 {exercise.exercise}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center align-middle">
                                 {exercise.reps}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center align-middle">
                                 {exercise.rests}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center align-middle">
                                 {exercise.target}
                             </td>
-                            <td className="text-center" width="1%">{r + 1}</td>
+                            <td className="text-center align-middle" width="1%">{r + 1}</td>
                             <td width="5%">
                                 {workout.results === undefined ? <>Loading...</> :
                                     resultState === true ?
@@ -209,21 +272,21 @@ function ViewWorkOut({ isAuth }) {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${i}-${r}`} name={`exerindex${i}-${r}`}
-                                            onChange={(e) => resultsHandler(e, i, r)} placeholder="Results" />
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii}`}
+                                            onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>
                         </tr>
                     )
                 } else {
                     line.push(
-                        <tr key={`${i}${r}`}>
+                        <tr key={`${ii}${r}`}>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td className="text-center">{r + 1}</td>
+                            <td className="text-center align-middle">{r + 1}</td>
                             <td>
                                 {workout.results === undefined ? <>Loading...</> :
                                     resultState === true ?
@@ -239,8 +302,8 @@ function ViewWorkOut({ isAuth }) {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${i}-${r}`} name={`${exercise.exercise}-exerindex${i}-${r}`}
-                                            onChange={(e) => resultsHandler(e, i, r)} placeholder="Results" />
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii+r}`}
+                                            onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>
                         </tr>
@@ -277,6 +340,9 @@ function ViewWorkOut({ isAuth }) {
     if (deleting.deleted){
         return <Redirect to='/betterathletes/dashboard'/>
     }
+    //if (isSubmit) {
+    //    return <Redirect to="/betterathletes/dashboard" />
+    //}
     return (
         <Container className="bg-contrast px-4">
             {/* ---------------- Heading -------------------- */}
@@ -334,7 +400,7 @@ function ViewWorkOut({ isAuth }) {
                                         {/* ------------------- EACH EXERCISE LINE ------------------- */}
                                         {item.map((item2, index2) => (
                                             <tbody className="bigger-text2" key={index2}>
-                                                {displayExercise(item2, index2)}
+                                                {displayExercise(item2, index, index2)}
                                             </tbody>
                                         ))}
                                     </table>
@@ -385,6 +451,28 @@ function ViewWorkOut({ isAuth }) {
                     </Col>
                 </Row>
             </Form>
+             {/* Any empty fields modal */}
+             <Modal show={showEmpty} onHide={handleClose} centered >
+                <Modal.Header className="bg-dark">
+                    <Modal.Title>Oops</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="bg-dark bigger-text2">Please make sure you fill in all fields before saving the workout</Modal.Body>
+                <Modal.Footer className="bg-dark">
+                    <Button variant="main" onClick={handleClose}>
+                        Ok
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* Add error */}
+            <Modal show={showError} onHide={handleCloseError} centered >
+                <Modal.Header className="bg-dark">
+                    <Modal.Title>Something went wrong</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="bg-dark bigger-text2">We could not save this workout</Modal.Body>
+                <Modal.Footer className="bg-dark">
+                    <Button variant="main" onClick={handleCloseError}>
+                        Ok
+            {/* Delete workout confirmation */}
             <Modal show={show} onHide={handleClose} >
                 <Modal.Header className="bg-dark" closeButton>
                     <Modal.Title>Delete WorkOut</Modal.Title>
