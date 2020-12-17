@@ -315,7 +315,7 @@ function Register({ isAuth, setAuth }) {
               ) : null}
               </Col>
             </Form.Row>
-            <Form.Row className="my-4">
+            <Form.Row className="my-4 text-left">
               {/* Club Selection */}
               <Col className="mx-3">
                 <Form.Label>Club</Form.Label>
@@ -364,7 +364,7 @@ function Register({ isAuth, setAuth }) {
               ) : null}
               </Col>
             </Form.Row>
-            <Form.Row className="my-4">
+            <Form.Row className="my-4 text-left">
               {/* Public Workout Selection */}
               <Col className="mx-3">
                 <Form.Label>Do you wish to make your workouts public?</Form.Label>
@@ -378,7 +378,7 @@ function Register({ isAuth, setAuth }) {
               ) : null}
               </Col>
               {/* Is Coach Selection */}
-              <Col className="mx-3">
+              <Col className="mx-3 text-left">
                 <Form.Label>Are you a coach?</Form.Label>
                 <Form.Control onChange={handleChange} name="is_coach" as="select" className={touched.is_coach && errors.is_coach ? `is-invalid` : null}>
                   <option value=" ">Select One</option>

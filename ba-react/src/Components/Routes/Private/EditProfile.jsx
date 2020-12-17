@@ -6,6 +6,7 @@ import { axiosInstance } from '../../../func/axiosApi';
 function EditProfile({getProfile, id, edit, setEdit, profile}) {
     const [userprofile, setUserProfile] = useState(profile.profile)
     const [club, setClub] = useState();
+    const [locError, setError] = useState();
 
     useEffect(() => {
 
@@ -22,11 +23,22 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
         getClub();
       }, [])
     
+      
     function changeHandler(e) {
+        if(e.target.name == "location"){
+            if(e.target.value == ""){
+                setError("Location cannot be empty")
+            }else{
+                setError();
+            }    
+        }
         setUserProfile((user) => ({ ...user, [e.target.name]: e.target.value }));
       }
 
     async function submit(){
+        if(userprofile.location == ""){
+            return setError("Please input your location before saving");
+        }
         try {
             let resp = await axiosInstance.put(`profile/${id}`, userprofile);
             setEdit(!edit);
@@ -89,6 +101,7 @@ function EditProfile({getProfile, id, edit, setEdit, profile}) {
                         type="text"
                         value={userprofile.location}
                     />
+                    {locError&& <div className="text-danger">{locError}</div>}
                     </Form.Row>
                     <Form.Row>
                     <Form.Label>Do you want to make your Workout Public?</Form.Label>
