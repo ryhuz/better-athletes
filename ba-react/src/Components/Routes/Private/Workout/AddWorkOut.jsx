@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import DatePicker from 'react-modern-calendar-datepicker';
 import { Col, Row, Form, Button, Container, Modal } from "react-bootstrap";
 import axios from "axios";
 import { Redirect } from 'react-router-dom';
@@ -277,13 +276,14 @@ function WorkOut({ isAuth }) {
         getAthletes();
         /* Get date from URL */
         if (window.location.search) {
+            
             let params = window.location.search.split('?').slice(1)
             let dateFromURL = {}
             params.forEach(x => {
                 let temp = x.split('=')
                 dateFromURL[temp[0]] = Number(temp[1])
             })
-            setDate(dateFromURL)
+            setDate(`${dateFromURL.year}-${dateFromURL.month}-${dateFromURL.day}`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -295,7 +295,6 @@ function WorkOut({ isAuth }) {
         setDate(e.target.value);
     }
 
-    console.log(date);
     return (
         <Container className="p-5">
             <Row className="mb-3">
