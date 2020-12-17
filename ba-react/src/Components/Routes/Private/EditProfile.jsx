@@ -12,7 +12,6 @@ function EditProfile({ getProfile, id, edit, setEdit, profile }) {
     const [lnError, setLnError] = useState();
 
     useEffect(() => {
-
         // getting club details for user creation
         async function getClub() {
             try {

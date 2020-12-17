@@ -458,7 +458,7 @@ function WorkOut({ isAuth }) {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            {/* Registration error */}
+            {/* Add error */}
             <Modal show={showError} onHide={handleCloseError} centered >
                 <Modal.Header className="bg-dark">
                     <Modal.Title>Something went wrong</Modal.Title>

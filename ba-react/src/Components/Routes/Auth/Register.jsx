@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Redirect } from "react-router-dom";
-import { Col, Form, Container, Button } from "react-bootstrap";
+import { Col, Form, Container, Button, Modal } from "react-bootstrap";
 import { axiosInstance } from "../../../func/axiosApi"
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
@@ -8,6 +8,19 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 function Register({ isAuth, setAuth }) {
+  const [errMsg, setErrMsg] = useState("Your registration was not completed")
+  const [registering, setRegistering] = useState({
+    submitting: false,
+    error: false
+  });
+  const handleCloseError = () => setRegistering({
+    submitting: false,
+    error: false
+  });
+  const handleShowError = () => setRegistering({
+    submitting: false,
+    error: true
+  });
   const [userExists, setUserExists] = useState({
     checking: false,
     found: false
@@ -16,7 +29,6 @@ function Register({ isAuth, setAuth }) {
   const [club, setClub] = useState();
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
   useEffect(() => {
-
     // getting club details for user creation
     async function getClub() {
       try {
@@ -123,6 +135,10 @@ function Register({ isAuth, setAuth }) {
 
   //submits and sends user creation request to Django
   async function submit(user) {
+    setRegistering({
+      submitting: true,
+      error: false
+    })
     try {
       await axios.post("http://localhost:8000/api/signup", user);
       try {
@@ -137,10 +153,18 @@ function Register({ isAuth, setAuth }) {
           user: decoded.username
         });
       } catch (err) {
-        console.log(err);
+        setErrMsg("Could not sign you in")
+        setRegistering({
+          submitting: false,
+          error: true
+        })
       }
     } catch (error) {
-      alert('Oh no! Something went wrong! Try to change your username');
+      setErrMsg("Your registration was not completed")
+      setRegistering({
+        submitting: false,
+        error: true
+      })
     }
   }
 
@@ -417,14 +441,26 @@ function Register({ isAuth, setAuth }) {
               </Col>
             </Form.Row>
             <Form.Row className="mt-4 mx-3">
-              <Button type="submit" variant="main" block>
-                Register
+              <Button type="submit" variant="main" block disabled={registering.submitting}>
+                {registering.submitting ? "Submitting..." : "Register"}
               </Button>
             </Form.Row>
             <div className="text-right px-4">Have an account?<NavLink to="/login"> Login</NavLink></div>
           </Form>
           {/* Re-route to Login Page */}
         </Col>
+        {/* Registration error */}
+        <Modal show={registering.error} onHide={handleCloseError} centered >
+          <Modal.Header className="bg-dark">
+            <Modal.Title>Something went wrong</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="bg-dark bigger-text2">{errMsg}</Modal.Body>
+          <Modal.Footer className="bg-dark">
+            <Button variant="main" onClick={handleCloseError}>
+              Ok
+          </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </div>
   );
