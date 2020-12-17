@@ -2,26 +2,26 @@ import React from 'react'
 import { NavLink } from "react-router-dom";
 import { Col, Row, Container, Button } from "react-bootstrap";
 
-function LoggedInLanding() {
+function LoggedInLanding({ user_id }) {
     return (
         <>
-            <Container className="text-center">
-                <Row>
+            <Container className="text-center page-center">
+                <Row className="bg-contrast">
                     <Col md={12} className="my-4">
-                        <h6 className="display-1">Better Athletes</h6>
+                        <h6 className="display-1">Ready to train today?</h6>
                     </Col>
                     <Col md={12} className="my-4">
-                        <h6 className="display-4">Join Us Today</h6>
+                        <h6 className="display-4"></h6>
                     </Col>
                     <Col md={6} className="my-4">
-                        <NavLink to="/login" style={{ textDecoration: 'none' }}>
-                            <Button variant="outline-primary" size="lg" block>Login</Button>
+                        <NavLink to="/betterathletes/dashboard" style={{ textDecoration: 'none' }}>
+                            <Button variant="main" size="lg" block>Dashboard</Button>
                         </NavLink>
                     </Col>
 
                     <Col md={6} className="my-4">
-                        <NavLink to="/register" style={{ textDecoration: 'none' }}>
-                            <Button variant="outline-secondary" size="lg" block> Register</Button>
+                        <NavLink to={`/betterathletes/calendar/${user_id}`} style={{ textDecoration: 'none' }}>
+                            <Button variant="main" size="lg" block>Calendar</Button>
                         </NavLink>
                     </Col>
                 </Row>
