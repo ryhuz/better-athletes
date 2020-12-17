@@ -4,6 +4,7 @@ import makeAnimated from 'react-select/animated';
 import { Col, Row, Form, Button, Container, Modal } from "react-bootstrap";
 import axios from "axios";
 import { Redirect } from 'react-router-dom';
+import { axiosInstance } from "../../../../func/axiosApi"
 
 function WorkOut({ isAuth }) {
     const [showEmpty, setShowEmpty] = useState(false);
@@ -236,13 +237,7 @@ function WorkOut({ isAuth }) {
             })
 
             try {
-                let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
-                    headers: {
-                        'Authorization': "JWT " + localStorage.getItem('token'),
-                        'Content-Type': 'application/json',
-                        'accept': "application/json"
-                    }
-                })
+                let response = await axiosInstance.post("workouts", djangoFormVersion)
                 if (response) {
                     setisSubmit(true);
                 }
@@ -259,13 +254,7 @@ function WorkOut({ isAuth }) {
     useEffect(() => {
         async function getAthletes() {
             try {
-                let response = await axios.get("http://localhost:8000/api/workouts", {
-                    headers: {
-                        'Authorization': "JWT " + localStorage.getItem('token'),
-                        'Content-Type': 'application/json',
-                        'accept': "application/json"
-                    }
-                });
+                let response = await axiosInstance.get("workouts");
                 setAthletes(response.data.athletes)
                 !isAuth.coach && setSelectedOption([response.data.athletes[0]])
                 setisSubmit(false);

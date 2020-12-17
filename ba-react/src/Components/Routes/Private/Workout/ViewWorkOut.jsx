@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect, useParams } from 'react-router-dom'
 import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
-import axios from "axios";
-import { axiosInstance } from '../../../../func/axiosApi';
+import { axiosInstance } from "../../../../func/axiosApi"
 
 function ViewWorkOut({ isAuth }) {
     const [deleting, setDeleting] = useState({
@@ -38,14 +37,8 @@ function ViewWorkOut({ isAuth }) {
 
     async function saveComments() {
         try {
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json"
-                }
-            }// workoutResult ID
-            await axios.post(`http://localhost:8000/api/singleworkout/comment/${id}`, comments, headToken)
+            // workoutResult ID
+            await axiosInstance.post(`singleworkout/comment/${id}`, comments)
             getWorkout();
         } catch (error) {
             setAxiosErr(true)
@@ -84,15 +77,8 @@ function ViewWorkOut({ isAuth }) {
 
     async function getWorkout() {
         try {
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json",
-
-                }
-            }// to update workoutResult ID
-            let data = await axios.get(`http://localhost:8000/api/singleworkout/${id}`, headToken)
+            // to update workoutResult ID
+            let data = await axiosInstance.get(`singleworkout/${id}`)
             setWorkout(data.data.result)
             setshowComments(data.data.all_comments)
             setResultState(data.data.result.completed);

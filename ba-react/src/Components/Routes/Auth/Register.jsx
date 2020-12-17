@@ -29,7 +29,7 @@ function Register({ isAuth, setAuth }) {
     // getting club details for user creation
     async function getClub() {
       try {
-        let resp = await axios.get("http://localhost:8000/api/clubs");
+        let resp = await axios.get("https://better-ath-django.herokuapp.com/api/clubs");
         setClub(resp.data);
       } catch (error) {
         setClubErr(true)
