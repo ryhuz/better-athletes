@@ -9,14 +9,17 @@ import { useParams } from 'react-router-dom'
 function CalendarDisplay() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',]
     const [retrieved, setRetrieved] = useState(false)
-    const [workouts, setWorkouts] = useState([])
+    const [workouts, setWorkouts] = useState({
+        workouts: [],
+        message: "Loading workouts..."
+    })
     const [calendar, setCalendar] = useState({
         today: 0,
         prevWeek: [],
         currWeek: [],
         nextWeek: []
     })
-    let {id} = useParams();
+    let { id } = useParams();
     useEffect(() => {
         function getCalendar() {
             let prev = []
@@ -40,10 +43,16 @@ function CalendarDisplay() {
         }
         async function getWorkouts() {
             try {
-                let temp = await axiosInstance(`getworkouts/${id}`) // getworkouts?user=${user.id}?week=${sfjksdfjds}
-                setWorkouts(temp.data)
+                let temp = await axiosInstance(`getworkouts/${id}`)
+                setWorkouts({
+                    workouts: temp.data,
+                })
             } catch (e) {
                 console.log(e);
+                setWorkouts({
+                    workouts: [],
+                    message: "Error getting workouts"
+                })
             }
         }
         getCalendar()
@@ -71,18 +80,19 @@ function CalendarDisplay() {
             {retrieved ?
                 <>
                     <h4 className="display-4 text-center py-4">Your Training Calendar</h4>
+                    {!workouts && <div>{workouts.message}</div>}
                     <div className="btn btn-sm btn-block btn-main my-2" onClick={() => changeWeek('prev')}>
                         Previous Week
                     </div>
                     <div className="mx-3">
                         <DisplayMonth mth={calendar.prevWeek[2].format('MMMM')} days={days} />
-                        <DisplayWeek workouts={workouts} week={calendar.prevWeek} relative="prev" />
+                        <DisplayWeek workouts={workouts.workouts} week={calendar.prevWeek} relative="prev" />
                         {calendar.prevWeek[2].format("MM") !== calendar.currWeek[2].format("MM") &&
                             <DisplayMonth mth={calendar.currWeek[2].format('MMMM')} days={days} />}
-                        <DisplayWeek workouts={workouts} week={calendar.currWeek} relative="curr" />
+                        <DisplayWeek workouts={workouts.workouts} week={calendar.currWeek} relative="curr" />
                         {calendar.currWeek[2].format("MM") !== calendar.nextWeek[2].format("MM") &&
                             <DisplayMonth mth={calendar.nextWeek[2].format('MMMM')} days={days} />}
-                        <DisplayWeek workouts={workouts} week={calendar.nextWeek} relative="next" />
+                        <DisplayWeek workouts={workouts.workouts} week={calendar.nextWeek} relative="next" />
                     </div>
                     <div className="btn btn-sm btn-block btn-main my-2" onClick={() => changeWeek('next')}>
                         Next Week

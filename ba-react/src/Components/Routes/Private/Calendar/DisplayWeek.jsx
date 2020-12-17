@@ -15,31 +15,29 @@ function DisplayWeek({ week, workouts, relative }) {
     }
     return (
         <Row>
-            {workouts ?
-                <>
-                    {week.map(day => (
-                        <Col key={day} className={`border overflow-auto cal-day ${relative === "prev" ? "cal-gradient-prev" : ""}${relative === "next" ? "cal-gradient-next" : ""}`}
-                            onMouseOver={e => showAddWorkout(e)} onMouseOut={e => hideAddWorkout(e)}>
-                            <span className={`${(day.format('dd') === "Su" || day.format('dd') === "Sa") ? 'text-danger' : ""}`}>{day.format("Do")}</span>
-                            <div className="add-workout-button">
-                                <NavLink to={`/betterathletes/add_new_workout/`} className=""></NavLink>
-                            </div>
+            <>
+                {week.map(day => (
+                    <Col key={day} className={`border overflow-auto cal-day ${relative === "prev" ? "cal-gradient-prev" : ""}${relative === "next" ? "cal-gradient-next" : ""}`}
+                        onMouseOver={e => showAddWorkout(e)} onMouseOut={e => hideAddWorkout(e)}>
+                        <span className={`${(day.format('dd') === "Su" || day.format('dd') === "Sa") ? 'text-danger' : ""}`}>{day.format("Do")}</span>
+                        <div className="add-workout-button">
+                            <NavLink to={`/betterathletes/add_new_workout/?day=${day.format("D")}?month=${day.format("M")}?year=${day.format("YYYY")}`} className=""></NavLink>
+                        </div>
+                        {workouts && <>
                             {workouts.map((x, i) => (
-                                <>
+                                <div key={i}>
                                     {day.format('YYYY-MM-DD') === x.workout_date &&
                                         <NavLink to={`/betterathletes/view_workout/${x.workout_id}`} className="red-shadow">
-
-                                            <div key={i} id={x.workout_id} className="ml-3 display-7">- {x.workout_name}</div>
+                                            <div id={x.workout_id} className="ml-3 display-7">- {x.workout_name}</div>
                                         </NavLink>
                                     }
-                                </>
-                            ))}
-                        </Col>
-                    ))}
-                </> :
-                <div>
-                    Loading ...
-            </div>}
+                                </div>
+                            ))
+                            }
+                        </>}
+                    </Col>
+                ))}
+            </>
         </Row>
     )
 }
