@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Nova+Square&family=PT+Sans:wght@700&display=swap');
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+body {
+  margin: 0;
+  font-family: 'PT Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: url("https://www.globuscorporation.com/wp-content/uploads/2017/05/AdobeStock_87609906.jpeg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+a, body, th, td {
+  color: white !important;
+  text-shadow: 5px 5px 10px #6e0a0a;
+}
+
+.title, .Calendar__weekDay {
+  font-family: 'Nova Square', cursive;
+  transition: 0.3s;
+}
+
+.bg-contrast {
+  background-color: rgba(0, 0, 0, 0.589);
+}
+
+a.red-shadow{
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+a.red-shadow:hover, a>.red-shadow:hover{
+  color: rgb(190, 121, 121) !important;
+  text-decoration: none;
+}
+
+.full-height {
+  height: calc(100vh - 56px);
+}
+
+.page-center{
+  padding-top: 15%;
+}
+
+.bigger-text {
+  font-size: 2.3rem;
+  font-weight:300;
+}
+.bigger-text2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.display-5{
+  font-size: 2.5rem;
+  font-weight:300;
+}
+.display-6{
+  font-size: 1.7rem;
+  font-weight:300;
+}
+.display-7{
+  font-size: 1.2rem;
+  font-weight:300;
+}
+.ml-7{
+  margin-left: 58px!important;
+}
+.mx-10 {
+  margin: 0 13% 0 13%;
+}
+.navbar{
+  background-image: linear-gradient(to bottom right, #5a5f63, #000000);
+}
+
+button.btn-main, .btn.btn-main {
+  background-color: #6e0a0a;
+  color: rgb(173, 173, 173);
+}
+button.btn-main:hover, .btn.btn-main:hover {
+  background-color: #9e4444;
+  color: rgb(173, 173, 173);
+}
+
+.dash-card {
+  height: 24rem;
+  background-color: rgba(80, 76, 76, 0.425);
+  box-shadow: 3px 5px 30px 5px #ffffff54;
+}
+
+.dash-card-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.cal-container {
+  margin: 0 5% 0 5%;
+}
+.DatePicker>input{
+  height: 38px;
+  width: 130px;
+  padding: 0 0 0 15px;
+  font-size: 16px;
+  text-align: left;
+}
+
+.cal-day {
+  height: 12em;
+}
+
+.cal-gradient-next{
+  background: linear-gradient(0deg,  rgba(175, 175, 175, 0.295), rgba(0, 0, 0, 0.13));
+}
+.cal-gradient-prev{
+  background: linear-gradient(180deg,  rgba(175, 175, 175, 0.295), rgba(0, 0, 0, 0.13));
+}
+.button-addexe {
+  color: purple
+}
+
+tbody>tr:hover {
+  background-color: rgba(148, 148, 148, 0.596);
+}
+
+td {
+  white-space: nowrap;
+}
+
+.add-workout-button {
+  min-height: 21px;
+}
+
+.btn.btn-xs {
+  padding: 0.1rem, 0.2rem;
+  font-size: 0.875rem;
+  line-height: 0.5;
+  border-radius: 0.2rem;
+}
+
+.Calendar__weekDays.Calendar__weekDay, .Calendar__weekDays{
+  color: black!important;
+  font-weight: bolder;
+}
+.form-control.empty{
+  border: red 2px solid;
+}

@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+python-dotenv = "*"
+psycopg2 = "*"
+djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
+djangorestframework-simplejwt = "*"
+django-cors-headers = "*"
+install = "*"
+pyjwt = "*"
+gunicorn = "*"
+django-heroku = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
