@@ -75,7 +75,6 @@ class Workouts(APIView):
             all_workouts = [workout.serialize() for workout in workouts]
             token = request.headers['Authorization'].split(" ")[1]
             decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-            print(decoded_token)
             user_id = decoded_token['user_id']
             user = UserDetail.objects.get(base_user_id=user_id)
             
@@ -342,20 +341,19 @@ def single_workout(request, id):
     result = WorkoutResult.objects.get(workout_id=id)
     all_comments = WorkoutComment.objects.filter(workout_result_id=id)
     serialized_comments = [x.serialize() for x in all_comments]
-    print(id)
-    
+    print(result)
     if request.method == "GET":
         
         single_workout_data = {
             "result": result.single_workout(),
             "all_comments": serialized_comments
         }
-        
-        
+
         return JsonResponse(single_workout_data, status=200, safe=False)
     
     elif request.method == "POST":
         print("Hellow")    
+        print("1")   
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         

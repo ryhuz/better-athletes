@@ -160,8 +160,6 @@ class WorkoutResult(models.Model):
             models.CharField(max_length=255, blank=True)
         ), blank=True
     )
-    # workout_conversation = 
-    # performance_tracking
 
     def __str__(self):
         return self.athlete.first_name + "/" + self.workout.workout_name
@@ -184,12 +182,14 @@ class WorkoutResult(models.Model):
             "result_id": self.id,
             "workout_id": self.workout.id,
             "workout_name": self.workout.workout_name,
+            "workout_date": self.workout.workout_date,
             "exercise": self.workout.exercise,
             "results": self.results,
             "reps": self.workout.reps,
             "rests": self.workout.rests,
             "target": self.workout.targets,
             "completed": self.completed,
+            "athlete_name": self.athlete.first_name + " " + self.athlete.last_name
         }
     
 class SavedWorkout(models.Model):
