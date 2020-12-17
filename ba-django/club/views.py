@@ -362,6 +362,11 @@ def single_workout(request, id):
 
         return JsonResponse({"message" : "Data saved"}, status=200)
     
+    elif request.method == "DELETE":
+        result.delete()
+        return JsonResponse({"message":"Deleted"}, status=200)
+
+
 @csrf_exempt  
 def workout_comment(request,id):
     

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
 import axios from "axios";
+import { axiosInstance } from '../../../../func/axiosApi';
 
 function ViewWorkOut() {
     const [workout, setWorkout] = useState({ results: [] })
@@ -291,6 +292,16 @@ console.log(results)
         getWorkout();
     }, [])
 
+    async function delWorkout(){
+        try {
+            let resp = await axiosInstance.delete(`singleworkout/${id}`);
+            if(resp){
+                console.log("Please help to redirect");
+            };
+        } catch (error) {
+            alert("Something went wrong!");
+        };
+    };
 
     return (
         <Container className="bg-contrast px-4">
@@ -400,16 +411,16 @@ console.log(results)
                     </Col>
                 </Row>
             </Form>
-            <Modal show={show} onHide={handleClose} style={{backgroundColor:"#212529"}}>
-                <Modal.Header closeButton>
+            <Modal show={show} onHide={handleClose} >
+                <Modal.Header style={{backgroundColor:"#0d0e10"}} closeButton>
                     <Modal.Title>Delete WorkOut</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Do you really wish to delete this workout?</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                <Modal.Body style={{backgroundColor:"#0d0e10"}}>Do you really wish to delete this workout?</Modal.Body>
+                <Modal.Footer style={{backgroundColor:"#0d0e10"}}>
+                    <Button variant="danger" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={delWorkout}>
                         Confirm
                     </Button>
                 </Modal.Footer>

@@ -130,7 +130,7 @@ class Workout(models.Model):
 
 class WorkoutResult(models.Model):
     athlete = models.ForeignKey(User, related_name=("athlete"), on_delete=models.PROTECT)
-    workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.PROTECT)
+    workout = models.ForeignKey(Workout, related_name=("athlete"), on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     completed_on = models.DateTimeField(blank=True, default=None, null=True)
     reviewed = models.BooleanField(default=False)
