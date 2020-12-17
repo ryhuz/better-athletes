@@ -148,15 +148,19 @@ function WorkOut({ isAuth }) {
             let formated_date = date.year + "-" + date.month + "-" + date.day
             djangoFormVersion.workout_date = formated_date
         }
-
+        let max_rectangular_len = 0
+        
+        /* rectangularisation of every key except results (
+         for results, please refer to separate loop, due to setting the max_rectangular_length
+         in the first loop) 
+        */
         inputForm.sets.forEach(set => {
             let exerciseSet = []
             let repSet = []
             let restSet = []
             let targetsSet = []
             let unitsSet = []
-            let commentsSet = []
-            let resultsSet = []
+            let commentsSet = []           
 
             set.forEach(ex => {
                 exerciseSet.push(ex.exercise)
@@ -165,8 +169,14 @@ function WorkOut({ isAuth }) {
                 targetsSet.push(ex.targets)
                 unitsSet.push(ex.units)
                 commentsSet.push(ex.comments)
-                resultsSet.push(ex.results)
+
+                if (Number(ex.reps) > max_rectangular_len){
+                    max_rectangular_len = Number(ex.reps)
+                }
+                
             })
+
+            console.log(max_rectangular_len)
             /* Rectangularising data */
             if (exerciseSet.length < maxLength) {
                 for (let i = 0; i <= maxLength - exerciseSet.length; i++) {
@@ -176,7 +186,6 @@ function WorkOut({ isAuth }) {
                     targetsSet.push("")
                     unitsSet.push("")
                     commentsSet.push("")
-                    resultsSet.push("")
                 }
             }
             djangoFormVersion.exercises.push(exerciseSet)
@@ -185,9 +194,30 @@ function WorkOut({ isAuth }) {
             djangoFormVersion.targets.push(targetsSet)
             djangoFormVersion.units.push(unitsSet)
             djangoFormVersion.comments.push(commentsSet)
-            djangoFormVersion.results.push(resultsSet)
-            console.log(djangoFormVersion)
+            // console.log(djangoFormVersion)
         })
+        
+        /** Rectangularisation of results based on number of reps captured
+         *  (for all others, please refer to above loop)
+         */
+
+        inputForm.sets.forEach(set => {
+            let resultsSet = []
+            set.forEach(ex => {
+                resultsSet.push(new Array(max_rectangular_len).fill(""))               
+            })
+            console.log(max_rectangular_len)
+            /* Rectangularising data */
+            if (resultsSet.length < maxLength) {
+                for (let i = 0; i <= maxLength - resultsSet.length; i++) {
+                    resultsSet.push(new Array(max_rectangular_len).fill(""))
+                }
+            }
+            djangoFormVersion.results.push(resultsSet)
+            // console.log(djangoFormVersion)
+        })
+        console.log(djangoFormVersion)
+
         try {
             let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
                 headers: {
@@ -197,7 +227,7 @@ function WorkOut({ isAuth }) {
                 }
             })
             if (response) {
-                setisSubmit(true);
+                // setisSubmit(true);
             }
         } catch (error) {
             console.log(error)
@@ -205,7 +235,7 @@ function WorkOut({ isAuth }) {
         }
 
     }
-
+    // console.log(inputForm)
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
@@ -239,7 +269,6 @@ function WorkOut({ isAuth }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-console.log(date)
     if (isSubmit) {
         return <Redirect to="/betterathletes/dashboard" />
     }
