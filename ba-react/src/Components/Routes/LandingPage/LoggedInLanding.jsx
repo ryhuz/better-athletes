@@ -10,9 +10,6 @@ function LoggedInLanding({ user_id }) {
                     <Col md={12} className="my-4">
                         <h6 className="display-1">Ready to train today?</h6>
                     </Col>
-                    <Col md={12} className="my-4">
-                        <h6 className="display-4"></h6>
-                    </Col>
                     <Col md={6} className="my-4">
                         <NavLink to="/betterathletes/dashboard" style={{ textDecoration: 'none' }}>
                             <Button variant="main" size="lg" block>Dashboard</Button>
