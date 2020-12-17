@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import { axiosInstance } from "../../../../func/axiosApi"
 import { Row, Col } from 'react-bootstrap'
 import AthDashItems from './AthDashItems'
 
@@ -12,18 +12,10 @@ function AthleteDash() {
     useEffect(() => {
         async function retrieve() {
             try {
-                let headToken = {
-                    headers: {
-                        'Authorization': "JWT " + localStorage.getItem('token'),
-                        'Content-Type': "application/json",
-                        'accept': "application/json"
-                    }
-                }
-                let data = await axios.get(`http://localhost:8000/api/dashboard`, headToken)
+                let data = await axiosInstance.get(`dashboard`)
                 setDashData(data.data)
             }
             catch (e) {
-                console.log(e)
                 setAxiosErr(true)
             }
         }

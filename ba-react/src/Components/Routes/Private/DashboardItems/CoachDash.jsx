@@ -17,7 +17,6 @@ function CoachDash() {
         tracked_id: null,
         note: "",
     })
-    const [track, setTrack] = useState()
 
     useEffect(() => {
         retrieve()
@@ -25,18 +24,10 @@ function CoachDash() {
 
     async function retrieve() {
         try {
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json"
-                }
-            }
-            let data = await axios.get(`http://localhost:8000/api/dashboard`, headToken)
+            let data = await axiosInstance.get(`dashboard`)
             setDashData(data.data)
         }
         catch (e) {
-            console.log(e)
             setAxiosErr(true)
         }
     }
@@ -64,8 +55,6 @@ function CoachDash() {
             alert("Error has occured");
         }
     }
-
-    console.log(note);
     return (
         <>
             {axiosErr ?

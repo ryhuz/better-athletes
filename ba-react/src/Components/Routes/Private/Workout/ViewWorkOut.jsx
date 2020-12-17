@@ -1,13 +1,18 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import { useParams, Redirect } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Redirect, useParams } from 'react-router-dom'
 import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
-import axios from "axios";
+import { axiosInstance } from "../../../../func/axiosApi"
 
-function ViewWorkOut() {
-    const [showEmpty, setShowEmpty] = useState(false);
-    const [showError, setShowError] = useState(false);
+function ViewWorkOut({ isAuth }) {
+    const [deleting, setDeleting] = useState({
+        loading: false,
+        deleted: false,
+        error: false,
+    })
     const [isSubmit, setisSubmit] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [showEmpty, setShowEmpty] = useState(false);
+    const [showError, setShowError] = useState(false);
     const [workout, setWorkout] = useState({ results: [] })
     const [results, setResults] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
@@ -21,6 +26,9 @@ function ViewWorkOut() {
     const handleShow = () => setShowEmpty(true);
     const handleCloseError = () => setShowError(false);
     const handleShowError = () => setShowError(true);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     let { id } = useParams()
 
@@ -38,7 +46,7 @@ function ViewWorkOut() {
     }
 
     function resultsHandler(e, i, ii) {
-        let { name, value, id } = e.target;
+        let { name, value } = e.target;
         let obj = { ...results, [name]: value }
         setResults(obj)
     }
@@ -50,17 +58,10 @@ function ViewWorkOut() {
 
     async function saveComments() {
         try {
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json"
-                }
-            }// workoutResult ID
-            let data = await axios.post(`http://localhost:8000/api/singleworkout/comment/${id}`, comments, headToken)
+            // workoutResult ID
+            await axiosInstance.post(`singleworkout/comment/${id}`, comments)
             getWorkout();
         } catch (error) {
-            console.log(error)
             setAxiosErr(true)
         }
 
@@ -89,7 +90,6 @@ function ViewWorkOut() {
                     }
                 })
             })
-            console.log(max_rectangular_len)
 
             formState.sets.forEach(set => {
                 let result_arr = []
@@ -99,9 +99,6 @@ function ViewWorkOut() {
             resultsSet.push(result_arr)
             })
 
-            console.log(resultsSet)
-        
-
             for (const property in obj){
                 let key = property.split("-")
                 let zero = Number(key[0])
@@ -110,8 +107,6 @@ function ViewWorkOut() {
                 resultsSet[zero][one][two] = obj[property]
                 
             }
-            console.log(resultsSet)
-
             let clone = [...resultsSet]
             // console.log(clone)
             clone.forEach(cloneset =>{
@@ -123,21 +118,10 @@ function ViewWorkOut() {
                     }
                 })
             })
-            console.log(clone)
             django_results.results = clone;
 
-
-
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json"
-                }
-            }
-            console.log(django_results)
             // to update workoutResult ID
-            let response = await axios.post(`http://localhost:8000/api/singleworkout/${id}`, django_results, headToken)
+            let response = await axiosInstance.post(`singleworkout/${id}`, django_results)
 
             if (response) {
                 setisSubmit(true);
@@ -155,16 +139,8 @@ function ViewWorkOut() {
 
     async function getWorkout() {
         try {
-            let headToken = {
-                headers: {
-                    'Authorization': "JWT " + localStorage.getItem('token'),
-                    'Content-Type': "application/json",
-                    'accept': "application/json",
-
-                }
-            }// to update workoutResult ID
-            let data = await axios.get(`http://localhost:8000/api/singleworkout/${id}`, headToken)
-            setisSubmit(false);
+            // to update workoutResult ID
+            let data = await axiosInstance.get(`singleworkout/${id}`)
             setWorkout(data.data.result)
             setshowComments(data.data.all_comments)
           
@@ -254,7 +230,6 @@ function ViewWorkOut() {
 
         }
         catch (e) {
-            console.log(e)
             setAxiosErr(true)
         }
     }
@@ -338,23 +313,46 @@ function ViewWorkOut() {
         }
         return line;
     }
-console.log(results)
     useEffect(() => {
         getWorkout();
     }, [])
-    
-    if (isSubmit) {
-        return <Redirect to="/betterathletes/dashboard" />
+
+    async function delWorkout() {
+        setDeleting({
+            ...deleting,
+            loading: true,
+        })
+        try {
+            let resp = await axiosInstance.delete(`singleworkout/${id}`);
+            if (resp.data.deleted) {
+                setDeleting({
+                    deleted: true
+                })
+            };
+        } catch (error) {
+            setDeleting({
+                ...deleting,
+                loading: false,
+                error: true
+            })
+        };
+    };
+    if (deleting.deleted){
+        return <Redirect to='/betterathletes/dashboard'/>
     }
-
-
+    //if (isSubmit) {
+    //    return <Redirect to="/betterathletes/dashboard" />
+    //}
     return (
         <Container className="bg-contrast px-4">
             {/* ---------------- Heading -------------------- */}
             <Row className="my-5">
-                <Col md={12}>
+                <Col md={6}>
                     <h4 className="title display-5">{workout.workout_name}</h4>
                 </Col>
+                {isAuth.coach && <Col md={6} className="d-flex justify-content-end mt-2">
+                    <Button variant="main" onClick={handleShow}>Delete Workout</Button>
+                </Col>}
                 <Col md={12}>
                     <h4 className="display-6">{workout.athlete_name}</h4>
                 </Col>
@@ -422,7 +420,7 @@ console.log(results)
                 <Row >
                     <Col md={12} className="d-flex flex-row align-items-center my-3">
                         <div>
-                            {showComments == undefined ? <>Loading ... </> : showComments.map((item, index) => (
+                            {showComments === undefined ? <>Loading ... </> : showComments.map((item, index) => (
                                 <div className="my-3" key={index}>
                                     <div>
                                         <h6>{item.user}</h6>
@@ -474,6 +472,21 @@ console.log(results)
                 <Modal.Footer className="bg-dark">
                     <Button variant="main" onClick={handleCloseError}>
                         Ok
+            {/* Delete workout confirmation */}
+            <Modal show={show} onHide={handleClose} >
+                <Modal.Header className="bg-dark" closeButton>
+                    <Modal.Title>Delete WorkOut</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="bg-dark">
+                    <div>Do you really wish to delete this workout?</div>
+                    {deleting.error && <div className="text-danger">Error deleting workout</div>}
+                </Modal.Body>
+                <Modal.Footer className="bg-dark">
+                    <Button variant="danger" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="secondary" onClick={delWorkout} disabled={deleting.loading}>
+                        {deleting.loading ? "Deleting..." : "Confirm"}
                     </Button>
                 </Modal.Footer>
             </Modal>

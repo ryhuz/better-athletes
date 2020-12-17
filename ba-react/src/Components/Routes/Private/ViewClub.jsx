@@ -18,19 +18,17 @@ function ViewClub() {
         getClub()
     }, [])
 
-    console.log(club);
-
     return (
-        <Container>
+        <Container className="mt-5">
             {Object.keys(club).length ?
                 <>
-                    <Jumbotron>
+                    <Jumbotron className="bg-dark">
                         <h2 className="display-4">{club.club_name}</h2>
                     </Jumbotron>
                     <Row>
                         <Col>
-                            <h6>About the club</h6>
-                            <div id="club-desc">
+                            <h6 className="title display-7">About the club</h6>
+                            <div id="club-desc" className="ml-3 bigger-text">
                                 {club.club_desc}
                             </div>
                         </Col>
@@ -39,22 +37,26 @@ function ViewClub() {
                         </Col>
                     </Row>
                     <hr />
-                    <h6>Coaches</h6>
-                    {club.coaches.map(coach => (
-                        <div>
-                            <NavLink to={`/betterathletes/profile/${coach.user_id}`} style={{textDecoration:"none"}} key={coach.user_id} className="club-coaches">
-                                {coach.name}
-                            </NavLink>
-                        </div>
-                    ))}
-                    <h6>Athletes</h6>
-                    {club.athletes.map(a => (
-                        <div>
-                            <NavLink to={`/betterathletes/profile/${a.user_id}`} style={{textDecoration:"none"}} key={a.user_id} className="club-coaches">
-                                {a.name}
-                            </NavLink>
-                        </div>
-                    ))}
+                    <div className="my-5">
+                        <h6 className="title display-6">Coaches</h6>
+                        {club.coaches.map(coach => (
+                            <div className="my-2 ml-3">
+                                <NavLink to={`/betterathletes/profile/${coach.user_id}`} style={{ textDecoration: "none" }} key={coach.user_id} className="bigger-text2">
+                                    {coach.name}
+                                </NavLink>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="my-5">
+                        <h6 className="title display-6">Athletes</h6>
+                        {club.athletes.map(a => (
+                            <div className="my-2 ml-3">
+                                <NavLink to={`/betterathletes/profile/${a.user_id}`} style={{ textDecoration: "none" }} key={a.user_id} className="bigger-text2">
+                                    {a.name}
+                                </NavLink>
+                            </div>
+                        ))}
+                    </div>
                 </> :
                 <Jumbotron>
                     <h2 className="display-4">Loading...</h2>

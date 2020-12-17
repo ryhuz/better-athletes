@@ -32,6 +32,13 @@ def not_found(request):
 class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
 
+    def put(self, request, format='json'):
+        try:
+            found = User.objects.get(username=request.data['username'])
+            return JsonResponse({"found": True}, status=200, safe=False)
+        except Exception as e:
+            return JsonResponse({"found": False}, status=200, safe=False)
+
     def post(self, request, format='json'):
         # serialize and check for the basic user details
         serializer = UserSerializer(data=request.data)
@@ -109,13 +116,7 @@ class Workouts(APIView):
             for rep in s:
                 if rep == "":
                     valid_reps[valid_reps.index(s)][s.index(rep)] = None
-                    #assign none to result
-                # else:
-                #     the corresponding result = list.push x rep
-        # [
-        #     [1,2,3],
-        #     [1,1, None]
-        # ]
+
         results = body['results']
         
         for r in results:
@@ -134,7 +135,6 @@ class Workouts(APIView):
  
         units = body['units']  
         comments = body['comments']
-        print(athlete_list)
         for athlete in athlete_list:
             
             workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
@@ -273,6 +273,7 @@ def profile(request, id):
                 serialized_recent.append({
                     'workout_name': x.workout.workout_name,
                     'workout_date': x.workout.workout_date,
+                    'workout_id': x.workout.id,
                 })
             data['recent_workouts'] = serialized_recent
         
@@ -341,6 +342,11 @@ def single_workout(request, id):
 
         return JsonResponse({"message" : "Data saved"}, status=200)
     
+    elif request.method == "DELETE":
+        result.delete()
+        return JsonResponse({"deleted": True}, status=200)
+
+
 @csrf_exempt  
 def workout_comment(request,id):
 
@@ -351,6 +357,7 @@ def workout_comment(request,id):
     result = WorkoutResult.objects.get(workout_id=id)
     workout_id = result.workout_id
     workout = Workout.objects.get(pk=workout_id)    
+
     if request.method == "POST":
         
         body_unicode = request.body.decode('utf-8')
@@ -426,4 +433,3 @@ def tracked_athletes(request, id):
         return JsonResponse({"found":True}, status=200, safe=False)
     else:
         return JsonResponse({"found": False}, status=204, safe=False)
-    
