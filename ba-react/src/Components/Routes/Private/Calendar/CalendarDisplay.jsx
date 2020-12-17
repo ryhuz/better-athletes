@@ -67,7 +67,7 @@ function CalendarDisplay() {
     }
 
     return (
-        <div className="bg-contrast cal-container">
+        <div className="bg-contrast cal-container mb-5">
             {retrieved ?
                 <>
                     <h4 className="display-4 text-center py-4">Your Training Calendar</h4>
