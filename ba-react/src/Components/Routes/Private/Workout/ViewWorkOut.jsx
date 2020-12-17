@@ -4,7 +4,7 @@ import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-boots
 import axios from "axios";
 import { axiosInstance } from '../../../../func/axiosApi';
 
-function ViewWorkOut() {
+function ViewWorkOut({isAuth}) {
     const [workout, setWorkout] = useState({ results: [] })
     const [results, setResults] = useState({})
     const [axiosErr, setAxiosErr] = useState(false)
@@ -310,9 +310,9 @@ console.log(results)
                 <Col md={6}>
                     <h4 className="title display-5">{workout.workout_name}</h4>
                 </Col>
-                <Col md={6} className="d-flex justify-content-end mt-2">
+                {isAuth.coach&&<Col md={6} className="d-flex justify-content-end mt-2">
                     <Button variant="main" onClick={handleShow}>Delete Workout</Button>
-                </Col>
+                </Col>}
                 <Col md={12}>
                     <h4 className="display-6">{workout.athlete_name}</h4>
                 </Col>
