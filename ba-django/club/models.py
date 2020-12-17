@@ -49,7 +49,8 @@ class UserDetail(models.Model):
             'age': (date.today() - self.dob) // timedelta(days=365.2425),
             'gender': self.gender,
             'public_workouts': self.public_workouts,
-            'dob': self.dob
+            'dob': self.dob,
+            'is_coach': self.is_coach,
             
         }
 
@@ -208,7 +209,9 @@ class TrackedAthlete(models.Model):
             "athlete_id": self.athlete.id,
             "athlete": self.athlete.username,
             "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
-            "notes": self.notes
+            "notes": self.notes,
+            "athlete_age": (date.today() - self.athlete.userdetail.dob) // timedelta(days=365.2425),
+            "athlete_gender": self.athlete.userdetail.gender,
         }
     
 class WorkoutComment(models.Model):
