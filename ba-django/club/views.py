@@ -175,7 +175,8 @@ def dashboard(request):
     if is_coach == True:
         # Getting coach details and tracked athletes
         all_ath = TrackedAthlete.objects.filter(coach=user)
-        
+        serialize_track = [x.serialize() for x in all_ath]
+
         # coach - get pending coach review
         ath_workouts = WorkoutResult.objects.filter(athlete__in=(x.athlete for x in all_ath))
         pending_coach_review = ath_workouts.filter(completed = True, reviewed = False).order_by('-workout__workout_date')[:5]
@@ -200,7 +201,8 @@ def dashboard(request):
             "pending_coach_review": serialized_ppr,
             "today": serialized_today,
             "pending_athlete": serialized_pending_athlete,
-            "recent_completed": serialized_past
+            "recent_completed": serialized_past,
+            "tracked_athletes": serialize_track,
         }
 
     else:

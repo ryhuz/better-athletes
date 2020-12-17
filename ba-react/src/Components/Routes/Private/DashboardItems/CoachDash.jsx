@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Row, Col } from 'react-bootstrap'
 import CoachDashItems from './CoachDashItems'
+import { NavLink } from 'react-router-dom'
 
 function CoachDash() {
     const title = ["Pending Your Review", "Today's Agenda", "Workouts Pending Athlete's Results", 'Recently Completed']
@@ -30,6 +31,7 @@ function CoachDash() {
         }
         retrieve()
     }, [])
+    console.log(dashData);
     return (
         <>
             {axiosErr ?
@@ -41,6 +43,38 @@ function CoachDash() {
                     </div>
                 </Col> :
                 <>
+                    <Col xs={12} md={12}>
+                            <div className="border m-3 dash-card">
+                                <div className="h4 py-3 px-2 text-center border">
+                                    Tracked Athletes
+                                </div>
+                                <Row xs={1} className="px-4 pt-3">
+                                    <Col>
+                                        <Row>
+                                            <Col><h6 className="title display-7"><b>Athlete Name</b></h6></Col>
+                                        </Row>
+                                    </Col>
+                                    {Object.keys(dashData).length ?
+                                    <>
+                                        <Col>
+                                            <Row xs={1}>
+                                                {dashData.tracked_athletes.map(el => (
+                                                    <Col key={el.athlete_id}>
+                                                        <Row>
+                                                            <Col className="px-0 ml-2">
+                                                                <NavLink className="h6 nav-link" to={`profile/${el.athlete_id}`}>
+                                                                    {el.athlete_name}
+                                                                </NavLink>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                ))}
+                                            </Row>
+                                        </Col>
+                                    </> : <>Loading....</>}
+                                </Row>
+                            </div>
+                    </Col>
                     {keys.map((card, index) => (
                         <Col xs={12} md={6} key={index}>
                             <div className={`border m-3 dash-card ${(card==="today" || card==="pending_athlete") && 'dash-card-scroll'}`}>
