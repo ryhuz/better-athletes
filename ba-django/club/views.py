@@ -117,7 +117,19 @@ class Workouts(APIView):
         #     [1,2,3],
         #     [1,1, None]
         # ]
-
+        results = body['results']
+        
+        for r in results:
+            for rr in r:
+                for rrr in rr:
+                    if rrr == "":
+                        results[results.index(r)][r.index(rr)][rr.index(rrr)] = None
+        
+        
+        print(results)
+        print(valid_reps)
+    
+    
 
         workout_name = body['workout_name']
         exercise = body['exercises']
@@ -127,7 +139,7 @@ class Workouts(APIView):
         workout_date = body['workout_date']
 
         # ======save for WorkoutResult Modal=======#
-        results = body['results']
+        
 
         # [
         #     [ [x], [x, x], [x,x,x],  ],
@@ -136,17 +148,18 @@ class Workouts(APIView):
 
         units = body['units']  
         comments = body['comments']
-
+        print(athlete_list)
         for athlete in athlete_list:
             
             workout = Workout(workout_name=workout_name, exercise=exercise, reps=reps,rests=rests, targets=targets, workout_date=workout_date)
             workout.save()
             
             a = User.objects.get(pk=athlete['user_id'])
-            
+            print(a)
             workout_result = WorkoutResult(athlete=a,workout=workout,results=results, units=units, comments=comments)
+            print(workout_result)
             workout_result.save()
-       
+        
 
         return JsonResponse({"message" : "Data isvalid"}, status=200)
         # Include a error JsonResponse
@@ -318,11 +331,11 @@ def getworkouts(request,id):
 
 @csrf_exempt
 def single_workout(request, id):
-    
-    result = WorkoutResult.objects.get(pk=id)
+    # to check with shawn later
+    result = WorkoutResult.objects.get(workout_id=id)
     all_comments = WorkoutComment.objects.filter(workout_result_id=id)
     serialized_comments = [x.serialize() for x in all_comments]
-
+    print(id)
     
     if request.method == "GET":
         

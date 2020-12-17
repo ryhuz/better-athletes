@@ -148,15 +148,19 @@ function WorkOut({ isAuth }) {
             let formated_date = date.year + "-" + date.month + "-" + date.day
             djangoFormVersion.workout_date = formated_date
         }
-
+        let max_rectangular_len = 0
+        
+        /* rectangularisation of every key except results (
+         for results, please refer to separate loop, due to setting the max_rectangular_length
+         in the first loop) 
+        */
         inputForm.sets.forEach(set => {
             let exerciseSet = []
             let repSet = []
             let restSet = []
             let targetsSet = []
             let unitsSet = []
-            let commentsSet = []
-            let resultsSet = []
+            let commentsSet = []           
 
             set.forEach(ex => {
                 exerciseSet.push(ex.exercise)
@@ -165,8 +169,14 @@ function WorkOut({ isAuth }) {
                 targetsSet.push(ex.targets)
                 unitsSet.push(ex.units)
                 commentsSet.push(ex.comments)
-                resultsSet.push(ex.results)
+
+                if (Number(ex.reps) > max_rectangular_len){
+                    max_rectangular_len = Number(ex.reps)
+                }
+                
             })
+
+            console.log(max_rectangular_len)
             /* Rectangularising data */
             if (exerciseSet.length < maxLength) {
                 for (let i = 0; i <= maxLength - exerciseSet.length; i++) {
@@ -176,7 +186,6 @@ function WorkOut({ isAuth }) {
                     targetsSet.push("")
                     unitsSet.push("")
                     commentsSet.push("")
-                    resultsSet.push("")
                 }
             }
             djangoFormVersion.exercises.push(exerciseSet)
@@ -185,9 +194,30 @@ function WorkOut({ isAuth }) {
             djangoFormVersion.targets.push(targetsSet)
             djangoFormVersion.units.push(unitsSet)
             djangoFormVersion.comments.push(commentsSet)
-            djangoFormVersion.results.push(resultsSet)
-            console.log(djangoFormVersion)
+            // console.log(djangoFormVersion)
         })
+        
+        /** Rectangularisation of results based on number of reps captured
+         *  (for all others, please refer to above loop)
+         */
+
+        inputForm.sets.forEach(set => {
+            let resultsSet = []
+            set.forEach(ex => {
+                resultsSet.push(new Array(max_rectangular_len).fill(""))               
+            })
+            console.log(max_rectangular_len)
+            /* Rectangularising data */
+            if (resultsSet.length < maxLength) {
+                for (let i = 0; i <= maxLength - resultsSet.length; i++) {
+                    resultsSet.push(new Array(max_rectangular_len).fill(""))
+                }
+            }
+            djangoFormVersion.results.push(resultsSet)
+            // console.log(djangoFormVersion)
+        })
+        console.log(djangoFormVersion)
+
         try {
             let response = await axios.post("http://localhost:8000/api/workouts", djangoFormVersion, {
                 headers: {
@@ -197,7 +227,7 @@ function WorkOut({ isAuth }) {
                 }
             })
             if (response) {
-                setisSubmit(true);
+                // setisSubmit(true);
             }
         } catch (error) {
             console.log(error)
@@ -205,11 +235,10 @@ function WorkOut({ isAuth }) {
         }
 
     }
-
+    // console.log(inputForm)
     /**
      * @GET = retrieve Athlete data and populate in drop down list
      */
-    console.log(selectedOption)
     useEffect(() => {
         async function getAthletes() {
             try {
@@ -228,9 +257,18 @@ function WorkOut({ isAuth }) {
             }
         }
         getAthletes();
+        /* Get date from URL */
+        if(window.location.search){
+            let params = window.location.search.split('?').slice(1)
+            let dateFromURL = {}
+            params.forEach(x=>{
+                let temp = x.split('=')
+                dateFromURL[temp[0]] = Number(temp[1])
+            })
+            setDate(dateFromURL)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
     if (isSubmit) {
         return <Redirect to="/betterathletes/dashboard" />
     }
@@ -245,6 +283,7 @@ function WorkOut({ isAuth }) {
                 <Col md={12} className="outer_form">
                     <Form>
                         <Row className="no-gutters">
+                            {/* Workout Name */}                            
                             <Col md={6} className="mx-4">
                                 <Form.Control
                                     name="workout_name"
@@ -252,6 +291,7 @@ function WorkOut({ isAuth }) {
                                     placeholder="Workout Name"
                                 />
                             </Col>
+                            {/* Select Date */}
                             <Col className="text-center" md='auto'>
                                 <DatePicker
                                     inputClassName="form-control date-picker"
@@ -259,8 +299,11 @@ function WorkOut({ isAuth }) {
                                     onChange={setDate}
                                     inputPlaceholder="Workout Day"
                                     shouldHighlightWeekends
+                                    colorPrimary="#000000"
+                                    calendarPopperPosition = "bottom"
                                 />
                             </Col>
+                            {/* Select Athlete to assign */}
                             <Col className="px-3">
                                 {isAuth.coach ?
                                     <Select
