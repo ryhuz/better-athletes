@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Redirect, useParams } from 'react-router-dom'
 import { Col, Row, Form, Button, Container, Accordion, Modal } from "react-bootstrap";
 import axios from "axios";
@@ -26,7 +26,7 @@ function ViewWorkOut({ isAuth }) {
     let { id } = useParams()
 
     function resultsHandler(e, i, ii) {
-        let { name, value, id } = e.target;
+        let { name, value } = e.target;
         let obj = { ...results, [name]: value }
         setResults(obj)
     }
@@ -45,7 +45,7 @@ function ViewWorkOut({ isAuth }) {
                     'accept': "application/json"
                 }
             }// workoutResult ID
-            let data = await axios.post(`http://localhost:8000/api/singleworkout/comment/${id}`, comments, headToken)
+            await axios.post(`http://localhost:8000/api/singleworkout/comment/${id}`, comments, headToken)
             getWorkout();
         } catch (error) {
             setAxiosErr(true)
@@ -53,14 +53,11 @@ function ViewWorkOut({ isAuth }) {
 
     }
     async function saveResults() {
-        // try {
         let max_length_counter = 0;
-        let obj = { ...results }
         let arr = []
         let django_results = {
             results: [],
         }
-
 
         workout.exercise.forEach((item, index) => {
             arr.push([])
@@ -79,14 +76,6 @@ function ViewWorkOut({ isAuth }) {
             }
         })
         django_results.results = arr
-
-        let headToken = {
-            headers: {
-                'Authorization': "JWT " + localStorage.getItem('token'),
-                'Content-Type': "application/json",
-                'accept': "application/json"
-            }
-        }
 
         getWorkout();
         setResultState(true);
@@ -379,7 +368,7 @@ function ViewWorkOut({ isAuth }) {
                 <Row >
                     <Col md={12} className="d-flex flex-row align-items-center my-3">
                         <div>
-                            {showComments == undefined ? <>Loading ... </> : showComments.map((item, index) => (
+                            {showComments === undefined ? <>Loading ... </> : showComments.map((item, index) => (
                                 <div className="my-3" key={index}>
                                     <div>
                                         <h6>{item.user}</h6>

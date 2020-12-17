@@ -17,10 +17,7 @@ function Register({ isAuth, setAuth }) {
     submitting: false,
     error: false
   });
-  const handleShowError = () => setRegistering({
-    submitting: false,
-    error: true
-  });
+
   const [userExists, setUserExists] = useState({
     checking: false,
     found: false

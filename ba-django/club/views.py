@@ -264,9 +264,6 @@ def profile(request, id):
             }, status=200, safe=False)
         except:
             return JsonResponse({"message":"something went wrong"}, status=400, safe=False)
-           
-        
-    
 
     try:
         user_profile = UserDetail.objects.get(base_user__id=id)
@@ -283,6 +280,7 @@ def profile(request, id):
                 serialized_recent.append({
                     'workout_name': x.workout.workout_name,
                     'workout_date': x.workout.workout_date,
+                    'workout_id': x.workout.id,
                 })
             data['recent_workouts'] = serialized_recent
         

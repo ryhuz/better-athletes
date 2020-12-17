@@ -17,7 +17,6 @@ function CoachDash() {
         tracked_id: null,
         note: "",
     })
-    const [track, setTrack] = useState()
 
     useEffect(() => {
         retrieve()

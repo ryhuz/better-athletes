@@ -21,7 +21,8 @@ function AllRoutes() {
     valid: false,
     refreshed: true,
     coach: false,
-    user: ""
+    user: "",
+    user_id: ""
   })
 
   useEffect(() => {
@@ -33,7 +34,8 @@ function AllRoutes() {
         valid: false,
         refreshed: false,
         coach: false,
-        user: ""
+        user: "",
+        user_id: "",
       });
     }
 
@@ -66,11 +68,12 @@ function AllRoutes() {
           removeToken()
         }
       } else {
-        return setAuth({
+        setAuth({
           valid: false,
           refreshed: false,
           coach: null,
-          user: ""
+          user: "",
+          user_id: "",
         });
       }
     }
@@ -98,12 +101,13 @@ function AllRoutes() {
           <Register isAuth={isAuth} setAuth={setAuth} />
         </Route>
         {/* Logged in route */}
-          <BetterAthletes isAuth={isAuth} component={AddWorkOut} path="/betterathletes/add_new_workout"/>
-          <BetterAthletes isAuth={isAuth} component={ViewWorkOut} path="/betterathletes/view_workout/:id"/>
-          <BetterAthletes isAuth={isAuth} component={Dashboard} path="/betterathletes/dashboard"/>
-          <BetterAthletes isAuth={isAuth} component={AthleteProfile} path="/betterathletes/profile/:id"/>
-          <BetterAthletes isAuth={isAuth} component={ViewClub} path="/betterathletes/myclub"/>
-          <BetterAthletes isAuth={isAuth} component={CalendarDisplay} path="/betterathletes/calendar/:id"/>
+        <BetterAthletes isAuth={isAuth} component={AddWorkOut} path="/betterathletes/add_new_workout" />
+        <BetterAthletes isAuth={isAuth} component={ViewWorkOut} path="/betterathletes/view_workout/:id" />
+        <BetterAthletes isAuth={isAuth} component={Dashboard} path="/betterathletes/dashboard" />
+        <BetterAthletes isAuth={isAuth} component={AthleteProfile} path="/betterathletes/profile/:id" />
+        <BetterAthletes isAuth={isAuth} component={ViewClub} path="/betterathletes/myclub" />
+        <BetterAthletes isAuth={isAuth} component={CalendarDisplay} path="/betterathletes/calendar/:id" />
+        <BetterAthletes isAuth={isAuth} component={Dashboard} path="/betterathletes/" />
       </Switch>
     </Router>
   )
