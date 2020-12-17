@@ -9,6 +9,12 @@ import Landing from "./LandingPage/Landing"
 import { axiosInstance } from "../../func/axiosApi";
 import NavBarLoggedIn from "../NavBars/NavBarLoggedIn"
 import NavBarNotLoggedIn from "../NavBars/NavBarNotLoggedIn"
+import AddWorkOut from "./Private/Workout/AddWorkOut"
+import ViewWorkOut from "./Private/Workout/ViewWorkOut"
+import Dashboard from './Private/Dashboard';
+import AthleteProfile from './Private/AthleteProfile';
+import ViewClub from './Private/ViewClub';
+import CalendarDisplay from './Private/Calendar/CalendarDisplay'
 
 function AllRoutes() {
   const [isAuth, setAuth] = useState({
@@ -75,7 +81,7 @@ function AllRoutes() {
   return (
     <Router>
       {isAuth.valid ?
-        <NavBarLoggedIn coach={isAuth.coach} username={isAuth.user} user_id={isAuth.user_id}/> :
+        <NavBarLoggedIn coach={isAuth.coach} username={isAuth.user} user_id={isAuth.user_id} /> :
         <NavBarNotLoggedIn />}
       <Switch>
         <Route path="/" exact>
@@ -92,7 +98,12 @@ function AllRoutes() {
           <Register isAuth={isAuth} setAuth={setAuth} />
         </Route>
         {/* Logged in route */}
-        <BetterAthletes isAuth={isAuth} />
+          <BetterAthletes isAuth={isAuth} component={AddWorkOut} path="/betterathletes/add_new_workout"/>
+          <BetterAthletes isAuth={isAuth} component={ViewWorkOut} path="/betterathletes/view_workout/:id"/>
+          <BetterAthletes isAuth={isAuth} component={Dashboard} path="/betterathletes/dashboard"/>
+          <BetterAthletes isAuth={isAuth} component={AthleteProfile} path="/betterathletes/profile/:id"/>
+          <BetterAthletes isAuth={isAuth} component={ViewClub} path="/betterathletes/myclub"/>
+          <BetterAthletes isAuth={isAuth} component={CalendarDisplay} path="/betterathletes/calendar/:id"/>
       </Switch>
     </Router>
   )

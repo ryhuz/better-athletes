@@ -96,18 +96,18 @@ class Workout(models.Model):
     )
     reps = ArrayField( # number of sets
         ArrayField( # reps per exercise
-            models.IntegerField(validators=[MinValueValidator(1)], blank=True)
-        )
+            models.IntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
+        ), blank=True, null=True
     )
     rests = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
-        )
+        ), blank=True, null=True
     )
     targets = ArrayField( # number of sets
         ArrayField( # target per exercise
             models.CharField(max_length=50, blank=True)
-        )
+        ), blank=True, null=True
     )
     created_date = models.DateTimeField(auto_now=True)
     
@@ -185,7 +185,8 @@ class WorkoutResult(models.Model):
             "results": self.results,
             "reps": self.workout.reps,
             "rests": self.workout.rests,
-            "target": self.workout.targets
+            "target": self.workout.targets,
+            "completed": self.completed,
         }
     
 class SavedWorkout(models.Model):
@@ -207,6 +208,7 @@ class TrackedAthlete(models.Model):
             "athlete_id": self.athlete.id,
             "athlete": self.athlete.username,
             "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
+            "notes": self.notes
         }
     
 class WorkoutComment(models.Model):

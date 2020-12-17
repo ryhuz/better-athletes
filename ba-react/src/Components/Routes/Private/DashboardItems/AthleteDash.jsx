@@ -29,7 +29,6 @@ function AthleteDash() {
         }
         retrieve()
     }, [])
-    console.log(dashData)
     return (
         <>
             {axiosErr ?
@@ -43,13 +42,13 @@ function AthleteDash() {
                 <>
                     {keys.map((card, index) => (
                         <Col xs={12} md={6} key={index}>
-                            <div className="border m-3 dash-card">
+                            <div className={`border m-3 dash-card ${(card==="today" || card==="pending_athlete") && 'dash-card-scroll'}`}>
                                 <div className="h4 py-3 px-2 text-center border">
                                     {title[index]}
                                 </div>
                                 <Row xs={1} className="px-4 pt-3">
                                     {Object.keys(dashData).length ?
-                                        <AthDashItems data={dashData[card]} empty={empty[index]} /> :
+                                        <AthDashItems data={dashData[card]} empty={empty[index]} key={card}/> :
                                         <>Loading....</>
                                     }
                                 </Row>
