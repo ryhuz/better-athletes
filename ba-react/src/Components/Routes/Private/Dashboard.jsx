@@ -7,7 +7,7 @@ function Dashboard({ isAuth }) {
 
     return (
         <Container>
-            <Row className="pt-5">
+            <Row className="pt-5" sm={1}>
                 {isAuth.coach ?
                     <CoachDash /> :
                     <AthleteDash />
