@@ -270,6 +270,8 @@ console.log(date)
                                     onChange={setDate}
                                     inputPlaceholder="Workout Day"
                                     shouldHighlightWeekends
+                                    colorPrimary="#000000"
+                                    calendarPopperPosition = "bottom"
                                 />
                             </Col>
                             {/* Select Athlete to assign */}
