@@ -45,7 +45,7 @@ function ViewWorkOut() {
 
     }
     async function saveResults() {
-        try {
+        // try {
             let max_length_counter = 0;
             let obj = { ...results }
             let arr = []
@@ -57,12 +57,12 @@ function ViewWorkOut() {
             workout.exercise.forEach((item, index) => {
                 arr.push([])
             })
+            console.log(obj)
 
-
-            for (const property in obj) {
-                let key = property.charAt(property.length - 1);
-                arr[Number(key)].push(obj[property])
-            }
+            // for (const property in obj) {
+            //     let key = property.charAt(property.length - 1);
+            //     arr[Number(key)].push(obj[property])
+            // }
 
 
             arr.forEach((item, index) => {
@@ -78,7 +78,7 @@ function ViewWorkOut() {
                 }
             })
             django_results.results = arr
-
+            console.log(django_results)
 
             let headToken = {
                 headers: {
@@ -87,16 +87,17 @@ function ViewWorkOut() {
                     'accept': "application/json"
                 }
             }
+            console.log(django_results)
             // to update workoutResult ID
-            await axios.post(`http://localhost:8000/api/singleworkout/${id}`, django_results, headToken)
+            // await axios.post(`http://localhost:8000/api/singleworkout/${id}`, django_results, headToken)
 
             getWorkout();
             setResultState(true);
 
-        } catch (error) {
-            console.log(error)
-            setAxiosErr(true)
-        }
+        // } catch (error) {
+        //     console.log(error)
+        //     setAxiosErr(true)
+        // }
     }
 
     async function getWorkout() {
@@ -209,7 +210,7 @@ function ViewWorkOut() {
             for (let r = 0; r < Number(exercise.reps); r++) {
                 if (r === 0) {
                     line.push(
-                        <tr>
+                        <tr key={`${i}${r}`}>
                             <td className="text-center" width="1%">
                                 {i + 1}
                             </td>
@@ -249,7 +250,7 @@ function ViewWorkOut() {
                     )
                 } else {
                     line.push(
-                        <tr>
+                        <tr key={`${i}${r}`}>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -305,15 +306,14 @@ console.log(results)
                 {formState.sets.map((item, index) => (
                     <Form.Group key={index}>
                         <Container>
-                            <Accordion key={index} defaultActiveKey={index+1}>
-
+                            <Accordion key={index} defaultActiveKey={index + 1}>
                                 {/* ------------------- SET Headings ------------------- */}
-                                <Accordion.Toggle as={Row} eventKey={index+1} className="no-gutters">
+                                <Accordion.Toggle as={Row} eventKey={index + 1} className="no-gutters">
                                     <Col md={12}>
                                         <h5>SET {index + 1}</h5>
                                     </Col>
                                 </Accordion.Toggle>
-                                <Accordion.Collapse eventKey={index+1}>
+                                <Accordion.Collapse eventKey={index + 1}>
                                     <table className="table table-borderless">
                                         <thead>
                                             <tr>
@@ -339,13 +339,11 @@ console.log(results)
                                             </tr>
                                         </thead>
                                         {/* ------------------- EACH EXERCISE LINE ------------------- */}
-                                        <tbody className="bigger-text2">
-                                            {item.map((item2, index2) => (
-                                                <>
-                                                    {displayExercise(item2, index2)}
-                                                </>
-                                            ))}
-                                        </tbody>
+                                        {item.map((item2, index2) => (
+                                            <tbody className="bigger-text2" key={index2}>
+                                                {displayExercise(item2, index2)}
+                                            </tbody>
+                                        ))}
                                     </table>
                                 </Accordion.Collapse>
                             </Accordion>

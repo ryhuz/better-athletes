@@ -334,7 +334,7 @@ def single_workout(request, id):
     result = WorkoutResult.objects.get(workout_id=id)
     all_comments = WorkoutComment.objects.filter(workout_result_id=id)
     serialized_comments = [x.serialize() for x in all_comments]
-    
+    print(result)
     if request.method == "GET":
         
         single_workout_data = {
@@ -346,6 +346,7 @@ def single_workout(request, id):
     
     elif request.method == "POST":
         print("Hellow")    
+        print("1")   
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         
