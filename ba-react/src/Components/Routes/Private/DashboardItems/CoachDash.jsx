@@ -51,7 +51,9 @@ function CoachDash() {
                                 <Row xs={1} className="px-4 pt-3">
                                     <Col>
                                         <Row>
-                                            <Col><h6 className="title display-7"><b>Athlete Name</b></h6></Col>
+                                            <Col className="col-6"><h6 className="title display-7"><b>Athlete Name</b></h6></Col>
+                                            <Col className="col-3"><h6 className="title display-7"><b>Age</b></h6></Col>
+                                            <Col className="col-3"><h6 className="title display-7"><b>Gender</b></h6></Col>
                                         </Row>
                                     </Col>
                                     {Object.keys(dashData).length ?
@@ -60,11 +62,17 @@ function CoachDash() {
                                             <Row xs={1}>
                                                 {dashData.tracked_athletes.map(el => (
                                                     <Col key={el.athlete_id}>
-                                                        <Row>
-                                                            <Col className="px-0 ml-2">
+                                                        <Row className="text-left">
+                                                            <Col className="px-0 col-6">
                                                                 <NavLink className="h6 nav-link" to={`profile/${el.athlete_id}`}>
                                                                     {el.athlete_name}
                                                                 </NavLink>
+                                                            </Col>
+                                                            <Col className="px-0 col-3">
+                                                                <h6 className="pt-2">{el.athlete_age} y.o.</h6>
+                                                            </Col>
+                                                            <Col className="px-0 col-3">
+                                                                <h6 className="pt-2">{el.athlete_gender==="F"?"Female":el.athlete_gender==="M"?"Male":"Prefer not to Say"}</h6>
                                                             </Col>
                                                         </Row>
                                                     </Col>

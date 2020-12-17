@@ -209,7 +209,9 @@ class TrackedAthlete(models.Model):
             "athlete_id": self.athlete.id,
             "athlete": self.athlete.username,
             "athlete_name": self.athlete.first_name + " " + self.athlete.last_name,
-            "notes": self.notes
+            "notes": self.notes,
+            "athlete_age": (date.today() - self.athlete.userdetail.dob) // timedelta(days=365.2425),
+            "athlete_gender": self.athlete.userdetail.gender,
         }
     
 class WorkoutComment(models.Model):
