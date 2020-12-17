@@ -6,14 +6,14 @@ import CoachDash from './DashboardItems/CoachDash'
 function Dashboard({ isAuth }) {
 
     return (
-        <Container>
+        <div className="mx-10">
             <Row className="pt-5" sm={1}>
                 {isAuth.coach ?
                     <CoachDash /> :
                     <AthleteDash />
                 }
             </Row>
-        </Container>
+        </div>
     )
 }
 
