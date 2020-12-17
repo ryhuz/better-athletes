@@ -65,7 +65,6 @@ function ViewWorkOut({ isAuth }) {
         }
 
     }
-    console.log(showComments)
 
     async function saveResults() {
         if (anyEmptyInputs()) {
@@ -81,7 +80,6 @@ function ViewWorkOut({ isAuth }) {
                 }
                 let max_rectangular_len = 0
 
-
                 formState.sets.forEach(set => {
                     set.forEach(ex => {
                         if (Number(ex.reps) > max_rectangular_len) {
@@ -89,6 +87,7 @@ function ViewWorkOut({ isAuth }) {
                         }
                     })
                 })
+                
 
                 formState.sets.forEach(set => {
                     let result_arr = []
@@ -97,15 +96,14 @@ function ViewWorkOut({ isAuth }) {
                     })
                     resultsSet.push(result_arr)
                 })
-
                 for (const property in obj) {
                     let key = property.split("-")
                     let zero = Number(key[0])
                     let one = Number(key[1])
-                    let two = Number(key[2]) - 1 < 0 ? Number(key[2]) : Number(key[2]) - 1
+                    let two = Number(key[2])
                     resultsSet[zero][one][two] = obj[property]
-
                 }
+
                 let clone = [...resultsSet]
                 // console.log(clone)
                 clone.forEach(cloneset => {
@@ -271,7 +269,7 @@ function ViewWorkOut({ isAuth }) {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii}`}
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${r}`}
                                             onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>
@@ -301,7 +299,7 @@ function ViewWorkOut({ isAuth }) {
                                             </Col>
                                         </Row>
                                         :
-                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${ii + r}`}
+                                        <Form.Control size="sm" id={`${ii}-${r}`} name={`${i}-${ii}-${r}`}
                                             onChange={(e) => resultsHandler(e, ii, r)} placeholder="Results" />
                                 }
                             </td>

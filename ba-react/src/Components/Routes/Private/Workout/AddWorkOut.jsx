@@ -144,7 +144,7 @@ function WorkOut({ isAuth }) {
      * @reminder = to check data format, convert obj to array to send to back using another set state for submitworkout func
      */
     async function submitWorkout() {
-        if (anyEmptyInputs()) {
+        if (false) {
             handleShow()
         } else {
             setSaving(true)
@@ -155,7 +155,7 @@ function WorkOut({ isAuth }) {
             let djangoFormVersion = {
                 athletes: selectedOption,
                 workout_name: inputForm.workout_name,
-                workout_date: "",
+                workout_date: date,
                 exercises: [],
                 reps: [],
                 rests: [],
@@ -165,12 +165,6 @@ function WorkOut({ isAuth }) {
                 results: []
             }
 
-            if (date === null) {
-                djangoFormVersion.workout_date = ""
-            } else {
-                let formated_date = date.year + "-" + date.month + "-" + date.day
-                djangoFormVersion.workout_date = formated_date
-            }
             let max_rectangular_len = 0
 
             /* rectangularisation of every key except results (
@@ -235,7 +229,7 @@ function WorkOut({ isAuth }) {
                 }
                 djangoFormVersion.results.push(resultsSet)
             })
-
+            console.log(djangoFormVersion)
             try {
                 let response = await axiosInstance.post("workouts", djangoFormVersion)
                 if (response) {
