@@ -18,8 +18,6 @@ function ViewClub() {
         getClub()
     }, [])
 
-    console.log(club);
-
     return (
         <Container>
             {Object.keys(club).length ?

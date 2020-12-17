@@ -23,7 +23,6 @@ function AthleteDash() {
                 setDashData(data.data)
             }
             catch (e) {
-                console.log(e)
                 setAxiosErr(true)
             }
         }

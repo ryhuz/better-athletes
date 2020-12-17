@@ -27,7 +27,6 @@ function Login({ isAuth, setAuth }) {
         });
       }
     } catch (error) {
-      console.log(error);
       setLoginErr(true)
     }
   }

@@ -48,7 +48,6 @@ function CalendarDisplay() {
                     workouts: temp.data,
                 })
             } catch (e) {
-                console.log(e);
                 setWorkouts({
                     workouts: [],
                     message: "Error getting workouts"

@@ -36,7 +36,6 @@ function CoachDash() {
             setDashData(data.data)
         }
         catch (e) {
-            console.log(e)
             setAxiosErr(true)
         }
     }
@@ -64,8 +63,6 @@ function CoachDash() {
             alert("Error has occured");
         }
     }
-
-    console.log(note);
     return (
         <>
             {axiosErr ?

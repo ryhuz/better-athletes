@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 function Register({ isAuth, setAuth }) {
+  const [clubErr, setClubErr] = useState(false);
   const [club, setClub] = useState();
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
   useEffect(() => {
@@ -18,7 +19,7 @@ function Register({ isAuth, setAuth }) {
         let resp = await axios.get("http://localhost:8000/api/clubs");
         setClub(resp.data);
       } catch (error) {
-        console.log(error);
+        setClubErr(true)
       }
     }
     getClub();
@@ -55,13 +56,13 @@ function Register({ isAuth, setAuth }) {
       .required('Date of birth is required'),
 
     gender: Yup.string()
-    .test('empty-check','Gender cannot be empty',value=>(value === "M" || value=== "F" || value==="P"))
-    .required('Gender is required'),
+      .test('empty-check', 'Gender cannot be empty', value => (value === "M" || value === "F" || value === "P"))
+      .required('Gender is required'),
 
     location: Yup.string()
-    .required('Location is required')
-    .min(2, "Specified field is too short")
-    .max(50, "Specified field is too long"),
+      .required('Location is required')
+      .min(2, "Specified field is too short")
+      .max(50, "Specified field is too long"),
 
     phone: Yup.string()
       .required('Phone number is required')
@@ -74,16 +75,16 @@ function Register({ isAuth, setAuth }) {
       .required('Weight is required'),
 
     club: Yup.string()
-    .required('Club is required')
-    .test('empty-check','Club cannot be empty',value=>value !== " "),
+      .required('Club is required')
+      .test('empty-check', 'Club cannot be empty', value => value !== " "),
 
     public_workouts: Yup.string()
       .required('Please confirm your profile privacy setting')
-      .test('empty-check','Please confirm your profile privacy setting',value=>value !== " "),
+      .test('empty-check', 'Please confirm your profile privacy setting', value => value !== " "),
 
     is_coach: Yup.string()
       .required('Please confirm whether you are a coach')
-      .test('empty-check','Please confirm whether you are a coach',value=>value !== " "),
+      .test('empty-check', 'Please confirm whether you are a coach', value => value !== " "),
   });
 
   const {
@@ -119,7 +120,6 @@ function Register({ isAuth, setAuth }) {
   //submits and sends user creation request to Django
   async function submit(user) {
     try {
-      console.log(user);
       await axios.post("http://localhost:8000/api/signup", user);
       try {
         let resp = await axiosInstance.post("login", { username: user.username, password: user.password });
@@ -147,6 +147,7 @@ function Register({ isAuth, setAuth }) {
   return (
     <div className="d-flex align-items-center landing full-height">
       <Container className="text-center bg-contrast px-5 py-2">
+        {clubErr && <div className="text-danger text-left">Error fetching club data!</div>}
         <div className="my-4">
           <h2>Better Athletes</h2>
           <h4>User Registration</h4>
@@ -166,8 +167,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.username && errors.username ? (
-                <div className="invalid-feedback">{errors.username}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.username}</div>
+                ) : null}
               </Col>
               {/* Email Input */}
               <Col className="mx-3">
@@ -181,8 +182,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.email && errors.email ? (
-                <div className="invalid-feedback">{errors.email}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.email}</div>
+                ) : null}
               </Col>
             </Form.Row>
             <Form.Row className="my-4 text-left">
@@ -200,8 +201,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.password && errors.password ? (
-                <div className="invalid-feedback">{errors.password}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.password}</div>
+                ) : null}
               </Col>
               <Col className="mx-3">
                 {/* Password Confirmation */}
@@ -217,8 +218,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.password2 && errors.password2 ? (
-                <div className="invalid-feedback">{errors.password2}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.password2}</div>
+                ) : null}
               </Col>
             </Form.Row>
             <Form.Row className="my-4 text-left">
@@ -233,8 +234,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.first_name && errors.first_name ? (
-                <div className="invalid-feedback">{errors.first_name}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.first_name}</div>
+                ) : null}
               </Col>
               <Col className="mx-3">
                 <Form.Label>Last Name</Form.Label>
@@ -247,8 +248,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.last_name && errors.last_name ? (
-                <div className="invalid-feedback">{errors.last_name}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.last_name}</div>
+                ) : null}
               </Col>
               {/* Date of Birth Input */}
               <Col className="mx-3">
@@ -263,8 +264,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.dob && errors.dob ? (
-                <div className="invalid-feedback">{errors.dob}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.dob}</div>
+                ) : null}
               </Col>
             </Form.Row>
             <Form.Row className="my-4 text-left">
@@ -278,8 +279,8 @@ function Register({ isAuth, setAuth }) {
                   <option value="P">Prefer not to say</option>
                 </Form.Control>
                 {touched.gender && errors.gender ? (
-                <div className="invalid-feedback">{errors.gender}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.gender}</div>
+                ) : null}
               </Col>
               <Col className="mx-3">
                 {/* Location Input */}
@@ -294,8 +295,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.location && errors.location ? (
-                <div className="invalid-feedback">{errors.location}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.location}</div>
+                ) : null}
               </Col>
               <Col className="mx-3">
                 {/* Contact Input */}
@@ -310,8 +311,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.phone && errors.phone ? (
-                <div className="invalid-feedback">{errors.phone}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.phone}</div>
+                ) : null}
               </Col>
             </Form.Row>
             <Form.Row className="my-4 text-left">
@@ -325,8 +326,8 @@ function Register({ isAuth, setAuth }) {
                   ))}
                 </Form.Control>
                 {touched.club && errors.club ? (
-                <div className="invalid-feedback">{errors.club}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.club}</div>
+                ) : null}
               </Col>
               <Col className="mx-3">
                 {/* Height Input */}
@@ -342,8 +343,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.height && errors.height ? (
-                <div className="invalid-feedback">{errors.height}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.height}</div>
+                ) : null}
               </Col>
               <Col className="mx-3">
                 {/* Weight Input */}
@@ -359,8 +360,8 @@ function Register({ isAuth, setAuth }) {
                   }
                 />
                 {touched.weight && errors.weight ? (
-                <div className="invalid-feedback">{errors.weight}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.weight}</div>
+                ) : null}
               </Col>
             </Form.Row>
             <Form.Row className="my-4 text-left">
@@ -373,8 +374,8 @@ function Register({ isAuth, setAuth }) {
                   <option value={false}>No</option>
                 </Form.Control>
                 {touched.public_workouts && errors.public_workouts ? (
-                <div className="invalid-feedback">{errors.public_workouts}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.public_workouts}</div>
+                ) : null}
               </Col>
               {/* Is Coach Selection */}
               <Col className="mx-3 text-left">
@@ -385,8 +386,8 @@ function Register({ isAuth, setAuth }) {
                   <option value={false}>No</option>
                 </Form.Control>
                 {touched.is_coach && errors.is_coach ? (
-                <div className="invalid-feedback">{errors.is_coach}</div>
-              ) : null}
+                  <div className="invalid-feedback">{errors.is_coach}</div>
+                ) : null}
               </Col>
             </Form.Row>
             <Form.Row className="mt-4 mx-3">

@@ -42,7 +42,6 @@ function ViewWorkOut() {
             let data = await axios.post(`http://localhost:8000/api/singleworkout/comment/${id}`, comments, headToken)
             getWorkout();
         } catch (error) {
-            console.log(error)
             setAxiosErr(true)
         }
 
@@ -60,13 +59,6 @@ function ViewWorkOut() {
             workout.exercise.forEach((item, index) => {
                 arr.push([])
             })
-            console.log(obj)
-
-            // for (const property in obj) {
-            //     let key = property.charAt(property.length - 1);
-            //     arr[Number(key)].push(obj[property])
-            // }
-
 
             arr.forEach((item, index) => {
                 if (item.length > max_length_counter) {
@@ -81,7 +73,6 @@ function ViewWorkOut() {
                 }
             })
             django_results.results = arr
-            console.log(django_results)
 
             let headToken = {
                 headers: {
@@ -90,17 +81,10 @@ function ViewWorkOut() {
                     'accept': "application/json"
                 }
             }
-            console.log(django_results)
-            // to update workoutResult ID
-            // await axios.post(`http://localhost:8000/api/singleworkout/${id}`, django_results, headToken)
 
             getWorkout();
             setResultState(true);
 
-        // } catch (error) {
-        //     console.log(error)
-        //     setAxiosErr(true)
-        // }
     }
 
     async function getWorkout() {
@@ -202,7 +186,6 @@ function ViewWorkOut() {
 
         }
         catch (e) {
-            console.log(e)
             setAxiosErr(true)
         }
     }
@@ -286,7 +269,6 @@ function ViewWorkOut() {
         }
         return line;
     }
-console.log(results)
     useEffect(() => {
         getWorkout();
     }, [])
