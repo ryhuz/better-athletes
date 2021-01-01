@@ -1,5 +1,8 @@
 # Better Athletes
 
+*This repo was original hosted on my GA account*
+*you can view this app at https://better-athletes.herokuapp.com/*
+
 Manage your workouts better
 
 ## Description
@@ -17,4 +20,4 @@ Better athletes is a platform which provides the option to make your workouts mo
 ### Wireframes
 
 ## Acknowledgements
-Thank you Tyrone for carrying the team.
+Tyrone, and Ken, for helping to build this project.
