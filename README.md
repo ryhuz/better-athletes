@@ -9,6 +9,29 @@ Manage your workouts better
 
 Better athletes is a platform which provides the option to make your workouts more specific and track your data more closely. Other apps ask you for distance and time, with no flexibility. But if your workouts are more interval based where you need to track each rep, Better Athletes gives you that option!
 
+## Built With
+  - React
+  - React-Router-Dom
+  - Django
+  - Django Rest Framework
+  - PostgreSQL
+  - Bootstrap/Bootstrap React
+  - Axios
+
+## Functions 
+
+  - Register and Login authentication system
+  - Dashboard view for recent, upcoming, and today's workouts
+  - Reminders to key in results of workout, or reminder for coach to acknowledge results
+  - Calendar view for workouts
+  - Add workout, add results, and view
+  - Comment on workout
+
+## Challenges
+  * Implementing JWT authentication was a challenge as we had only used Node/Express before this. Having to refresh the tokens was something we had to look up the documentation and understand.
+  * Nested arrays for results
+      While we had a clear idea of how to store the data, being 4-times nested and having to rectangularise the arrays for Postgres was tricky and took up a lot of time.
+
 ## Wire Frames
 
 |Landing page|Club|Dashboard|
@@ -21,15 +44,6 @@ Better athletes is a platform which provides the option to make your workouts mo
 |------------|
 |![View Workout](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/View%20Workout.PNG)|
 
-## Built With
-- React
-- React-Router-Dom
-- Django
-- Bootstrap/Bootstrap React
-- Axios
-
-## Planning
-### Wireframes
 
 ## Acknowledgements
 Tyrone, and Ken, for helping to build this project.
