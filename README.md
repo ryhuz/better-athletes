@@ -12,13 +12,13 @@ Better athletes is a platform which provides the option to make your workouts mo
 ## Wire Frames
 
 |Landing page|Club|Dashboard|
-|---------|------|--------|
+|------------|----|---------|
 |![Landing Page](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/Landing.PNG)|![Club](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/Club.PNG)|![Coach Dashboard](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/Dashboard%20Coach.PNG)|
 |Profile|Calendar|Add Workout|
-|------|------------|-----------|
+|-------|--------|-----------|
 |![Profile](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/Profile.PNG)|![Calendar](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/Calendar.PNG)|![Add Workout](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/Add%20Workout.PNG)|
 |View Workout|
-|------|
+|------------|
 |![View Workout](https://github.com/ryhuz/better-athletes/blob/master/Wireframes/View%20Workout.PNG)|
 
 ## Built With
